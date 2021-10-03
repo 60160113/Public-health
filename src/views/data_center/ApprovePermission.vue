@@ -39,6 +39,14 @@
           <template #no-items-view
             ><div class="text-center">ไม่พบข้อมูล</div>
           </template>
+
+          <template #action>
+            <td>
+              <CButton color="success" shape="pill"> อนุมัติ </CButton>
+              &nbsp;
+              <CButton color="danger" shape="pill"> ปฏิเสธ </CButton>
+            </td>
+          </template>
         </CDataTable>
       </CCardBody>
     </CCard>
