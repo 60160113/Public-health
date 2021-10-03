@@ -10,10 +10,11 @@ module.exports = {
     const formData = req.body.formData
     const permission = req.payload.permission
     let formParam = ''
-    Object.keys(formData).forEach(function(key) {
+    Object.keys(formData).forEach(function (key) {
       formParam = `${formParam}&${key}=${formData[key]}`
     })
     const result = await axios.post(encodeURI(`${process.env.VUE_APP_JOGET_URL}web/json/data/form/store/${reqApp.appId}/${reqApp.formId}/${primaryKey}?j_username=${juser[permission].username}&j_password=${juser[permission].password}${formParam}`))
+    console.log(result);
     return result
   },
 
