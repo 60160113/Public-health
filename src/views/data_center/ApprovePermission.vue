@@ -16,6 +16,66 @@
             </h6>
           </CCol>
         </CRow>
+        <CRow>
+          <CCol :md="{ size: '3' }">
+            <h6 style="float: right"><strong>วันที่ส่งคืน</strong></h6>
+          </CCol>
+          <CCol :md="{ size: '9' }">
+            <h6>
+              {{ checkInContents[0].returnDate }}
+            </h6>
+          </CCol>
+        </CRow>
+        <CRow>
+          <CCol :md="{ size: '3' }">
+            <h6 style="float: right"><strong>หมายเลขบัตร</strong></h6>
+          </CCol>
+          <CCol :md="{ size: '9' }">
+            <h6>
+              {{ checkInContents[0].checkInCard }}
+            </h6>
+          </CCol>
+        </CRow>
+        <CRow>
+          <CCol :md="{ size: '3' }">
+            <h6 style="float: right"><strong>ผู้ร้องขอ</strong></h6>
+          </CCol>
+          <CCol :md="{ size: '9' }">
+            <h6>
+              {{ checkInContents[0].requester }}
+            </h6>
+          </CCol>
+        </CRow>
+        <CRow>
+          <CCol :md="{ size: '3' }">
+            <h6 style="float: right"><strong>ตำแหน่ง</strong></h6>
+          </CCol>
+          <CCol :md="{ size: '9' }">
+            <h6>
+              {{ checkInContents[0].position }}
+            </h6>
+          </CCol>
+        </CRow>
+        <CRow>
+          <CCol :md="{ size: '3' }">
+            <h6 style="float: right"><strong>สังกัด</strong></h6>
+          </CCol>
+          <CCol :md="{ size: '9' }">
+            <h6>
+              {{ checkInContents[0].affiliation }}
+            </h6>
+          </CCol>
+        </CRow>
+        <CRow>
+          <CCol :md="{ size: '3' }">
+            <h6 style="float: right"><strong>วัตถุประสงค์</strong></h6>
+          </CCol>
+          <CCol :md="{ size: '9' }">
+            <h6>
+              {{ checkInContents[0].purpose }}
+            </h6>
+          </CCol>
+        </CRow>
       </CCardBody>
     </CCard>
 
@@ -58,7 +118,43 @@
             ><div class="text-center">ไม่พบข้อมูล</div>
           </template>
         </CDataTable>
+        <!-- <CRow>
+          <CCol>
+            <template>
+              <CRow form class="form-group">
+                <CCol sm="3"></CCol>
+                <CInputRadio
+                  v-for="(option, optionKey) in options"
+                  :key="optionKey"
+                  :label="option.label"
+                  :value="option.value"
+                  :inline="true"
+                  :checked="form.reviewStatus === option.value"
+                  @update:checked="() => (form.reviewStatus = option.value)"
+                />
+              </CRow>
+            </template>
+          </CCol>
+        </CRow> -->
+        <!-- <CRow>
+          <CCol>
+            <CTextarea
+              horizontal
+              label="ความคิดเห็น"
+              rows="4"
+              v-model="form.comment"
+            />
+          </CCol>
+        </CRow> -->
       </CCardBody>
+      <CCardFooter>
+        <CButton
+          color="success"
+          class="float-right ml-1"
+          @click="approvePermission()"
+          >อนุมัติ</CButton
+        >
+      </CCardFooter>
     </CCard>
   </div>
 </template>
@@ -109,17 +205,32 @@ export default {
       modal: false,
 
       hardwareList: [],
-      checkInContents: []
+      checkInContents: [],
+      activityId: "",
     };
   },
-  created(){
-    this.getCheckIn().then((res)=>{
+  created() {
+    this.getCheckIn().then((res) => {
       console.log(res);
       this.checkInContents = res.data.data;
-    })
+    });
+    this.getActivityId().then((res) => {
+      this.activityId = res.data.activityId;
+      console.log(this.activityId);
+    });
   },
   methods: {
-    async getCheckIn(){
+    async getActivityId() {
+      const processData = {
+        processId: this.$route.params.processId,
+      };
+      return await axios.post(
+        `${process.env.VUE_APP_BACKEND_URL}/process/view`,
+        processData,
+        this.axiosOptions
+      );
+    },
+    async getCheckIn() {
       const axiosData = {
         app: {
           appId: "mophApp",
@@ -149,6 +260,48 @@ export default {
         type: "ชั่วคราว",
       };
       this.modal = false;
+    },
+    async approvePermission() {
+      this.loadingPage = true;
+      const axiosData = {
+        app: {
+          appId: "mophApp",
+          formId: "checkIn",
+        },
+        primaryKey: "",
+        formData: {
+          processName: "Consider Requirement",
+        },
+      };
+      await axios
+        .post(
+          `${process.env.VUE_APP_BACKEND_URL}/form/submit`,
+          axiosData,
+          this.axiosOptions
+        )
+        .then(async (res) => {
+          console.log(res);
+          const processData = {
+            activityId: this.activityId,
+            variables: [
+              {
+                paramName: "permissionApproveStatus",
+                paramValue: this.enter,
+              },
+            ],
+          };
+          await axios
+            .post(
+              `${process.env.VUE_APP_BACKEND_URL}/process/completeWithVariable`,
+              processData,
+              this.axiosOptions
+            )
+            .then(() => {
+              this.loadingPage = false;
+              this.$router.push("/data-center/list-approve-permission/");
+              // }
+            });
+        });
     },
     async checkingIn() {
       this.loadingPage = true;
