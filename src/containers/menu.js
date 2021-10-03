@@ -19,7 +19,7 @@ export default [
   {
     _name: "CSidebarNavItem",
     name: "Consider Requirement",
-    to: "/data-center/consider-requirement",
+    to: "/data-center/list-consider-requirement",
     icon: "cil-circle"
   },
   {
@@ -34,6 +34,7 @@ export default [
     to: "/data-center/review",
     icon: "cil-circle"
   },
+  // Change Request
   {
     _name: "CSidebarNavTitle",
     _children: ["Change Request"]

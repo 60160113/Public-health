@@ -15,7 +15,12 @@ export default [
     component: () => import("@/views/data_center/ApprovePermission.vue")
   },
   {
-    path: "/data-center/consider-requirement",
+    path: "/data-center/list-consider-requirement",
+    name: "List Consider Requirement",
+    component: () => import("@/views/data_center/ListConsiderRequirement.vue")
+  },
+  {
+    path: "/data-center/consider-requirement:processId",
     name: "Consider Requirement",
     component: () => import("@/views/data_center/ConsiderRequirement.vue")
   },
