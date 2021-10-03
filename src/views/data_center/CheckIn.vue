@@ -97,7 +97,6 @@
           :itemsPerPageSelect="{
             label: 'แสดง',
           }"
-          :loading="loading"
           hover
           striped
           border
@@ -127,7 +126,9 @@
       </CCardBody>
     </CCard>
 
-    <CButton block color="primary" class="mt-3" @click="checkingIn()">บันทึก</CButton>
+    <CButton block color="primary" class="mt-3" @click="checkingIn()"
+      >บันทึก</CButton
+    >
 
     <CModal
       :show.sync="modal"
@@ -284,16 +285,45 @@ export default {
             primaryKey: "",
             formData: this.checkIn,
           };
-          await axios.post(
-            `${process.env.VUE_APP_BACKEND_URL}/form/submit`,
-            axiosData,
-            this.axiosOptions
-          )
-          .then((res)=>{
-            console.log(res);
-            this.loadingPage = false
-            // this.$router.push("/pr/PRpage/");
-          })
+          await axios
+            .post(
+              `${process.env.VUE_APP_BACKEND_URL}/form/submit`,
+              axiosData,
+              this.axiosOptions
+            )
+            .then(async (res) => {
+              console.log(res);
+              const processData = {
+                processId: this.checkIn.processId,
+              };
+              await axios
+                .post(
+                  `${process.env.VUE_APP_BACKEND_URL}/process/view`,
+                  processData,
+                  this.axiosOptions
+                )
+                .then(async (res) => {
+                  const activityId = res.data.activityId;
+                  const processData = {
+                    activityId: activityId,
+                  };
+                  await axios
+                    .post(
+                      `${process.env.VUE_APP_BACKEND_URL}/process/complete`,
+                      processData,
+                      this.axiosOptions
+                    )
+                    .then((res) => {
+                      console.log(res);
+                      // if(res.data.status === 'complete' ){
+                      this.loadingPage = false;
+                      // this.$router.push("/pr/PRpage/");
+                      // }
+                    });
+                });
+              // this.loadingPage = false
+              // this.$router.push("/pr/PRpage/");
+            });
         });
     },
   },
