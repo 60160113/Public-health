@@ -239,48 +239,7 @@ export default {
       departmentIndex: 0,
       department: "",
       id: "",
-      changeRequestList: [
-        {
-          changeRequestId: "F-IT-CO-06.01-01/01",
-          requester: "Samppa Nori",
-          dateCreated: "2012/01/01",
-          subject: "เพิ่มระบบ A101",
-          reason: "เพิ่มระบบใหม่",
-          processName: "รออนุมัติ"
-        },
-        {
-          changeRequestId: "F-IT-CO-06.01-01/02",
-          requester: "Estavan Lykos",
-          dateCreated: "2012/02/01",
-          subject: "แก้ไข A109",
-          reason: "ปรับปรุง/แก้ไข",
-          processName: "รอตรวจสอบ"
-        },
-        {
-          changeRequestId: "F-IT-CO-06.01-01/03",
-          requester: "Chetan Mohamed",
-          dateCreated: "2012/02/01",
-          subject: "ตรวจสอบความถูกต้องของ A500",
-          reason: "อื่นๆ",
-          processName: "รออนุมัติ"
-        },
-        {
-          changeRequestId: "F-IT-CO-06.01-01/04",
-          requester: "Derick Maximinus",
-          dateCreated: "2012/03/01",
-          reason: "เพิ่มระบบใหม่",
-          subject: "เพิ่มระบบ A103",
-          processName: "เสร็จสิ้น"
-        },
-        {
-          changeRequestId: "F-IT-CO-06.01-01/05",
-          requester: "Friderik Dávid",
-          dateCreated: "2012/01/21",
-          subject: "ปรับปรุง/แก้ไข B101",
-          reason: "ปรับปรุง/แก้ไข",
-          processName: "รอผลดำเนินการ"
-        }
-      ]
+      changeRequestList: []
     };
   },
   created() {
@@ -291,113 +250,27 @@ export default {
     this.editChangeRequest.modiflyBy = this.infoAuth.fullname;
     this.getChangeRequest();
   },
-  watch: {
-    departmentIndex: function(index) {
-      this.department = this.departmentList[index].data.departmentName;
-      this.newChangeRequest.projectDepartment = this.departmentList[
-        index
-      ].data.departmentName;
-      this.getProject();
-    },
-    projectIndex: function(index) {
-      this.id = this.projectList[index].data.id;
-      this.newChangeRequest.project = this.projectList[index].data.projectId;
-      this.newChangeRequest.projectName = this.projectList[
-        index
-      ].data.projectName;
-      this.newChangeRequest.projectAmount = this.projectList[
-        index
-      ].data.projectAmount;
-    }
-  },
+  watch: {},
   methods: {
     async getChangeRequest() {
-      const searchData = [];
+      console.log('getChangeRequest');
+      const searchData = [
+        {
+          paramName: "changeRequestStatus",
+          paramValue: "active"
+        }
+      ];
       await jogetService
-        .list("thacExpense", "list_fin_advance", searchData)
+        .list("mophApp", "list_moph_change_request", searchData)
         .then(res => {
           this.changeRequestList = res.data.data;
         });
     },
-    async getDepartment() {
-      const searchData = [];
-      await jogetService
-        .list("userAccountManagement", "listDepartment", searchData)
-        .then(res => {
-          let department = [];
-          department.push({
-            value: 0,
-            label: "กรุณาเลือกแผนก",
-            data: ""
-          });
-          res.data.data.forEach((item, index) => {
-            department.push({
-              value: index + 1,
-              label: item.departmentName,
-              data: item
-            });
-          });
-          this.departmentList = department;
-        });
-    },
-    async getProject() {
-      const searchData = [
-        {
-          paramName: "department",
-          paramValue: this.department
-        }
-      ];
-      await jogetService
-        .list("thacExpense", "list_project", searchData)
-        .then(res => {
-          let project = [];
-          project.push({
-            value: 0,
-            label: "กรุณาเลือกโครงการ",
-            data: ""
-          });
-          res.data.data.forEach((item, index) => {
-            project.push({
-              value: index + 1,
-              label: item.projectId + ": " + item.projectName,
-              data: item
-            });
-          });
-          this.projectList = project;
-        });
-    },
 
-    async getreasonList() {
-      await jogetService
-        .listAll("userAccountManagement", "listAllUsers")
-        .then(res => {
-          let requester = [];
-          res.data.data.forEach(item => {
-            requester.push({
-              value: item.fullname,
-              text: item.fullname
-            });
-          });
-          this.reasonList = requester;
-        });
-    },
     async changeRequestCreate() {
       await jogetService
         .startProcess("thacExpense", "expenseClaim")
         .then(res => {
-          this.newChangeRequest.processId = res.data.processId;
-          if (Number(this.newChangeRequest.value) <= 10000) {
-            let position = "ผู้อำนวยการฝ่าย" + this.department;
-            this.newChangeRequest.approval = position;
-          } else if (
-            Number(this.newChangeRequest.value) > 10000 &&
-            Number(this.newChangeRequest.value) <= 50000
-          ) {
-            this.newChangeRequest.approval =
-              "รองผู้อำนวยการสถาบันอนุญาโตตุลาการ";
-          } else if (Number(this.newChangeRequest.value) > 50000) {
-            this.newChangeRequest.approval = "ผู้อำนวยการสถาบันอนุญาโตตุลาการ";
-          }
           this.newChangeRequest.processName = "รออนุมัติ";
           jogetService
             .formSubmit("thacExpense", "fin_advance", "", this.newChangeRequest)
