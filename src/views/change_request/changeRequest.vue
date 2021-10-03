@@ -53,13 +53,11 @@
                 toggler-text=""
                 class="ml-1"
                 placement="left-start"
-                v-if="item.processName == 'รออนุมัติ'"
               >
                 <div>
                   <div>
-                    <CDropdownItem
-                      @click="considerRequestPage(item.finAdvanceId)"
-                      >ตรวจสอบคำร้อง</CDropdownItem
+                    <CDropdownItem @click="reviewRequestPage(item.finAdvanceId)"
+                      >พิจารณาคำร้อง</CDropdownItem
                     >
                     <CDropdownDivider></CDropdownDivider>
                   </div>
@@ -69,47 +67,6 @@
                   <CDropdownItem @click="checkDelete(item)"
                     >ลบคำร้อง</CDropdownItem
                   >
-                </div></CDropdown
-              >
-              <CDropdown
-                color="info"
-                size="sm"
-                toggler-text=""
-                class="ml-1"
-                placement="left-start"
-                v-if="item.processName == 'รอตรวจสอบ'"
-              >
-                <div>
-                  <div>
-                    <CDropdownItem
-                      @click="considerRequestPage(item.finAdvanceId)"
-                      >ตรวจสอบคำร้อง</CDropdownItem
-                    >
-                    <CDropdownDivider></CDropdownDivider>
-                  </div>
-                  <CDropdownItem @click="openChangeRequestEdit(item)"
-                    >แก้ไขคำร้อง</CDropdownItem
-                  >
-                  <CDropdownItem @click="checkDelete(item)"
-                    >ลบคำร้อง</CDropdownItem
-                  >
-                </div></CDropdown
-              >
-              <CDropdown
-                color="info"
-                size="sm"
-                toggler-text=""
-                class="ml-1"
-                placement="left-start"
-                v-if="item.processName == 'อนุมัติ'"
-              >
-                <div>
-                  <div>
-                    <CDropdownItem
-                      @click="considerRequestPage(item.finAdvanceId)"
-                      >ตรวจสอบผลดำเนินการ</CDropdownItem
-                    >
-                  </div>
                 </div></CDropdown
               >
             </td>
@@ -316,9 +273,9 @@ export default {
             });
         });
     },
-    considerRequestPage(changeRequestId) {
+    reviewRequestPage(changeRequestId) {
       let routeData = this.$router.resolve({
-        name: "AddData",
+        name: "reviewChangeRequest",
         query: { data: changeRequestId }
       });
       window.open(routeData.href, "_blank");
