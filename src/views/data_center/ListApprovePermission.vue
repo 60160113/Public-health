@@ -160,6 +160,9 @@ export default {
         this.axiosOptions
       );
     },
+    approvePermission(item){
+      this.$router.push("/data-center/approve-permission/" + item.processId)
+    }
   },
 };
 </script>

@@ -10,7 +10,7 @@ export default [
     component: () => import("@/views/data_center/ListApprovePermission.vue")
   },
   {
-    path: "/data-center/approve-permission",
+    path: "/data-center/approve-permission/:processId",
     name: "Approve Permission",
     component: () => import("@/views/data_center/ApprovePermission.vue")
   },

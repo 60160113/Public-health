@@ -13,7 +13,7 @@ export default [
   {
     _name: "CSidebarNavItem",
     name: "Approve Permission",
-    to: "/data-center/approve-permission",
+    to: "/data-center/list-approve-permission",
     icon: "cil-circle"
   },
   {
