@@ -25,13 +25,13 @@ export default [
   {
     _name: "CSidebarNavItem",
     name: "Check-out",
-    to: "/data-center/check-out",
+    to: "/data-center/list-check-out",
     icon: "cil-circle"
   },
   {
     _name: "CSidebarNavItem",
     name: "Review",
-    to: "/data-center/review",
+    to: "/data-center/list-review",
     icon: "cil-circle"
   },
   // Change Request
