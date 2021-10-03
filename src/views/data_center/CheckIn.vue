@@ -202,13 +202,13 @@
 <script>
 import { DatePicker } from "v-calendar";
 import axios from "axios";
-import { jogetService } from "@/helpers/joget-helper";
+// import { jogetService } from "@/helpers/joget-helper";
 import { authHeader } from "@/helpers/auth-header";
 export default {
   components: {
     "v-date-picker": DatePicker,
-    jogetService,
-    authHeader,
+    // jogetService,
+    // authHeader,
   },
   data() {
     return {
@@ -227,6 +227,7 @@ export default {
       },
 
       hardware: {
+        checkInId: "",
         name: "",
         brand: "",
         serialNumber: "",
@@ -274,6 +275,12 @@ export default {
           this.axiosOptions
         )
         .then(async (res) => {
+<<<<<<< Updated upstream
+=======
+          console.log(res);
+          // this.checkIn.processName = "";
+          this.checkIn.processName = "Approve Permission";
+>>>>>>> Stashed changes
           this.checkIn.processId = res.data.processId;
           const axiosData = {
             app: {
@@ -290,6 +297,40 @@ export default {
               this.axiosOptions
             )
             .then(async (res) => {
+<<<<<<< Updated upstream
+=======
+              console.log(res);
+              // const hardwareData = {
+              //   app: {
+              //     appId: "mophApp",
+              //     formId: "hardware",
+              //   },
+              //   primaryKey: "",
+              //   formData: this.checkIn,
+              // };
+              // await axios
+              // .post
+              this.hardwareList.forEach(async (element) => {
+                element.processId = this.checkIn.processId;
+                const itemsData = {
+                  app: {
+                    appId: "mophApp",
+                    formId: "hardware",
+                  },
+                  primaryKey: "",
+                  formData: element,
+                };
+                await axios
+                  .post(
+                    `${process.env.VUE_APP_BACKEND_URL}/form/submit`,
+                    itemsData,
+                    this.axiosOptions
+                  )
+                  .then((res) => {
+                    console.log(res);
+                  });
+              });
+>>>>>>> Stashed changes
               const processData = {
                 processId: this.checkIn.processId,
               };
@@ -303,15 +344,26 @@ export default {
                   const activityId = res.data.activityId;
                   const processData = {
                     activityId: activityId,
+                    variables: [
+                      {
+                        paramName: "enterStatus",
+                        paramValue: this.enter,
+                      },
+                    ],
                   };
                   await axios
                     .post(
-                      `${process.env.VUE_APP_BACKEND_URL}/process/complete`,
+                      `${process.env.VUE_APP_BACKEND_URL}/process/completeWithVariable`,
                       processData,
                       this.axiosOptions
                     )
                     .then((res) => {
                       this.loadingPage = false;
+<<<<<<< Updated upstream
+=======
+                      this.$router.push("/data-center/approve-permission/");
+                      // }
+>>>>>>> Stashed changes
                     });
                 });
             });
