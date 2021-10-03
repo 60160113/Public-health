@@ -11,11 +11,7 @@
           :fields="[
             { key: 'requester', label: 'Requester', _style: 'width:20%' },
             { key: 'position', label: 'Position', _style: 'width:10%' },
-            {
-              key: 'affiliation',
-              label: 'Affiliation',
-              _style: 'width:10%',
-            },
+            { key: 'affiliation', label: 'Affiliation', _style: 'width:10%' },
             { key: 'purpose', label: 'Purpose', _style: 'width:15%' },
             { key: 'date', label: 'Date', _style: 'width:10%' },
             {
@@ -42,6 +38,14 @@
         >
           <template #no-items-view
             ><div class="text-center">ไม่พบข้อมูล</div>
+          </template>
+
+          <template #action>
+            <td>
+              <CButton color="info" size="sm" class="ml-1">
+                <CIcon :content="$options.freeSet.cilPeople" />
+              </CButton>
+            </td>
           </template>
         </CDataTable>
       </CCardBody>
