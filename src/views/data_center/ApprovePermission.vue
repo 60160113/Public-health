@@ -7,7 +7,7 @@
 
       <CCardBody>
         <CDataTable
-          :items="requests"
+          :items="list"
           :fields="[
             { key: 'requester', label: 'Requester', _style: 'width:20%' },
             { key: 'position', label: 'Position', _style: 'width:10%' },
@@ -42,9 +42,9 @@
 
           <template #action>
             <td>
-              <CButton color="success" shape="pill"> อนุมัติ </CButton>
-              &nbsp;
-              <CButton color="danger" shape="pill"> ปฏิเสธ </CButton>
+              <CButton color="info" size="sm" class="ml-1">
+                <CIcon :content="$options.freeSet.cilPeople" />
+              </CButton>
             </td>
           </template>
         </CDataTable>
@@ -57,7 +57,7 @@
 export default {
   data() {
     return {
-      requests: [],
+      list: [],
     };
   },
 };
