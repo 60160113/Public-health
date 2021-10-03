@@ -2,11 +2,7 @@ import 'core-js/stable'
 import Vue from 'vue'
 import Vuex from 'vuex'
 //import CoreuiVuePro from '@coreui/vue-pro'
-<<<<<<< Updated upstream
-import babelPolyfill from "babel-polyfill";
-=======
 // import ggicon from 'https://css.gg/css'
->>>>>>> Stashed changes
 import CoreuiVuePro from '../node_modules/@coreui/vue-pro/src/index.js'
 import App from './App'
 import router from './router/index'
@@ -24,7 +20,6 @@ Vue.prototype.$log = console.log.bind(console)
 new Vue({
   el: '#app',
   router,
-  babelPolyfill,
   store,
   babelPolyfill,
   // ggicon,
