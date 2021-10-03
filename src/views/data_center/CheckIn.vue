@@ -8,32 +8,36 @@
       <CCardBody>
         <CRow>
           <CCol col="6">
-            <CInput horizontal label="ผู้ร้องขอ" v-model="form.requester" />
+            <CInput horizontal label="ผู้ร้องขอ" v-model="checkIn.requester" />
           </CCol>
           <CCol col="6">
-            <CInput horizontal label="ตำแหน่ง" v-model="form.position" />
+            <CInput horizontal label="ตำแหน่ง" v-model="checkIn.position" />
           </CCol>
 
           <CCol col="6">
-            <CInput horizontal label="สังกัด" v-model="form.affiliation" />
+            <CInput horizontal label="สังกัด" v-model="checkIn.affiliation" />
           </CCol>
           <CCol col="6">
             <CInput
               horizontal
               label="เลขที่บัตรประชาชน"
-              v-model="form.idcard"
+              v-model="checkIn.idcard"
             />
           </CCol>
 
           <CCol col="12">
-            <CTextarea horizontal label="วัตถุประสงค์" v-model="form.purpose" />
+            <CTextarea
+              horizontal
+              label="วัตถุประสงค์"
+              v-model="checkIn.purpose"
+            />
           </CCol>
 
           <CCol col="6">
             <CInput
               horizontal
               label="หมายเลขบัตร เข้า-ออก"
-              v-model="form.checkInCard"
+              v-model="checkIn.checkInCard"
             />
           </CCol>
           <CCol col="6">
@@ -48,7 +52,7 @@
                   :masks="{
                     input: 'DD/MM/YYYY',
                   }"
-                  v-model="form.returnDate"
+                  v-model="checkIn.returnDate"
               /></CCol>
             </CRow>
           </CCol>
@@ -60,10 +64,136 @@
           label="เข้าศูนย์ปฏิบัติการ"
           :checked.sync="enter"
         />
-
-        <CButton block color="primary" class="mt-3">บันทึก</CButton>
       </CCardBody>
     </CCard>
+
+    <CCard v-if="enter">
+      <CCardHeader>
+        <strong class="text-primary">รายการ Hardwares</strong>
+      </CCardHeader>
+
+      <CCardBody
+        ><CDataTable
+          :items="hardwareList"
+          :fields="[
+            { key: 'name', label: 'Name', _style: 'width:25%' },
+            { key: 'brand', label: 'Brand', _style: 'width:10%' },
+            {
+              key: 'serialNumber',
+              label: 'Serial Number',
+              _style: 'width:10%',
+            },
+            { key: 'unit', label: 'Unit', _style: 'width:15%' },
+            { key: 'direction', label: 'Direction', _style: 'width:15%' },
+            { key: 'type', label: 'Type', _style: 'width:15%' },
+            { key: 'action', label: 'Action', _style: 'width:10%' },
+          ]"
+          :tableFilter="{
+            label: 'ค้นหา: ',
+            placeholder: 'ค้นหา',
+          }"
+          pagination
+          :items-per-page="5"
+          :itemsPerPageSelect="{
+            label: 'แสดง',
+          }"
+          :loading="loading"
+          hover
+          striped
+          border
+        >
+          <template #no-items-view
+            ><div class="text-center">ไม่พบข้อมูล</div>
+          </template>
+          <template #over-table>
+            <div style="margin-bottom: 10px">
+              <CButton color="primary" shape="pill" @click="modal = true">
+                เพิ่ม
+              </CButton>
+            </div>
+          </template>
+          <template #action="{ index }">
+            <td>
+              <CButton
+                color="danger"
+                shape="pill"
+                @click="hardwareList.splice(index, 1)"
+              >
+                ลบ
+              </CButton>
+            </td>
+          </template>
+        </CDataTable>
+      </CCardBody>
+    </CCard>
+
+    <CButton block color="primary" class="mt-3">บันทึก</CButton>
+
+    <CModal
+      :show.sync="modal"
+      :no-close-on-backdrop="true"
+      :centered="true"
+      size="xl"
+      color="primary"
+    >
+      <CRow>
+        <CCol col="6">
+          <CInput horizontal label="ชื่อ" v-model="hardware.name" />
+        </CCol>
+        <CCol col="6">
+          <CInput horizontal label="ยี่ห้อ" v-model="hardware.brand" />
+        </CCol>
+
+        <CCol col="6">
+          <CInput horizontal label="S/N" v-model="hardware.serialNumber" />
+        </CCol>
+        <CCol col="6">
+          <CInput horizontal label="จำนวน" v-model="hardware.unit" />
+        </CCol>
+      </CRow>
+
+      <CRow class="mt-3">
+        <CCol col="3">
+          <label style="margin-top: 6px">ดำเนินการ</label>
+        </CCol>
+        <CCol>
+          <CInputRadioGroup
+            :options="[
+              { value: 'เข้า', label: 'เข้า' },
+              { value: 'ออก', label: 'ออก' },
+            ]"
+            :checked.sync="hardware.direction"
+            custom
+            inline
+          />
+        </CCol>
+      </CRow>
+
+      <CRow class="mt-3">
+        <CCol col="3">
+          <label style="margin-top: 6px">รูปแบบ</label>
+        </CCol>
+        <CCol>
+          <CInputRadioGroup
+            :options="[
+              { value: 'ชั่วคราว', label: 'ชั่วคราว' },
+              { value: 'ถาวร', label: 'ถาวร' },
+            ]"
+            :checked.sync="hardware.type"
+            custom
+            inline
+          />
+        </CCol>
+      </CRow>
+      <template #header>
+        <h6 class="modal-title">นำเข้าสิ่งของเข้าศูนย์ปฏิบัติการฯ</h6>
+        <CButtonClose @click="modal = false" class="text-white" />
+      </template>
+      <template #footer>
+        <CButton @click="addHardware()" color="primary">บันทึก</CButton>
+        <CButton @click="modal = false" color="secondary">ปิด</CButton>
+      </template>
+    </CModal>
   </div>
 </template>
 
@@ -75,7 +205,7 @@ export default {
   },
   data() {
     return {
-      form: {
+      checkIn: {
         requester: "",
         position: "",
         affiliation: "",
@@ -86,8 +216,35 @@ export default {
         checkInCard: "",
       },
 
+      hardware: {
+        name: "",
+        brand: "",
+        serialNumber: "",
+        unit: "",
+        direction: "เข้า",
+        type: "ชั่วคราว",
+      },
+
       enter: false,
+
+      modal: false,
+
+      hardwareList: [],
     };
+  },
+  methods: {
+    addHardware() {
+      this.hardwareList.push(this.hardware);
+      this.hardware = {
+        name: "",
+        brand: "",
+        serialNumber: "",
+        unit: "",
+        direction: "เข้า",
+        type: "ชั่วคราว",
+      };
+      this.modal = false;
+    },
   },
 };
 </script>
