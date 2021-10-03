@@ -31,7 +31,7 @@ export default new Router({
   routes: [
     {
       path: '/',
-      // redirect: '/pages/login',
+      redirect: '/pages/login',
       name: 'Home',
       component: TheContainer,
       children: routes

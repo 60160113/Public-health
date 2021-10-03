@@ -15,7 +15,7 @@
                   <CInput
                     placeholder="Username"
                     autocomplete="username email"
-                    v-model="email"
+                    v-model="form.email"
                   >
                     <template #prepend-content
                       ><CIcon name="cil-user"
@@ -25,7 +25,7 @@
                     placeholder="Password"
                     type="password"
                     autocomplete="curent-password"
-                    v-model="password"
+                    v-model="form.password"
                   >
                     <template #prepend-content
                       ><CIcon name="cil-lock-locked"
@@ -80,26 +80,35 @@ export default {
   name: "Login",
   data() {
     return {
-      email: "",
-      password: "",
+      form: {
+        email: "",
+        password: "",
+      },
     };
   },
   created() {},
   methods: {
     login() {
-      const axiosData = {
-        email: this.email,
-        password: this.password,
+      const axiosHeader = {
+        headers: {
+          "Content-Type": "application/json",
+        },
       };
       axios
-        .post(`http://206.189.145.227:3333/auth/login`, axiosData)
+        .post(
+          `${process.env.VUE_APP_BACKEND_URL}/auth/login`,
+          this.form,
+          axiosHeader
+        )
         .then((res) => {
+          console.log(res);
           const user = res.data.user;
           user.token = res.data.token;
           localStorage.setItem("AuthUser", JSON.stringify(user));
-          this.$router.push({ name: "Dashboard" });
+          // console.log(localStorage);
+          this.$router.push("/data-center/check-in");
         });
-    },
+    }
   },
 };
 </script>
