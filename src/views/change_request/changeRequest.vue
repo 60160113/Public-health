@@ -172,13 +172,18 @@
 </template>
 <script>
 import { jogetService } from "@/helpers/joget-helper";
+import { authHeader } from "@/helpers/auth-header";
 
 export default {
   components: {
-    jogetService
+    jogetService,
+    authHeader
   },
   data() {
     return {
+      axiosOptions: {
+        headers: authHeader()
+      },
       infoAuth: [],
       tableLoading: false,
       changeRequestCreateModal: false,
@@ -226,7 +231,8 @@ export default {
         reason: "",
         createBy: "",
         modiflyBy: "",
-        processId: ""
+        processId: "",
+        processName: ""
       },
       editChangeRequest: {
         id: "",
@@ -282,8 +288,8 @@ export default {
             )
             .then(res => {
               console.log(res);
-            //   this.changeRequestCreateModal = false;
-            //   this.getChangeRequest();
+              //   this.changeRequestCreateModal = false;
+              //   this.getChangeRequest();
             });
         });
     },
