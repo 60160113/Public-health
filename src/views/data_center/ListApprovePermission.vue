@@ -44,14 +44,9 @@
               {{ new Date(item.returnDate).getFullYear() + 543 }}
             </td>
           </template> -->
-          <template #action="{ item }">
+          <template #action ="{ item }">
             <td>
-              <CButton
-                color="info"
-                size="sm"
-                class="ml-1"
-                @click="approvePermission(item)"
-              >
+              <CButton color="info" size="sm" class="ml-1" @click="approvePermission(item)">
                 <!-- <CIcon :content="$options.freeSet.cilPeople" /> -->
                 Action
               </CButton>
@@ -140,49 +135,11 @@ export default {
   methods: {
     loadTable() {
       this.tableLoading = true;
-      // this.getItems().then((res) => {
-      //   this.requests = res.data.data;
-      //   console.log(this.requests);
-      // });
-      this.requests = this.setData()
+      this.getItems().then((res) => {
+        this.requests = res.data.data;
+        console.log(this.requests);
+      });
       this.tableLoading = false;
-    },
-    setData() {
-      return [
-        {
-          processId: '2208_mophApp_checkInOutProcess',
-          id: "F-IT-PE-01.02-date.0031/2021",
-          requester: "พฤกษ์ เทพพิทักษ์",
-          position: "หัวหน้าแผนกบริหาร",
-          affiliation: "แผนกบริหาร",
-          purpose: "มารับ Projector",
-          date: new Date().toLocaleDateString(),
-          returnDate: new Date("10/9/2021").toLocaleDateString(),
-          checkInCard: 5856884545,
-        },
-        {
-          processId: '2208_mophApp_checkInOutProcess',
-          id: "F-IT-PE-01.01-date.0030/2021",
-          requester: "เสกสรร แป้นงาม",
-          position: "นักบัญชี",
-          affiliation: "ฝ่ายการเงิน",
-          purpose: "มารับหน้าจอคอมพิวเตอร์",
-          date: new Date("8/6/2021").toLocaleDateString(),
-          returnDate: new Date("8/9/2021").toLocaleDateString(),
-          checkInCard: 1245844625,
-        },
-        {
-          processId: '2208_mophApp_checkInOutProcess',
-          id: "F-IT-PE-01.03-date.0030/2021",
-          requester: "รัชกิต ปั้นรัก",
-          position: "นักบัญชี",
-          affiliation: "ฝ่ายการเงิน",
-          purpose: "เบิกลำโพง",
-          date: new Date("4/1/2021").toLocaleDateString(),
-          returnDate: new Date("6/9/2021").toLocaleDateString(),
-          checkInCard: 1885844625,
-        },
-      ];
     },
     async getItems() {
       const axiosData = {
@@ -194,7 +151,7 @@ export default {
           {
             paramName: "processName",
             paramValue: "Approve Permission",
-          },
+          }
         ],
       };
       return await axios.post(
@@ -202,9 +159,6 @@ export default {
         axiosData,
         this.axiosOptions
       );
-    },
-    approvePermission(item) {
-      this.$router.push("/data-center/approve-permission/" + item.processId);
     },
   },
 };
