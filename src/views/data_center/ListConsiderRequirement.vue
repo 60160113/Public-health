@@ -2,7 +2,7 @@
   <div>
     <CCard>
       <CCardHeader>
-        <strong class="text-primary">อนุมัติคำขอเข้าศูนย์ปฏิบัติการ</strong>
+        <strong class="text-primary">พิจารณาคำขอเข้าศูนย์ปฏิบัติการ</strong>
       </CCardHeader>
 
       <CCardBody>
