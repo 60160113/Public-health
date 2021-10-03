@@ -56,14 +56,23 @@
               >
                 <div>
                   <div>
-                    <CDropdownItem @click="reviewRequestPage(item.finAdvanceId)"
+                    <CDropdownItem
+                      v-if="item.processName == 'รอตรวจสอบ'"
+                      @click="reviewRequestPage(item.changeRequestId)"
                       >พิจารณาคำร้อง</CDropdownItem
+                    >
+                    <CDropdownItem
+                      v-if="item.processName == 'รออนุมัติ'"
+                      @click="considerRequestPage(item.changeRequestId)"
+                      >อนุมัติคำร้อง</CDropdownItem
+                    >
+                    <CDropdownItem
+                      v-if="item.processName == 'รอผลดำเนินการ'"
+                      @click="approveRequestPage(item.changeRequestId)"
+                      >ผลการดำเนินการ</CDropdownItem
                     >
                     <CDropdownDivider></CDropdownDivider>
                   </div>
-                  <CDropdownItem @click="openChangeRequestEdit(item)"
-                    >แก้ไขคำร้อง</CDropdownItem
-                  >
                   <CDropdownItem @click="checkDelete(item)"
                     >ลบคำร้อง</CDropdownItem
                   >
@@ -99,32 +108,6 @@
         <CButton color="success" @click="changeRequestCreate()">ยืนยัน</CButton>
       </template>
     </CModal>
-
-    <CModal
-      title="แก้ไขขออนุมัติดำเนินการเปลี่ยนแปลง (Change Request Form)"
-      color="warning"
-      :show.sync="changeRequestEditModal"
-      centered
-    >
-      <CTextarea
-        label="มีความประสงค์ขอเปลี่ยนแปลงเรื่อง"
-        horizontal
-        v-model="editChangeRequest.subject"
-      />
-      <CSelect
-        label="เหตุผลที่ขอเปลี่ยนแปลง"
-        placeholder="กรุณาเลือกเหตุผลที่ขอเปลี่ยนแปลง"
-        :value.sync="editChangeRequest.reason"
-        horizontal
-        :options="reasonList"
-      />
-      <template #footer>
-        <CButton color="secondary" @click="changeRequestEditModal = false"
-          >ยกเลิก</CButton
-        >
-        <CButton color="success" @click="changeRequestEdit()">ยืนยัน</CButton>
-      </template>
-    </CModal>
   </div>
 </template>
 <script>
@@ -145,7 +128,7 @@ export default {
       tableLoading: false,
       changeRequestCreateModal: false,
       changeRequestEditModal: false,
-      // changeRequestList: [],
+      changeRequestList: [],
       changeRequestFields: [
         { key: "index", label: "#", _style: "width:5%" },
         {
@@ -176,7 +159,6 @@ export default {
         { key: "processName", label: "สถานะ", _style: "min-width:5%" },
         { key: "action", label: "", _style: "width:5%;" }
       ],
-      projectList: [],
       reasonList: [
         { value: "new", label: "เพิ่มระบบใหม่" },
         { value: "edit", label: "ปรับปรุง/แก้ไข" },
@@ -189,34 +171,22 @@ export default {
         createBy: "",
         modiflyBy: "",
         processId: "",
-        processName: ""
-      },
-      editChangeRequest: {
-        id: "",
-        subject: "",
-        reason: "",
-        modiflyBy: "",
-        processId: ""
-      },
-      projectIndex: 0,
-      departmentIndex: 0,
-      department: "",
-      id: "",
-      changeRequestList: []
+        processName: "รอตรวจสอบ",
+        requester: ""
+      }
     };
   },
   created() {
-    // this.tableLoading = true;
+    this.tableLoading = true;
     this.infoAuth = JSON.parse(localStorage.getItem("AuthUser"));
     this.newChangeRequest.createBy = this.infoAuth.fullname;
     this.newChangeRequest.modiflyBy = this.infoAuth.fullname;
-    this.editChangeRequest.modiflyBy = this.infoAuth.fullname;
+    this.newChangeRequest.requester = this.infoAuth.fullname;
     this.getChangeRequest();
   },
   watch: {},
   methods: {
     async getChangeRequest() {
-      console.log("getChangeRequest");
       const searchData = [
         {
           paramName: "changeRequestStatus",
@@ -227,16 +197,17 @@ export default {
         .list("mophApp", "list_moph_change_request", searchData)
         .then(res => {
           this.changeRequestList = res.data.data;
+          this.tableLoading = false;
         });
     },
-
     async changeRequestCreate() {
       await jogetService
         .startProcess("mophApp", "changeManagementProcess")
-        .then(res => {
-          this.newChangeRequest.processName = "รออนุมัติ";
+        .then(async res => {
+          console.log(res);
+          //   this.newChangeRequest.processId = res.data.processId;
           console.log(this.newChangeRequest);
-          jogetService
+          await jogetService
             .formSubmit(
               "mophApp",
               "moph_change_request",
@@ -245,29 +216,6 @@ export default {
             )
             .then(res => {
               console.log(res);
-              //   this.changeRequestCreateModal = false;
-              //   this.getChangeRequest();
-            });
-        });
-    },
-    async openChangeRequestEdit(item) {
-      this.changeRequestEditModal = true;
-      this.editChangeRequest.id = item.id;
-      this.editChangeRequest.subject = item.subject;
-      this.editChangeRequest.reason = item.reason;
-    },
-    async changeRequestEdit() {
-      await jogetService
-        .startProcess("mophApp", "changeManagementProcess")
-        .then(res => {
-          jogetService
-            .formSubmit(
-              "mophApp",
-              "moph_change_request",
-              "",
-              this.newChangeRequest
-            )
-            .then(res => {
               this.changeRequestCreateModal = false;
               this.getChangeRequest();
             });
@@ -276,6 +224,20 @@ export default {
     reviewRequestPage(changeRequestId) {
       let routeData = this.$router.resolve({
         name: "reviewChangeRequest",
+        query: { data: changeRequestId }
+      });
+      window.open(routeData.href, "_blank");
+    },
+    considerRequestPage(changeRequestId) {
+      let routeData = this.$router.resolve({
+        name: "considerChangeRequest",
+        query: { data: changeRequestId }
+      });
+      window.open(routeData.href, "_blank");
+    },
+    approveRequestPage(changeRequestId) {
+      let routeData = this.$router.resolve({
+        name: "approveChangeRequest",
         query: { data: changeRequestId }
       });
       window.open(routeData.href, "_blank");
