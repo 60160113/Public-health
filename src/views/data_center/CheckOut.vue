@@ -2,7 +2,7 @@
   <div>
     <CCard>
       <CCardHeader>
-        <strong class="text-primary">ตรวจสอบความถูกต้อง</strong>
+        <strong class="text-primary">ติดต่อขอออกจากอาคาร</strong>
       </CCardHeader>
 
       <CCardBody>
