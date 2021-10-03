@@ -40,8 +40,8 @@ async function formSubmit(appId, formId, primaryKey, formData) {
 async function list(appId, listId, searchData) {
   const axiosData = {
     app: {
-      appId, appId,
-      listId, listId
+      appId: appId,
+      listId: listId
     },
     search: searchData
   }
