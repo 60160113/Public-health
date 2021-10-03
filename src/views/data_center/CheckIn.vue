@@ -227,7 +227,7 @@ export default {
       },
 
       hardware: {
-        checkInId: "",
+        processId: "",
         name: "",
         brand: "",
         serialNumber: "",
@@ -251,6 +251,7 @@ export default {
     addHardware() {
       this.hardwareList.push(this.hardware);
       this.hardware = {
+        processId: "",
         name: "",
         brand: "",
         serialNumber: "",
@@ -284,7 +285,7 @@ export default {
               appId: "mophApp",
               formId: "checkIn",
             },
-            primaryKey: '',
+            primaryKey: "",
             formData: this.checkIn,
           };
           console.log(axiosData);
@@ -306,24 +307,29 @@ export default {
               // };
               // await axios
               // .post
-              await this.hardwareList.forEach(async (element) => {
-                element.processId = this.checkIn.processId;
-                console.log(element);
+              // await this.hardwareList.forEach(async (element) => {
+              //   element.processId = this.checkIn.processId;
+              //   console.log(element);
                 const hardwareData = {
+                  // app: {
+                  //   appId: "mophApp",
+                  //   formId: "formHardware",
+                  // },
                   app: {
                     appId: "mophApp",
-                    formId: "formHardware",
+                    formId: "hardware",
                   },
-                  primaryKey: '',
-                  formData: {
-                    processId : element.processId,
-                    name: element.name,
-                    brand: element.brand,
-                    serialNumber: element.serialNumber,
-                    unit: element.unit,
-                    direction: element.direction,
-                    type: element.type,
-                  },
+                  primaryKey: "",
+                  // formData: {
+                  //   // processId: element.processId,
+                  //   name: element.name,
+                  //   brand: element.brand,
+                  //   serialNumber: element.serialNumber,
+                  //   unit: element.unit,
+                  //   direction: element.direction,
+                  //   type: element.type,
+                  // },
+                  formData: this.hardwareList[0]
                 };
                 console.log(hardwareData);
                 await axios
@@ -335,7 +341,7 @@ export default {
                   .then(async (res) => {
                     console.log("hw", res);
                   });
-              });
+              // });
               // const processData = {
               //   processId: this.checkIn.processId,
               // };
