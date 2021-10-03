@@ -63,7 +63,7 @@
                     >
                     <CDropdownDivider></CDropdownDivider>
                   </div>
-                  <CDropdownItem @click="openchangeRequestEdit(item)"
+                  <CDropdownItem @click="openChangeRequestEdit(item)"
                     >แก้ไขคำร้อง</CDropdownItem
                   >
                   <CDropdownItem @click="checkDelete(item)"
@@ -87,7 +87,7 @@
                     >
                     <CDropdownDivider></CDropdownDivider>
                   </div>
-                  <CDropdownItem @click="openchangeRequestEdit(item)"
+                  <CDropdownItem @click="openChangeRequestEdit(item)"
                     >แก้ไขคำร้อง</CDropdownItem
                   >
                   <CDropdownItem @click="checkDelete(item)"
@@ -253,7 +253,7 @@ export default {
   watch: {},
   methods: {
     async getChangeRequest() {
-      console.log('getChangeRequest');
+      console.log("getChangeRequest");
       const searchData = [
         {
           paramName: "changeRequestStatus",
@@ -269,19 +269,25 @@ export default {
 
     async changeRequestCreate() {
       await jogetService
-        .startProcess("thacExpense", "expenseClaim")
+        .startProcess("mophApp", "changeManagementProcess")
         .then(res => {
           this.newChangeRequest.processName = "รออนุมัติ";
+          console.log(this.newChangeRequest);
           jogetService
-            .formSubmit("thacExpense", "fin_advance", "", this.newChangeRequest)
+            .formSubmit(
+              "mophApp",
+              "moph_change_request",
+              "",
+              this.newChangeRequest
+            )
             .then(res => {
-              // this.calculateProject();
-              this.changeRequestCreateModal = false;
-              this.getChangeRequest();
+              console.log(res);
+            //   this.changeRequestCreateModal = false;
+            //   this.getChangeRequest();
             });
         });
     },
-    async openchangeRequestEdit(item) {
+    async openChangeRequestEdit(item) {
       this.changeRequestEditModal = true;
       this.editChangeRequest.id = item.id;
       this.editChangeRequest.subject = item.subject;
@@ -289,10 +295,15 @@ export default {
     },
     async changeRequestEdit() {
       await jogetService
-        .startProcess("thacExpense", "expenseClaim")
+        .startProcess("mophApp", "changeManagementProcess")
         .then(res => {
           jogetService
-            .formSubmit("thacExpense", "fin_advance", "", this.newChangeRequest)
+            .formSubmit(
+              "mophApp",
+              "moph_change_request",
+              "",
+              this.newChangeRequest
+            )
             .then(res => {
               this.changeRequestCreateModal = false;
               this.getChangeRequest();
