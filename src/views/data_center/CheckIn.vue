@@ -284,9 +284,10 @@ export default {
               appId: "mophApp",
               formId: "checkIn",
             },
-            primaryKey: "",
+            primaryKey: '',
             formData: this.checkIn,
           };
+          console.log(axiosData);
           await axios
             .post(
               `${process.env.VUE_APP_BACKEND_URL}/form/submit`,
@@ -305,58 +306,68 @@ export default {
               // };
               // await axios
               // .post
-              this.hardwareList.forEach(async (element) => {
+              await this.hardwareList.forEach(async (element) => {
                 element.processId = this.checkIn.processId;
-                const itemsData = {
+                console.log(element);
+                const hardwareData = {
                   app: {
                     appId: "mophApp",
-                    formId: "hardware",
+                    formId: "formHardware",
                   },
-                  primaryKey: "",
-                  formData: element,
+                  primaryKey: '',
+                  formData: {
+                    processId : element.processId,
+                    name: element.name,
+                    brand: element.brand,
+                    serialNumber: element.serialNumber,
+                    unit: element.unit,
+                    direction: element.direction,
+                    type: element.type,
+                  },
                 };
+                console.log(hardwareData);
                 await axios
                   .post(
                     `${process.env.VUE_APP_BACKEND_URL}/form/submit`,
-                    itemsData,
+                    hardwareData,
                     this.axiosOptions
                   )
-                  .then((res) => {
-                    console.log(res);
+                  .then(async (res) => {
+                    console.log("hw", res);
                   });
               });
-              const processData = {
-                processId: this.checkIn.processId,
-              };
-              await axios
-                .post(
-                  `${process.env.VUE_APP_BACKEND_URL}/process/view`,
-                  processData,
-                  this.axiosOptions
-                )
-                .then(async (res) => {
-                  const activityId = res.data.activityId;
-                  const processData = {
-                    activityId: activityId,
-                    variables: [
-                      {
-                        paramName: "enterStatus",
-                        paramValue: this.enter,
-                      },
-                    ],
-                  };
-                  await axios
-                    .post(
-                      `${process.env.VUE_APP_BACKEND_URL}/process/completeWithVariable`,
-                      processData,
-                      this.axiosOptions
-                    )
-                    .then(() => {
-                      this.loadingPage = false;
-                      this.$router.push("/data-center/approve-permission/");
-                      // }
-                    });
-                });
+              // const processData = {
+              //   processId: this.checkIn.processId,
+              // };
+              // await axios
+              //   .post(
+              //     `${process.env.VUE_APP_BACKEND_URL}/process/view`,
+              //     processData,
+              //     this.axiosOptions
+              //   )
+              //   .then(async (res) => {
+              //     const activityId = res.data.activityId;
+              //     const processData = {
+              //       activityId: activityId,
+              //       variables: [
+              //         {
+              //           paramName: "enterStatus",
+              //           paramValue: this.enter,
+              //         },
+              //       ],
+              //     };
+              //     await axios
+              //       .post(
+              //         `${process.env.VUE_APP_BACKEND_URL}/process/completeWithVariable`,
+              //         processData,
+              //         this.axiosOptions
+              //       )
+              //       .then(() => {
+              //         this.loadingPage = false;
+              //         this.$router.push("/data-center/list-approve-permission/");
+              //         // }
+              //       });
+              //   });
             });
         });
     },

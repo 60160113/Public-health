@@ -1,48 +1,38 @@
 {
-  "jogetUser": 
-  {
-    "user": 
-    {
+  "jogetUser": {
+    "user": {
       "username": "admin",
       "password": "osdevadmin"
     },
-    "consult":
-    {
+    "consult": {
       "username": "admin",
       "password": "osdevadmin"
     },
-    "director":
-    {
+    "director": {
       "username": "admin",
       "password": "osdevadmin"
     },
-    "manager": 
-    {
+    "manager": {
       "username": "admin",
       "password": "osdevadmin"
     },
-    "assistantManager":
-    {
+    "assistantManager": {
       "username": "admin",
       "password": "osdevadmin"
     },
-    "admin":
-    {
+    "admin": {
       "username": "admin",
       "password": "osdevadmin"
     },
-    "casesystem":
-    {
+    "casesystem": {
       "username": "admin",
       "password": "osdevadmin"
     },
-    "arbitral":
-    {
+    "arbitral": {
       "username": "admin",
       "password": "osdevadmin"
     },
-    "thac":
-    {
+    "thac": {
       "username": "admin",
       "password": "osdevadmin"
     }

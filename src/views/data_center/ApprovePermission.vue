@@ -12,9 +12,7 @@
           </CCol>
           <CCol :md="{ size: '9' }">
             <h6>
-              {{ new Date(hardwareList[0].date).getDate() }}
-              {{ thaiMonth[new Date(hardwareList[0].date).getMonth()] }}
-              {{ new Date(hardwareList[0].date).getFullYear() + 543 }}
+              {{ checkInContents[0].date }}
             </h6>
           </CCol>
         </CRow>
@@ -58,24 +56,6 @@
         >
           <template #no-items-view
             ><div class="text-center">ไม่พบข้อมูล</div>
-          </template>
-          <!-- <template #over-table>
-            <div style="margin-bottom: 10px">
-              <CButton color="primary" shape="pill" @click="modal = true">
-                เพิ่ม
-              </CButton>
-            </div>
-          </template> -->
-          <template #action="{ index }">
-            <td>
-              <CButton
-                color="danger"
-                shape="pill"
-                @click="hardwareList.splice(index, 1)"
-              >
-                ลบ
-              </CButton>
-            </td>
           </template>
         </CDataTable>
       </CCardBody>
@@ -129,11 +109,35 @@ export default {
       modal: false,
 
       hardwareList: [],
+      checkInContents: []
     };
   },
   created(){
+    this.getCheckIn().then((res)=>{
+      console.log(res);
+      this.checkInContents = res.data.data;
+    })
   },
   methods: {
+    async getCheckIn(){
+      const axiosData = {
+        app: {
+          appId: "mophApp",
+          listId: "list_checkIn",
+        },
+        search: [
+          {
+            paramName: "processId",
+            paramValue: this.$route.params.processId,
+          },
+        ],
+      };
+      return await axios.post(
+        `${process.env.VUE_APP_BACKEND_URL}/list/get`,
+        axiosData,
+        this.axiosOptions
+      );
+    },
     addHardware() {
       this.hardwareList.push(this.hardware);
       this.hardware = {
