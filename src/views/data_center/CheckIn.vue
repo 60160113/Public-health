@@ -54,6 +54,13 @@
           </CCol>
         </CRow>
 
+        <CInputCheckbox
+          inline
+          custom
+          label="เข้าศูนย์ปฏิบัติการ"
+          :checked.sync="enter"
+        />
+
         <CButton block color="primary" class="mt-3">บันทึก</CButton>
       </CCardBody>
     </CCard>
@@ -78,6 +85,8 @@ export default {
         returnDate: null,
         checkInCard: "",
       },
+
+      enter: false,
     };
   },
 };
