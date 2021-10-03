@@ -10,6 +10,18 @@ const Page500 = () => import('@/views/pages/Page500')
 const Login = () => import('@/views/pages/Login')
 const Register = () => import('@/views/pages/Register')
 
+const requireRoute = require.context('.', false, /\.js$/) // Get js files inside routes folder
+const routes = []
+
+requireRoute.keys().forEach((fileName) => {
+  // Avoid the index.js file
+  if (fileName === './index.js') {
+    return
+  }
+  const route = requireRoute(fileName).default
+  routes.push(...route)
+})
+
 Vue.use(Router)
 
 export default new Router({
@@ -22,7 +34,7 @@ export default new Router({
       // redirect: '/pages/login',
       name: 'Home',
       component: TheContainer,
-      children: []
+      children: routes
     },
     {
       path: '/pages',
