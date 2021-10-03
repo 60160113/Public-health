@@ -275,12 +275,7 @@ export default {
           this.axiosOptions
         )
         .then(async (res) => {
-<<<<<<< Updated upstream
-=======
-          console.log(res);
-          // this.checkIn.processName = "";
-          this.checkIn.processName = "Approve Permission";
->>>>>>> Stashed changes
+          this.checkIn.processName = "Approve Permission"
           this.checkIn.processId = res.data.processId;
           const axiosData = {
             app: {
@@ -297,8 +292,6 @@ export default {
               this.axiosOptions
             )
             .then(async (res) => {
-<<<<<<< Updated upstream
-=======
               console.log(res);
               // const hardwareData = {
               //   app: {
@@ -330,7 +323,6 @@ export default {
                     console.log(res);
                   });
               });
->>>>>>> Stashed changes
               const processData = {
                 processId: this.checkIn.processId,
               };
@@ -357,13 +349,10 @@ export default {
                       processData,
                       this.axiosOptions
                     )
-                    .then((res) => {
+                    .then(() => {
                       this.loadingPage = false;
-<<<<<<< Updated upstream
-=======
                       this.$router.push("/data-center/approve-permission/");
                       // }
->>>>>>> Stashed changes
                     });
                 });
             });
