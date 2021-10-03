@@ -5,11 +5,6 @@ export default [
     component: () => import("@/views/data_center/CheckIn.vue")
   },
   {
-    path: "/data-center/request-permission",
-    name: "Request Permission",
-    component: () => import("@/views/data_center/RequestPermission.vue")
-  },
-  {
     path: "/data-center/approve-permission",
     name: "Approve Permission",
     component: () => import("@/views/data_center/ApprovePermission.vue")
