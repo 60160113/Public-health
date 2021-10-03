@@ -97,7 +97,6 @@
           :itemsPerPageSelect="{
             label: 'แสดง',
           }"
-          :loading="loading"
           hover
           striped
           border
@@ -127,7 +126,9 @@
       </CCardBody>
     </CCard>
 
-    <CButton block color="primary" class="mt-3">บันทึก</CButton>
+    <CButton block color="primary" class="mt-3" @click="checkingIn()"
+      >บันทึก</CButton
+    >
 
     <CModal
       :show.sync="modal"
@@ -194,22 +195,31 @@
         <CButton @click="modal = false" color="secondary">ปิด</CButton>
       </template>
     </CModal>
+    <CElementCover :opacity="0.8" v-if="loadingPage" />
   </div>
 </template>
 
 <script>
 import { DatePicker } from "v-calendar";
+import axios from "axios";
+import { jogetService } from "@/helpers/joget-helper";
+import { authHeader } from "@/helpers/auth-header";
 export default {
   components: {
     "v-date-picker": DatePicker,
+    jogetService,
+    authHeader,
   },
   data() {
     return {
+      loadingPage: false,
       checkIn: {
         requester: "",
         position: "",
         affiliation: "",
         idcard: "",
+        processId: "",
+        processName: "",
         purpose: "",
         date: new Date(),
         returnDate: null,
@@ -223,6 +233,10 @@ export default {
         unit: "",
         direction: "เข้า",
         type: "ชั่วคราว",
+      },
+
+      axiosOptions: {
+        headers: authHeader(),
       },
 
       enter: false,
@@ -244,6 +258,73 @@ export default {
         type: "ชั่วคราว",
       };
       this.modal = false;
+    },
+    async checkingIn() {
+      this.loadingPage = true;
+      const axiosData = {
+        app: {
+          appId: "mophApp",
+          processDefId: "checkInOutProcess",
+        },
+      };
+      await axios
+        .post(
+          `${process.env.VUE_APP_BACKEND_URL}/process/start`,
+          axiosData,
+          this.axiosOptions
+        )
+        .then(async (res) => {
+          console.log(res);
+          // this.checkIn.processName = "";
+          this.checkIn.processId = res.data.processId;
+          const axiosData = {
+            app: {
+              appId: "mophApp",
+              formId: "checkIn",
+            },
+            primaryKey: "",
+            formData: this.checkIn,
+          };
+          await axios
+            .post(
+              `${process.env.VUE_APP_BACKEND_URL}/form/submit`,
+              axiosData,
+              this.axiosOptions
+            )
+            .then(async (res) => {
+              console.log(res);
+              const processData = {
+                processId: this.checkIn.processId,
+              };
+              await axios
+                .post(
+                  `${process.env.VUE_APP_BACKEND_URL}/process/view`,
+                  processData,
+                  this.axiosOptions
+                )
+                .then(async (res) => {
+                  const activityId = res.data.activityId;
+                  const processData = {
+                    activityId: activityId,
+                  };
+                  await axios
+                    .post(
+                      `${process.env.VUE_APP_BACKEND_URL}/process/complete`,
+                      processData,
+                      this.axiosOptions
+                    )
+                    .then((res) => {
+                      console.log(res);
+                      // if(res.data.status === 'complete' ){
+                      this.loadingPage = false;
+                      // this.$router.push("/pr/PRpage/");
+                      // }
+                    });
+                });
+              // this.loadingPage = false
+              // this.$router.push("/pr/PRpage/");
+            });
+        });
     },
   },
 };
