@@ -2,7 +2,7 @@
   <div>
     <CCard>
       <CCardHeader>
-        <strong class="text-primary">พิจารณาคำขอเข้าศูนย์ปฏิบัติการ</strong>
+        <strong class="text-primary">ติดต่อขอออกจากอาคาร</strong>
       </CCardHeader>
 
       <CCardBody>
@@ -150,7 +150,7 @@ export default {
         search: [
           {
             paramName: "processName",
-            paramValue: "Consider Requirement",
+            paramValue: "Check Out",
           }
         ],
       };
@@ -160,6 +160,9 @@ export default {
         this.axiosOptions
       );
     },
+    approvePermission(item){
+      this.$router.push("/data-center/approve-permission/" + item.processId)
+    }
   },
 };
 </script>

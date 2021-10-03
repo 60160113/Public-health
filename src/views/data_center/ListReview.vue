@@ -2,7 +2,7 @@
   <div>
     <CCard>
       <CCardHeader>
-        <strong class="text-primary">พิจารณาคำขอเข้าศูนย์ปฏิบัติการ</strong>
+        <strong class="text-primary">ตรวจสอบ</strong>
       </CCardHeader>
 
       <CCardBody>
@@ -150,7 +150,7 @@ export default {
         search: [
           {
             paramName: "processName",
-            paramValue: "Consider Requirement",
+            paramValue: "Review",
           }
         ],
       };
