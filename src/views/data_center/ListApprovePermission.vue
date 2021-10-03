@@ -44,9 +44,14 @@
               {{ new Date(item.returnDate).getFullYear() + 543 }}
             </td>
           </template> -->
-          <template #action ="{ item }">
+          <template #action="{ item }">
             <td>
-              <CButton color="info" size="sm" class="ml-1" @click="approvePermission(item)">
+              <CButton
+                color="info"
+                size="sm"
+                class="ml-1"
+                @click="approvePermission(item)"
+              >
                 <!-- <CIcon :content="$options.freeSet.cilPeople" /> -->
                 Action
               </CButton>
@@ -151,7 +156,7 @@ export default {
           {
             paramName: "processName",
             paramValue: "Approve Permission",
-          }
+          },
         ],
       };
       return await axios.post(
@@ -159,6 +164,9 @@ export default {
         axiosData,
         this.axiosOptions
       );
+    },
+    approvePermission(item) {
+      this.$router.push("/data-center/approve-permission/" + item.processId);
     },
   },
 };
