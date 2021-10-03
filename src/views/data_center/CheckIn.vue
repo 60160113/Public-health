@@ -274,8 +274,6 @@ export default {
           this.axiosOptions
         )
         .then(async (res) => {
-          console.log(res);
-          // this.checkIn.processName = "";
           this.checkIn.processId = res.data.processId;
           const axiosData = {
             app: {
@@ -292,7 +290,6 @@ export default {
               this.axiosOptions
             )
             .then(async (res) => {
-              console.log(res);
               const processData = {
                 processId: this.checkIn.processId,
               };
@@ -314,15 +311,9 @@ export default {
                       this.axiosOptions
                     )
                     .then((res) => {
-                      console.log(res);
-                      // if(res.data.status === 'complete' ){
                       this.loadingPage = false;
-                      // this.$router.push("/pr/PRpage/");
-                      // }
                     });
                 });
-              // this.loadingPage = false
-              // this.$router.push("/pr/PRpage/");
             });
         });
     },
