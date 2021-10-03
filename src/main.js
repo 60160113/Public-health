@@ -1,6 +1,7 @@
 import 'core-js/stable'
 import Vue from 'vue'
 //import CoreuiVuePro from '@coreui/vue-pro'
+import babelPolyfill from "babel-polyfill";
 import CoreuiVuePro from '../node_modules/@coreui/vue-pro/src/index.js'
 import App from './App'
 import router from './router/index'
@@ -14,6 +15,7 @@ Vue.prototype.$log = console.log.bind(console)
 new Vue({
   el: '#app',
   router,
+  babelPolyfill,
   store,
   //CIcon component documentation: https://coreui.io/vue/docs/components/icon
   icons,
