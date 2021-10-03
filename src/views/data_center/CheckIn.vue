@@ -275,7 +275,9 @@ export default {
           this.axiosOptions
         )
         .then(async (res) => {
-          this.checkIn.processName = "Approve Permission"
+          console.log(res);
+          // this.checkIn.processName = "";
+          this.checkIn.processName = "Approve Permission";
           this.checkIn.processId = res.data.processId;
           const axiosData = {
             app: {
