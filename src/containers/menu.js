@@ -33,5 +33,11 @@ export default [
     name: "Review",
     to: "/data-center/review",
     icon: "cil-circle"
+  },
+  {
+    _name: "CSidebarNavItem",
+    name: "Change Request",
+    to: "/change_request/changeRequest",
+    icon: "cil-circle"
   }
 ];
