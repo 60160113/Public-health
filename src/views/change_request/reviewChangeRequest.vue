@@ -3,7 +3,7 @@
     <CCard>
       <CCardHeader>
         <strong class="text-primary"
-          >พิจารณาแบบฟอร์มขออนุมัติดำเนินการเปลี่ยนแปลง</strong
+          >แบบขออนุมัติดำเนินการเปลี่ยนแปลง (Change Request Form)</strong
         >
       </CCardHeader>
 

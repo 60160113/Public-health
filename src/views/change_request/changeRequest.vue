@@ -62,12 +62,10 @@
                       >พิจารณาคำร้อง</CDropdownItem
                     >
                     <CDropdownItem
-                      v-if="item.processName == 'รออนุมัติ'"
                       @click="considerRequestPage(item.changeRequestId)"
                       >อนุมัติคำร้อง</CDropdownItem
                     >
                     <CDropdownItem
-                      v-if="item.processName == 'รอผลดำเนินการ'"
                       @click="approveRequestPage(item.changeRequestId)"
                       >ผลการดำเนินการ</CDropdownItem
                     >
@@ -230,14 +228,14 @@ export default {
     },
     considerRequestPage(changeRequestId) {
       let routeData = this.$router.resolve({
-        name: "considerChangeRequest",
+        name: "ConsiderChangeRequest",
         query: { data: changeRequestId }
       });
       window.open(routeData.href, "_blank");
     },
     approveRequestPage(changeRequestId) {
       let routeData = this.$router.resolve({
-        name: "approveChangeRequest",
+        name: "ApproveChangeRequest",
         query: { data: changeRequestId }
       });
       window.open(routeData.href, "_blank");
