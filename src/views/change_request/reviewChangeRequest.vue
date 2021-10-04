@@ -235,7 +235,7 @@ export default {
         )
         .then(res => {
           jogetService
-            .getCurrentActivity(this.changeRequestList.projectId)
+            .getCurrentActivity(this.changeRequestList.processId)
             .then(res => {
               this.changeRequestMain();
             });
