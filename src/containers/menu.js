@@ -34,6 +34,12 @@ export default [
     to: "/data-center/list-review",
     icon: "cil-circle"
   },
+  {
+    _name: "CSidebarNavItem",
+    name: "Report",
+    to: "/data-center/list-report",
+    icon: "cil-circle"
+  },
   // Change Request
   {
     _name: "CSidebarNavTitle",

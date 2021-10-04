@@ -227,7 +227,7 @@ export default {
       },
 
       hardware: {
-        checkInId: "",
+        processId: "",
         name: "",
         brand: "",
         serialNumber: "",
@@ -251,6 +251,7 @@ export default {
     addHardware() {
       this.hardwareList.push(this.hardware);
       this.hardware = {
+        processId: "",
         name: "",
         brand: "",
         serialNumber: "",
@@ -284,7 +285,7 @@ export default {
               appId: "mophApp",
               formId: "checkIn",
             },
-            primaryKey: '',
+            primaryKey: "",
             formData: this.checkIn,
           };
           console.log(axiosData);
@@ -310,13 +311,17 @@ export default {
                 element.processId = this.checkIn.processId;
                 console.log(element);
                 const hardwareData = {
+                  // app: {
+                  //   appId: "mophApp",
+                  //   formId: "formHardware",
+                  // },
                   app: {
                     appId: "mophApp",
-                    formId: "formHardware",
+                    formId: "hardware"
                   },
-                  primaryKey: '',
+                  primaryKey: "",
                   formData: {
-                    processId : element.processId,
+                    processId: element.processId,
                     name: element.name,
                     brand: element.brand,
                     serialNumber: element.serialNumber,
@@ -336,38 +341,38 @@ export default {
                     console.log("hw", res);
                   });
               });
-              // const processData = {
-              //   processId: this.checkIn.processId,
-              // };
-              // await axios
-              //   .post(
-              //     `${process.env.VUE_APP_BACKEND_URL}/process/view`,
-              //     processData,
-              //     this.axiosOptions
-              //   )
-              //   .then(async (res) => {
-              //     const activityId = res.data.activityId;
-              //     const processData = {
-              //       activityId: activityId,
-              //       variables: [
-              //         {
-              //           paramName: "enterStatus",
-              //           paramValue: this.enter,
-              //         },
-              //       ],
-              //     };
-              //     await axios
-              //       .post(
-              //         `${process.env.VUE_APP_BACKEND_URL}/process/completeWithVariable`,
-              //         processData,
-              //         this.axiosOptions
-              //       )
-              //       .then(() => {
-              //         this.loadingPage = false;
-              //         this.$router.push("/data-center/list-approve-permission/");
-              //         // }
-              //       });
-              //   });
+              const processData = {
+                processId: this.checkIn.processId,
+              };
+              await axios
+                .post(
+                  `${process.env.VUE_APP_BACKEND_URL}/process/view`,
+                  processData,
+                  this.axiosOptions
+                )
+                .then(async (res) => {
+                  const activityId = res.data.activityId;
+                  const processData = {
+                    activityId: activityId,
+                    variables: [
+                      {
+                        paramName: "enterStatus",
+                        paramValue: this.enter,
+                      },
+                    ],
+                  };
+                  await axios
+                    .post(
+                      `${process.env.VUE_APP_BACKEND_URL}/process/completeWithVariable`,
+                      processData,
+                      this.axiosOptions
+                    )
+                    .then(() => {
+                      this.loadingPage = false;
+                      this.$router.push("/data-center/list-approve-permission/");
+                      // }
+                    });
+                });
             });
         });
     },

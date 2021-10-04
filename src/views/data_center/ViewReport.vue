@@ -158,17 +158,17 @@
           </CCol>
         </CRow> -->
       </CCardBody>
-      <CCardFooter>
+      <!-- <CCardFooter>
         <CButton
           color="success"
           class="float-right ml-1"
           @click="approvePermission()"
           >อนุมัติ</CButton
         >
-        <!-- <CButton color="danger" class="float-right ml-1" @click="reject()"
+        <CButton color="danger" class="float-right ml-1" @click="reject()"
           >ปฎิเสธ</CButton
-        > -->
-      </CCardFooter>
+        >
+      </CCardFooter> -->
     </CCard>
   </div>
 </template>
@@ -349,7 +349,7 @@ export default {
                 )
                 .then(() => {
                   this.loadingPage = false;
-                  this.$router.push("/data-center/list-report/");
+                  this.$router.push("/data-center/list-review/");
                   // }
                 });
             });
