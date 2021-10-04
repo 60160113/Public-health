@@ -130,6 +130,7 @@ export default {
           _style: "width:10%",
         },
         { key: "checkInCard", label: "Card", _style: "width:15%" },
+        { key: "processName", label: "ProcessName", _style: "width:15%" },
         { key: "action", label: "Action", _style: "width:10%" },
       ],
     };

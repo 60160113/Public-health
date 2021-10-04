@@ -2,7 +2,7 @@
   <div>
     <CCard>
       <CCardHeader>
-        <strong class="text-primary">พิจารณาคำขอเข้าศูนย์ปฏิบัติการ</strong>
+        <strong class="text-primary">อนุมัติคำขอเข้าศูนย์ปฏิบัติการ</strong>
       </CCardHeader>
 
       <CCardBody>
@@ -44,9 +44,14 @@
               {{ new Date(item.returnDate).getFullYear() + 543 }}
             </td>
           </template> -->
-          <template #action ="{ item }">
+          <template #action="{ item }">
             <td>
-              <CButton color="info" size="sm" class="ml-1" @click="approvePermission(item)">
+              <CButton
+                color="info"
+                size="sm"
+                class="ml-1"
+                @click="considerRequirement(item)"
+              >
                 <!-- <CIcon :content="$options.freeSet.cilPeople" /> -->
                 Action
               </CButton>
@@ -125,6 +130,7 @@ export default {
           _style: "width:10%",
         },
         { key: "checkInCard", label: "Card", _style: "width:15%" },
+        { key: "processName", label: "ProcessName", _style: "width:15%" },
         { key: "action", label: "Action", _style: "width:10%" },
       ],
     };
@@ -151,7 +157,7 @@ export default {
           {
             paramName: "processName",
             paramValue: "Consider Requirement",
-          }
+          },
         ],
       };
       return await axios.post(
@@ -159,6 +165,9 @@ export default {
         axiosData,
         this.axiosOptions
       );
+    },
+    considerRequirement(item) {
+      this.$router.push("/data-center/consider-requirement/" + item.processId);
     },
   },
 };

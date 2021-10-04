@@ -53,7 +53,7 @@
                 @click="considerRequirement(item)"
               >
                 <!-- <CIcon :content="$options.freeSet.cilPeople" /> -->
-                Action
+                view
               </CButton>
             </td>
           </template>
@@ -156,7 +156,7 @@ export default {
         search: [
           {
             paramName: "processName",
-            paramValue: "Review Check Out",
+            paramValue: "Complete",
           },
         ],
       };
@@ -167,7 +167,7 @@ export default {
       );
     },
     considerRequirement(item) {
-      this.$router.push("/data-center/review/" + item.processId);
+      this.$router.push("/data-center/view-report/" + item.processId);
     },
   },
 };
