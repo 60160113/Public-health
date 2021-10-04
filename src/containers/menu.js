@@ -6,6 +6,12 @@ export default [
   },
   {
     _name: "CSidebarNavItem",
+    name: "List All",
+    to: "/data-center/list-all",
+    icon: "cil-circle"
+  },
+  {
+    _name: "CSidebarNavItem",
     name: "Check-in",
     to: "/data-center/check-in",
     icon: "cil-circle"
