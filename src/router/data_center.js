@@ -1,5 +1,10 @@
 export default [
   {
+    path: "/data-center/list-all",
+    name: "List All",
+    component: () => import("@/views/data_center/ListAll.vue")
+  },
+  {
     path: "/data-center/check-in",
     name: "Check-in",
     component: () => import("@/views/data_center/CheckIn.vue")
