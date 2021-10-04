@@ -205,7 +205,7 @@ export default {
         },
         {
           paramName: "processName",
-          paramValue: 'รอตรวจสอบ'
+          paramValue: "รอตรวจสอบ"
         }
       ];
       await jogetService
@@ -226,7 +226,6 @@ export default {
       } else if (this.newChangeRequest.changeType == "emergency") {
         this.newChangeRequest.assignTo = "ผู้บริหาร";
       }
-
       await jogetService
         .formSubmit(
           "mophApp",
@@ -234,7 +233,16 @@ export default {
           this.newChangeRequest.id,
           this.newChangeRequest
         )
-        .then(res => {});
+        .then(res => {
+          jogetService
+            .getCurrentActivity(this.changeRequestList.projectId)
+            .then(res => {
+              this.changeRequestMain();
+            });
+        });
+    },
+    changeRequestMain() {
+      this.$router.push({ name: "changeRequest" });
     }
   }
 };

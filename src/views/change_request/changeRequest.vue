@@ -18,6 +18,7 @@
           hover
           sorter
           pagination
+          :responsive="false"
         >
           <template #no-items-view>
             <div class="d-flex justify-content-center">
@@ -62,16 +63,26 @@
                       >พิจารณาคำร้อง</CDropdownItem
                     >
                     <CDropdownItem
+                      v-if="item.processName == 'รออนุมัติ'"
                       @click="considerRequestPage(item.changeRequestId)"
                       >อนุมัติคำร้อง</CDropdownItem
                     >
                     <CDropdownItem
+                      v-if="item.processName == 'รอผลดำเนินการ'"
                       @click="approveRequestPage(item.changeRequestId)"
                       >ผลการดำเนินการ</CDropdownItem
                     >
-                    <CDropdownDivider></CDropdownDivider>
+                    <CDropdownDivider
+                      v-if="item.processName !== 'เสร็จสิ้น'"
+                    ></CDropdownDivider>
                   </div>
-                  <CDropdownItem @click="checkDelete(item)"
+                  <CDropdownItem
+                    @click="infoRequestPage(item.changeRequestId)"
+                    >ดูข้อมูล</CDropdownItem
+                  >
+                  <CDropdownItem
+                    @click="checkDelete(item)"
+                    v-if="item.processName == 'รอตรวจสอบ'"
                     >ลบคำร้อง</CDropdownItem
                   >
                 </div></CDropdown
@@ -203,7 +214,14 @@ export default {
         .startProcess("mophApp", "changeManagementProcess")
         .then(async res => {
           console.log(res);
-          //   this.newChangeRequest.processId = res.data.processId;
+          this.newChangeRequest.processId = res.data.processId;
+          if (this.newChangeRequest.reason == "new") {
+            this.newChangeRequest.reason = "เพิ่มระบบใหม่";
+          } else if (this.newChangeRequest.reason == "edit") {
+            this.newChangeRequest.reason = "ปรับปรุง/แก้ไข";
+          } else if (this.newChangeRequest.reason == "other") {
+            this.newChangeRequest.reason = "อื่นๆ";
+          }
           console.log(this.newChangeRequest);
           await jogetService
             .formSubmit(
@@ -218,6 +236,13 @@ export default {
               this.getChangeRequest();
             });
         });
+    },
+    infoRequestPage(changeRequestId) {
+      let routeData = this.$router.resolve({
+        name: "InfoChangeRequest",
+        query: { data: changeRequestId }
+      });
+      window.open(routeData.href, "_blank");
     },
     reviewRequestPage(changeRequestId) {
       let routeData = this.$router.resolve({

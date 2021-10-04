@@ -12,7 +12,7 @@
           <CCol sm="12">
             <p>
               <strong class="text-primary">
-                ส่วนที่ 2 การพิจารณาอนุมัติการเปลี่ยนแปลง</strong
+                ส่วนที่ 1 รายละเอียดการขออนุมัติดำเนินการเปลี่ยนแปลง</strong
               >
             </p>
           </CCol>
@@ -91,54 +91,59 @@
         </CRow>
       </CCardBody>
       <CCardFooter>
-        <CCard body-wrapper>
-          <CRow>
-            <CCol>
-              <template>
-                <h5><strong>ผลพิจารณาอนุมัติให้ดำเนินการ</strong></h5>
-                <CRow form class="form-group">
-                  <CCol lg="3" sm="3"><strong>เลือก</strong></CCol>
-                  <CInputRadio
-                    horizontal
-                    v-for="(option, optionKey) in optionsApprove"
-                    :key="optionKey"
-                    :label="option.label"
-                    :value="option.value"
-                    :inline="true"
-                    :checked="
-                      changeRequestConsider.considerStatus === option.value
-                    "
-                    @update:checked="
-                      () => (changeRequestConsider.considerStatus = option.value)
-                    "
-                  />
-                </CRow>
-              </template>
-            </CCol>
-          </CRow>
-          <CRow>
-            <CCol>
-              <strong>
-                <CTextarea
-                  label="ความคิดเห็น"
-                  placeholder="ช่องกรอกความคิดเห็น"
-                  rows="3"
+        <CRow>
+          <CCol sm="12">
+            <p>
+              <strong class="text-primary">
+                ส่วนที่ 2 การพิจารณาอนุมัติการเปลี่ยนแปลง</strong
+              >
+            </p>
+          </CCol>
+          <CCol>
+            <template>
+              <p><strong>ผลพิจารณาอนุมัติให้ดำเนินการ</strong></p>
+              <CRow form class="form-group">
+                <CCol lg="3" sm="3"><strong>เลือก</strong></CCol>
+                <CInputRadio
                   horizontal
-                  :lazy="false"
-                  v-model="changeRequestConsider.comment"
+                  v-for="(option, optionKey) in optionsConsider"
+                  :key="optionKey"
+                  :label="option.label"
+                  :value="option.value"
+                  :inline="true"
+                  :checked="
+                    changeRequestConsider.considerStatus === option.value
+                  "
+                  @update:checked="
+                    () => (changeRequestConsider.considerStatus = option.value)
+                  "
                 />
-              </strong>
-            </CCol>
-          </CRow>
-          <CButton
-            class="mb-3"
-            size="sm"
-            color="success"
-            block
-            @click="reviewApprove()"
-            >บันทึก</CButton
-          >
-        </CCard>
+              </CRow>
+            </template>
+          </CCol>
+        </CRow>
+        <CRow>
+          <CCol>
+            <strong>
+              <CTextarea
+                label="ความคิดเห็น"
+                placeholder="ช่องกรอกความคิดเห็น"
+                rows="3"
+                horizontal
+                :lazy="false"
+                v-model="changeRequestConsider.comment"
+              />
+            </strong>
+          </CCol>
+        </CRow>
+        <CButton
+          class="mb-3"
+          size="sm"
+          color="success"
+          block
+          @click="reviewConsider()"
+          >บันทึก</CButton
+        >
       </CCardFooter>
     </CCard>
   </div>
@@ -182,33 +187,14 @@ export default {
         teamLeader: "",
         assignTo: ""
       },
-      changeTypeList: [
-        { value: "minor", label: "Minor" },
-        { value: "major", label: "Major" },
-        { value: "emergency", label: "Emergency" }
-      ],
-      relatedSystemList: [
-        { value: "pc", label: "PC" },
-        { value: "network", label: "Network" },
-        { value: "server", label: "Server" },
-        { value: "systemSoftware", label: "System Software" },
-        { value: "applicationSoftware", label: "Application Software" },
-        { value: "storage", label: "Storage" },
-        { value: "security", label: "Security" },
-        { value: "other", label: "other" }
-      ],
-      attachmentList: [
-        { value: "rollback", label: "Rollback Plan" },
-        { value: "other", label: "other" }
-      ],
       changeRequestConsider: {
         processId: "",
         considerName: "",
         considerStatus: "",
         comment: ""
       },
-      optionsApprove: [
-        { value: "approve", label: "อนุมัติให้ดำเนินการและทดสอบ" },
+      optionsConsider: [
+        { value: "consider", label: "อนุมัติให้ดำเนินการและทดสอบ" },
         { value: "nontest", label: "อนุมัติให้ดำเนินการโดยไม่ต้องทดสอบ" },
         { value: "reject", label: "ไม่อนุมัติ" }
       ]
@@ -216,12 +202,10 @@ export default {
   },
   created() {
     // this.tableLoading = true;
-    // this.infoAuth = JSON.parse(localStorage.getItem("AuthUser"));
-    // this.newChangeRequest.createBy = this.infoAuth.fullname;
-    // this.newChangeRequest.modiflyBy = this.infoAuth.fullname;
-    // this.editChangeRequest.modiflyBy = this.infoAuth.fullname;
     this.getChangeRequest();
     this.newChangeRequest.changeRequestId = this.$route.query.data;
+    this.infoAuth = JSON.parse(localStorage.getItem("AuthUser"));
+    // this.changeRequestConsider.considerName = this.infoAuth.fullname;
   },
   methods: {
     async getChangeRequest() {
@@ -244,24 +228,55 @@ export default {
           console.log(this.newChangeRequest);
         });
     },
-    async changeRequestCreate() {
-      console.log("this.newChangeRequest", this.newChangeRequest);
-      if (this.newChangeRequest.changeType == "minor") {
-        this.newChangeRequest.assignTo = "หัวหน้าทีมนั้นๆ";
-      } else if (this.newChangeRequest.changeType == "major") {
-        this.newChangeRequest.assignTo = "หัวหน้าทีม";
-      } else if (this.newChangeRequest.changeType == "emergency") {
-        this.newChangeRequest.assignTo = "ผู้บริหาร";
-      }
-
+    async reviewConsider() {
+      this.changeRequestConsider.processId = this.newChangeRequest.processId;
+      this.changeRequestConsider.considerName = this.infoAuth.fullname;
+      console.log(this.changeRequestConsider);
       await jogetService
         .formSubmit(
           "mophApp",
-          "moph_change_request",
-          this.newChangeRequest.id,
-          this.newChangeRequest
+          "moph_change_request_approve",
+          "",
+          this.changeRequestConsider
         )
-        .then(res => {});
+        .then(res => {
+          var assignTo = "";
+          var processName = "รอผลดำเนินการ";
+          const formData = {
+            processName: processName,
+            assignTo: assignTo
+          };
+          console.log("change status");
+          jogetService
+            .formSubmit(
+              "mophApp",
+              "moph_change_request",
+              this.newChangeRequest.id,
+              formData
+            )
+            .then(res => {
+              const processId = this.newChangeRequest.processId;
+              jogetService.getCurrentActivity(processId).then(res => {
+                const variableData = [
+                  {
+                    paramName: "approveChange",
+                    paramValue: this.changeRequestConsider.considerStatus
+                  }
+                ];
+                jogetService
+                  .processCompleteWithVariable(
+                    res.data.activityId,
+                    variableData
+                  )
+                  .then(res => {
+                    this.changeRequestMain();
+                  });
+              });
+            });
+        });
+    },
+    changeRequestMain() {
+      this.$router.push({ name: "changeRequest" });
     }
   }
 };

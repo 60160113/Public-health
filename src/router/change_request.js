@@ -18,5 +18,10 @@ export default [
     path: "/change_request/ApproveChangeRequest",
     name: "ApproveChangeRequest",
     component: () => import("@/views/change_request/ApproveChangeRequest.vue")
+  },
+  {
+    path: "/change_request/InfoChangeRequest",
+    name: "InfoChangeRequest",
+    component: () => import("@/views/change_request/InfoChangeRequest.vue")
   }
 ];

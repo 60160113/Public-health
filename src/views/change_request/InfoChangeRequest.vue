@@ -89,100 +89,57 @@
             </CRow>
           </CCol>
         </CRow>
-        <CRow>
-          <CCol sm="12">
-            <p>
-              <strong class="text-primary">
-                ส่วนที่ 2 การพิจารณาอนุมัติการเปลี่ยนแปลง</strong
-              >
-            </p>
-          </CCol>
-          <CCol sm="12">
-            <p>
-              <strong>ผลพิจารณาอนุมัติให้ดำเนินการ</strong>
-            </p>
-          </CCol>
-          <CCol sm="12">
-            <CRow>
-              <CCol sm="12">
-                <div v-for="item in considerComment" :key="item.id">
-                  <div>
-                    {{ item.considerName }} :
-                    {{ item.comment }}
-                  </div>
-                </div></CCol
-              >
-            </CRow>
-          </CCol>
-        </CRow>
       </CCardBody>
       <CCardFooter>
-        <CRow>
-          <CCol sm="12">
-            <p>
-              <strong class="text-primary">
-                ส่วนที่ 3 รายงานผลการดำเนินการเปลี่ยนแปลง
-                (ผู้ดำเนินการเปลี่ยนแปลง)</strong
-              >
-            </p>
-          </CCol>
-          <CCol>
-            <template>
-              <CRow form class="form-group">
-                <CCol lg="3" sm="3"><strong>เลือก</strong></CCol>
-                <CInputRadio
+        <CCard body-wrapper>
+          <CRow>
+            <CCol>
+              <template>
+                <h5><strong>ผลพิจารณาอนุมัติให้ดำเนินการ</strong></h5>
+                <CRow form class="form-group">
+                  <CCol lg="3" sm="3"><strong>เลือก</strong></CCol>
+                  <CInputRadio
+                    horizontal
+                    v-for="(option, optionKey) in optionsConsider"
+                    :key="optionKey"
+                    :label="option.label"
+                    :value="option.value"
+                    :inline="true"
+                    :checked="
+                      changeRequestConsider.considerStatus === option.value
+                    "
+                    @update:checked="
+                      () =>
+                        (changeRequestConsider.considerStatus = option.value)
+                    "
+                  />
+                </CRow>
+              </template>
+            </CCol>
+          </CRow>
+          <CRow>
+            <CCol>
+              <strong>
+                <CTextarea
+                  label="ความคิดเห็น"
+                  placeholder="ช่องกรอกความคิดเห็น"
+                  rows="3"
                   horizontal
-                  v-for="(option, optionKey) in optionsSuccess"
-                  :key="optionKey"
-                  :label="option.label"
-                  :value="option.value"
-                  :inline="true"
-                  :checked="
-                    changeRequestSuccess.operationStatus === option.value
-                  "
-                  @update:checked="
-                    () => (changeRequestSuccess.operationStatus = option.value)
-                  "
+                  :lazy="false"
+                  v-model="changeRequestConsider.comment"
                 />
-              </CRow>
-            </template>
-          </CCol>
-        </CRow>
-        <CRow>
-          <CCol>
-            <strong>
-              <CTextarea
-                v-if="changeRequestSuccess.operationStatus == 'fail'"
-                label="เนื่องจาก"
-                rows="3"
-                horizontal
-                :lazy="false"
-                v-model="changeRequestSuccess.comment"
-              />
-            </strong>
-          </CCol>
-        </CRow>
-        <CRow>
-          <CCol>
-            <strong>
-              <CTextarea
-                label="รายละเอียดการดำเนินงาน"
-                rows="3"
-                horizontal
-                :lazy="false"
-                v-model="changeRequestSuccess.operationDetail"
-              />
-            </strong>
-          </CCol>
-        </CRow>
-        <CButton
-          class="mb-3"
-          size="sm"
-          color="success"
-          block
-          @click="reviewSuccess()"
-          >บันทึก</CButton
-        >
+              </strong>
+            </CCol>
+          </CRow>
+          <CButton
+            class="mb-3"
+            size="sm"
+            color="success"
+            block
+            @click="reviewConsider()"
+            >บันทึก</CButton
+          >
+        </CCard>
       </CCardFooter>
     </CCard>
   </div>
@@ -226,29 +183,25 @@ export default {
         teamLeader: "",
         assignTo: ""
       },
-      changeRequestSuccess: {
+      changeRequestConsider: {
         processId: "",
-        changeOperator: "",
-        operationStatus: "",
-        comment: "",
-        operationDetail: ""
+        considerName: "",
+        considerStatus: "",
+        comment: ""
       },
-      optionsSuccess: [
-        { value: "success", label: "ดำเนินการสำเร็จ" },
-        {
-          value: "fail",
-          label: "ดำเนินการไม่สำเร็จ (โปรดระบุสาเหตุและการดำเนินงาน)"
-        }
-      ],
-      considerComment: []
+      optionsConsider: [
+        { value: "consider", label: "อนุมัติให้ดำเนินการและทดสอบ" },
+        { value: "nontest", label: "อนุมัติให้ดำเนินการโดยไม่ต้องทดสอบ" },
+        { value: "reject", label: "ไม่อนุมัติ" }
+      ]
     };
   },
   created() {
     // this.tableLoading = true;
     this.getChangeRequest();
-    this.getConsider();
     this.newChangeRequest.changeRequestId = this.$route.query.data;
     this.infoAuth = JSON.parse(localStorage.getItem("AuthUser"));
+    // this.changeRequestConsider.considerName = this.infoAuth.fullname;
   },
   methods: {
     async getChangeRequest() {
@@ -267,38 +220,24 @@ export default {
         .then(res => {
           this.changeRequestList = res.data.data[0];
           this.newChangeRequest = res.data.data[0];
-          this.newChangeRequest.processName = "เสร็จสิ้น";
+          this.newChangeRequest.processName = "รออนุมัติ";
           console.log(this.newChangeRequest);
         });
     },
-    async getConsider() {
-      const searchData = [
-        {
-          paramName: "processIdd",
-          paramValue: this.changeRequestList.processId
-        }
-      ];
-      await jogetService
-        .list("mophApp", "list_moph_change_request_approve", searchData)
-        .then(res => {
-          this.considerComment = res.data.data;
-          console.log(this.considerComment);
-        });
-    },
-    async reviewSuccess() {
-      this.changeRequestSuccess.processId = this.newChangeRequest.processId;
-      this.changeRequestSuccess.changeOperator = this.infoAuth.fullname;
-      console.log(this.changeRequestSuccess);
+    async reviewConsider() {
+      this.changeRequestConsider.processId = this.newChangeRequest.processId;
+      this.changeRequestConsider.considerName = this.infoAuth.fullname;
+      console.log(this.changeRequestConsider);
       await jogetService
         .formSubmit(
           "mophApp",
-          "moph_change_request_success",
+          "moph_change_request_approve",
           "",
-          this.changeRequestSuccess
+          this.changeRequestConsider
         )
         .then(res => {
           var assignTo = "";
-          var processName = "เสร็จสิ้น";
+          var processName = "รอผลดำเนินการ";
           const formData = {
             processName: processName,
             assignTo: assignTo
@@ -316,8 +255,8 @@ export default {
               jogetService.getCurrentActivity(processId).then(res => {
                 const variableData = [
                   {
-                    paramName: "result",
-                    paramValue: this.changeRequestSuccess.operationStatus
+                    paramName: "approveChange",
+                    paramValue: this.changeRequestConsider.considerStatus
                   }
                 ];
                 jogetService
