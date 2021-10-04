@@ -274,7 +274,7 @@ export default {
     async getConsider() {
       const searchData = [
         {
-          paramName: "processIdd",
+          paramName: "processId",
           paramValue: this.changeRequestList.processId
         }
       ];
