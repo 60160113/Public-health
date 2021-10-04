@@ -47,10 +47,10 @@
                 color="info"
                 size="sm"
                 class="ml-1"
-                @click="approvePermission(item)"
+                @click="considerRequirement(item)"
               >
                 <!-- <CIcon :content="$options.freeSet.cilPeople" /> -->
-                Action
+                view
               </CButton>
             </td>
           </template>
@@ -115,7 +115,8 @@ export default {
 
       dataField: [
         { key: "index", label: "#" },
-        { key: "requestId", label: "ID", _style: "width:20%" },
+        // { key: "id", label: "ID", _style: "width:20%" },
+        { key: "requestId", label: "ID", _style: "width:20%"},
         { key: "requester", label: "Requester", _style: "width:20%" },
         { key: "position", label: "Position", _style: "width:10%" },
         { key: "affiliation", label: "Affiliation", _style: "width:10%" },
@@ -129,6 +130,14 @@ export default {
         { key: "checkInCard", label: "Card", _style: "width:15%" },
         { key: "processName", label: "ProcessName", _style: "width:15%" },
         { key: "action", label: "Action", _style: "width:10%" },
+      ],
+
+      taskRoute: [
+        { processName: 'Approve Permission', routeName: 'approve-permission' },
+        { processName: 'Consider Requirement', routeName: 'consider-requirement' },
+        { processName: 'Check Out', routeName: 'check-out' },
+        { processName: 'Review Check Out', routeName: 'review' },
+        { processName: 'Complete', routeName: 'view-report' },
       ],
     };
   },
@@ -150,21 +159,27 @@ export default {
           appId: "mophApp",
           listId: "list_checkIn",
         },
-        search: [
-          {
-            paramName: "processName",
-            paramValue: "Approve Permission",
-          },
-        ],
+        // search: [
+        //   {
+        //     paramName: "processName",
+        //     paramValue: "Complete",
+        //   },
+        // ],
       };
       return await axios.post(
-        `${process.env.VUE_APP_BACKEND_URL}/list/get`,
+        `${process.env.VUE_APP_BACKEND_URL}/list/getAll`,
         axiosData,
         this.axiosOptions
       );
     },
-    approvePermission(item) {
-      this.$router.push("/data-center/approve-permission/" + item.processId);
+    considerRequirement(item) {
+      console.log(item)
+      this.taskRoute.forEach((task) => {
+        if (task.processName === item.processName) {
+          this.$router.push(`/data-center/${task.routeName}/` + item.processId);
+        }
+      })
+      
     },
   },
 };

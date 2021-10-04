@@ -86,7 +86,6 @@
             { key: 'unit', label: 'Unit', _style: 'width:15%' },
             { key: 'direction', label: 'Direction', _style: 'width:15%' },
             { key: 'type', label: 'Type', _style: 'width:15%' },
-            { key: 'action', label: 'Action', _style: 'width:10%' },
           ]"
           :tableFilter="{
             label: 'ค้นหา: ',
@@ -224,6 +223,7 @@ export default {
         date: new Date(),
         returnDate: null,
         checkInCard: "",
+        requestId: '',
       },
 
       hardware: {
@@ -279,13 +279,14 @@ export default {
           console.log(res);
           // this.checkIn.processName = "";
           this.checkIn.processName = "Approve Permission";
-          this.checkIn.processId = res.data.processId;
+          this.checkIn.requestId = ''
+          this.checkIn.processId = res.data.processId
           const axiosData = {
             app: {
               appId: "mophApp",
               formId: "checkIn",
             },
-            primaryKey: "",
+            primaryKey: res.data.processId,
             formData: this.checkIn,
           };
           console.log(axiosData);
@@ -369,7 +370,7 @@ export default {
                     )
                     .then(() => {
                       this.loadingPage = false;
-                      this.$router.push("/data-center/list-approve-permission/");
+                      this.$router.push("/data-center/view-tasks/");
                       // }
                     });
                 });

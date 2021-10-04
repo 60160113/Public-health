@@ -95,6 +95,7 @@
     <CModal
       title="ขออนุมัติดำเนินการเปลี่ยนแปลง (Change Request Form)"
       color="info"
+      size="xl"
       :show.sync="changeRequestCreateModal"
       centered
     >
@@ -109,6 +110,46 @@
         :value.sync="newChangeRequest.reason"
         horizontal
         :options="reasonList"
+      />
+      <CSelect
+        label="ประเภทของการเปลี่ยนแปลง"
+        placeholder="กรุณาเลือกประเภทของการเปลี่ยนแปลง"
+        :value.sync="newChangeRequest.reason"
+        horizontal
+        :options="[
+          { value: 'Minor', label: 'Minor' },
+          { value: 'Major', label: 'Major' },
+          { value: 'Emergency', label: 'Emergency' },
+        ]"
+      />
+      <CRow>
+        <CCol md="3">
+          <label for="">ระบบที่เกี่ยวข้อง</label>
+        </CCol>
+        <CCol>
+          <CInputCheckbox
+            v-for="(option, optionIndex) in systemOptions"
+            :key="option"
+            :label="option"
+            :value="option"
+            :custom="key > 1"
+            :name="key"
+            :checked="optionIndex === key"
+            @update:checked="onSystemChecked"
+          />
+        </CCol>
+      </CRow>
+      <CSelect
+        label="เอกสารที่แนบท้ายมาด้วย"
+        v-model="newChangeRequest.attachment"
+        :options="[
+          { value: '', label: 'ไม่มี' },
+          { value: 'Rollback Plan', label: 'Rollback Plan' }
+        ]"
+        horizontal
+      />
+      <CTextarea
+        label="รายละเอียดการเปลี่ยนแปลง"
       />
       <template #footer>
         <CButton color="secondary" @click="changeRequestCreateModal = false"
@@ -181,8 +222,15 @@ export default {
         modiflyBy: "",
         processId: "",
         processName: "รอตรวจสอบ",
-        requester: ""
-      }
+        requester: "",
+        changeRequestId: "",
+        relatedSystem: [],
+        attachment: '',
+      },
+
+      systemOptions: [
+        'PC', 'Network', 'Server', 'System Software', 'Application Software', 'Storage', 'Security'
+      ],
     };
   },
   created() {
@@ -227,7 +275,7 @@ export default {
             .formSubmit(
               "mophApp",
               "moph_change_request",
-              "",
+              res.data.processId,
               this.newChangeRequest
             )
             .then(res => {
@@ -236,6 +284,17 @@ export default {
               this.getChangeRequest();
             });
         });
+    },
+    onSystemChecked(value, event) {
+      if (value) {
+        this.newChangeRequest.relatedSystem.push(event.target.value)
+      } else {
+        this.newChangeRequest.relatedSystem.forEach((item, index) => {
+          if (item === event.target.value) {
+            this.newChangeRequest.relatedSystem.splice(index, 1)
+          }
+        })
+      }
     },
     infoRequestPage(changeRequestId) {
       let routeData = this.$router.resolve({

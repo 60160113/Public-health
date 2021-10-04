@@ -58,5 +58,10 @@ export default [
     path: "/data-center/view-report/:processId",
     name: "Entering Data Center Report",
     component: () => import("@/views/data_center/ViewReport.vue")
+  },
+  {
+    path: "/data-center/view-tasks",
+    name: "Tasks - Data Center",
+    component: () => import("@/views/data_center/Tasks.vue")
   }
 ];

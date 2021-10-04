@@ -7,83 +7,89 @@
 
       <CCardBody>
         <CRow>
-          <CCol :md="{ size: '3' }">
-            <h6 style="float: right"><strong>รหัส</strong></h6>
+          <CCol>
+            <CRow>
+              <CCol :md="{ size: '2' }">
+                <h6><strong>รหัส</strong></h6>
+              </CCol>
+              <CCol>
+                <h6>
+                  {{ checkInContents[0].requestId }}
+                </h6>
+              </CCol>
+            </CRow>
+            <CRow>
+              <CCol :md="{ size: '2' }">
+                <h6><strong>หมายเลขบัตร</strong></h6>
+              </CCol>
+              <CCol>
+                <h6>
+                  {{ checkInContents[0].checkInCard }}
+                </h6>
+              </CCol>
+            </CRow>
+            <CRow>
+              <CCol :md="{ size: '2' }">
+                <h6><strong>ผู้ร้องขอ</strong></h6>
+              </CCol>
+              <CCol>
+                <h6>
+                  {{ checkInContents[0].requester }}
+                </h6>
+              </CCol>
+            </CRow>
+            <CRow>
+              <CCol :md="{ size: '2' }">
+                <h6><strong>สังกัด</strong></h6>
+              </CCol>
+              <CCol>
+                <h6>
+                  {{ checkInContents[0].affiliation }}
+                </h6>
+              </CCol>
+            </CRow>
           </CCol>
-          <CCol :md="{ size: '9' }">
-            <h6>
-              {{ checkInContents[0].id }}
-            </h6>
-          </CCol>
-        </CRow>
-        <CRow>
-          <CCol :md="{ size: '3' }">
-            <h6 style="float: right"><strong>วันที่</strong></h6>
-          </CCol>
-          <CCol :md="{ size: '9' }">
-            <h6>
-              {{ checkInContents[0].date }}
-            </h6>
-          </CCol>
-        </CRow>
-        <CRow>
-          <CCol :md="{ size: '3' }">
-            <h6 style="float: right"><strong>วันที่ส่งคืน</strong></h6>
-          </CCol>
-          <CCol :md="{ size: '9' }">
-            <h6>
-              {{ checkInContents[0].returnDate }}
-            </h6>
-          </CCol>
-        </CRow>
-        <CRow>
-          <CCol :md="{ size: '3' }">
-            <h6 style="float: right"><strong>หมายเลขบัตร</strong></h6>
-          </CCol>
-          <CCol :md="{ size: '9' }">
-            <h6>
-              {{ checkInContents[0].checkInCard }}
-            </h6>
-          </CCol>
-        </CRow>
-        <CRow>
-          <CCol :md="{ size: '3' }">
-            <h6 style="float: right"><strong>ผู้ร้องขอ</strong></h6>
-          </CCol>
-          <CCol :md="{ size: '9' }">
-            <h6>
-              {{ checkInContents[0].requester }}
-            </h6>
-          </CCol>
-        </CRow>
-        <CRow>
-          <CCol :md="{ size: '3' }">
-            <h6 style="float: right"><strong>ตำแหน่ง</strong></h6>
-          </CCol>
-          <CCol :md="{ size: '9' }">
-            <h6>
-              {{ checkInContents[0].position }}
-            </h6>
-          </CCol>
-        </CRow>
-        <CRow>
-          <CCol :md="{ size: '3' }">
-            <h6 style="float: right"><strong>สังกัด</strong></h6>
-          </CCol>
-          <CCol :md="{ size: '9' }">
-            <h6>
-              {{ checkInContents[0].affiliation }}
-            </h6>
-          </CCol>
-        </CRow>
-        <CRow>
-          <CCol :md="{ size: '3' }">
-            <h6 style="float: right"><strong>วัตถุประสงค์</strong></h6>
-          </CCol>
-          <CCol :md="{ size: '9' }">
-            <h6>
-              {{ checkInContents[0].purpose }}
-            </h6>
+          <CCol>
+            <CRow>
+              <CCol :md="{ size: '2' }">
+                <h6><strong>วันที่</strong></h6>
+              </CCol>
+              <CCol>
+                <h6>
+                  {{ new Date(checkInContents[0].date).toLocaleDateString('th-TH') }}
+                </h6>
+              </CCol>
+            </CRow>
+            <CRow>
+              <CCol :md="{ size: '2' }">
+                <h6><strong>วันที่ส่งคืน</strong></h6>
+              </CCol>
+              <CCol>
+                <h6>
+                  {{ new Date(checkInContents[0].returnDate).toLocaleDateString('th-TH') }}
+                </h6>
+              </CCol>
+            </CRow>
+            <CRow>
+              <CCol :md="{ size: '2' }">
+                <h6><strong>ตำแหน่ง</strong></h6>
+              </CCol>
+              <CCol>
+                <h6>
+                  {{ checkInContents[0].position }}
+                </h6>
+              </CCol>
+            </CRow>
+            <CRow>
+              <CCol :md="{ size: '2' }">
+                <h6><strong>วัตถุประสงค์</strong></h6>
+              </CCol>
+              <CCol>
+                <h6>
+                  {{ checkInContents[0].purpose }}
+                </h6>
+              </CCol>
+            </CRow>
           </CCol>
         </CRow>
       </CCardBody>
@@ -349,7 +355,7 @@ export default {
                 )
                 .then(() => {
                   this.loadingPage = false;
-                  this.$router.push("/data-center/list-review/");
+                  this.$router.push("/data-center/view-tasks/");
                   // }
                 });
             });

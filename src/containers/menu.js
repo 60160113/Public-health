@@ -8,44 +8,50 @@ export default [
     _name: "CSidebarNavItem",
     name: "List All",
     to: "/data-center/list-all",
-    icon: "cil-circle"
+    icon: "cilLayers"
   },
   {
     _name: "CSidebarNavItem",
     name: "Check-in",
     to: "/data-center/check-in",
-    icon: "cil-circle"
+    icon: "cilLocationPin"
   },
   {
     _name: "CSidebarNavItem",
-    name: "Approve Permission",
-    to: "/data-center/list-approve-permission",
-    icon: "cil-circle"
+    name: "My Tasks",
+    to: "/data-center/view-tasks",
+    icon: "cilInbox"
   },
-  {
-    _name: "CSidebarNavItem",
-    name: "Consider Requirement",
-    to: "/data-center/list-consider-requirement",
-    icon: "cil-circle"
-  },
-  {
-    _name: "CSidebarNavItem",
-    name: "Check-out",
-    to: "/data-center/list-check-out",
-    icon: "cil-circle"
-  },
-  {
-    _name: "CSidebarNavItem",
-    name: "Review",
-    to: "/data-center/list-review",
-    icon: "cil-circle"
-  },
-  {
-    _name: "CSidebarNavItem",
-    name: "Report",
-    to: "/data-center/list-report",
-    icon: "cil-circle"
-  },
+  // {
+  //   _name: "CSidebarNavItem",
+  //   name: "Approve Permission",
+  //   to: "/data-center/list-approve-permission",
+  //   icon: "cil-circle"
+  // },
+  // {
+  //   _name: "CSidebarNavItem",
+  //   name: "Consider Requirement",
+  //   to: "/data-center/list-consider-requirement",
+  //   icon: "cil-circle"
+  // },
+  // {
+  //   _name: "CSidebarNavItem",
+  //   name: "Check-out",
+  //   to: "/data-center/list-check-out",
+  //   icon: "cil-circle"
+  // },
+  // {
+  //   _name: "CSidebarNavItem",
+  //   name: "Review",
+  //   to: "/data-center/list-review",
+  //   icon: "cil-circle"
+  // },
+  // {
+  //   _name: "CSidebarNavItem",
+  //   name: "Report",
+  //   to: "/data-center/list-report",
+  //   icon: "cil-circle"
+  // },
   // Change Request
   {
     _name: "CSidebarNavTitle",

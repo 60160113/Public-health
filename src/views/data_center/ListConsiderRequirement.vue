@@ -30,20 +30,17 @@
               {{ index + 1 }}
             </td>
           </template>
-          <!-- <template #date="{ item }">
+          <template #date="{ item }">
             <td>
-              {{ new Date(item.date).getDate() }}
-              {{ thaiMonth[new Date(item.date).getMonth()] }}
-              {{ new Date(item.date).getFullYear() + 543 }}
+              {{ new Date(item.date).toLocaleDateString('th-TH') }}
             </td>
           </template>
+
           <template #returnDate="{ item }">
             <td>
-              {{ new Date(item.returnDate).getDate() }}
-              {{ thaiMonth[new Date(item.returnDate).getMonth()] }}
-              {{ new Date(item.returnDate).getFullYear() + 543 }}
+              {{ new Date(item.returnDate).toLocaleDateString('th-TH') }}
             </td>
-          </template> -->
+          </template>
           <template #action="{ item }">
             <td>
               <CButton
@@ -118,7 +115,7 @@ export default {
 
       dataField: [
         { key: "index", label: "#" },
-        { key: "id", label: "ID", _style: "width:20%" },
+        { key: "requestId", label: "ID", _style: "width:20%" },
         { key: "requester", label: "Requester", _style: "width:20%" },
         { key: "position", label: "Position", _style: "width:10%" },
         { key: "affiliation", label: "Affiliation", _style: "width:10%" },
