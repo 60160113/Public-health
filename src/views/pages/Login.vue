@@ -86,7 +86,6 @@ export default {
       },
     };
   },
-  created() {},
   methods: {
     login() {
       const axiosHeader = {
@@ -101,11 +100,9 @@ export default {
           axiosHeader
         )
         .then((res) => {
-          console.log(res);
           const user = res.data.user;
           user.token = res.data.token;
           localStorage.setItem("AuthUser", JSON.stringify(user));
-          // console.log(localStorage);
           this.$router.push("/data-center/check-in");
         });
     }
