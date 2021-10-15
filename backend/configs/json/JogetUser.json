@@ -2,39 +2,39 @@
   "jogetUser": {
     "user": {
       "username": "admin",
-      "password": "osdevadmin"
+      "password": "j0get@dmin"
     },
     "consult": {
       "username": "admin",
-      "password": "osdevadmin"
+      "password": "j0get@dmin"
     },
     "director": {
       "username": "admin",
-      "password": "osdevadmin"
+      "password": "j0get@dmin"
     },
     "manager": {
       "username": "admin",
-      "password": "osdevadmin"
+      "password": "j0get@dmin"
     },
     "assistantManager": {
       "username": "admin",
-      "password": "osdevadmin"
+      "password": "j0get@dmin"
     },
     "admin": {
       "username": "admin",
-      "password": "osdevadmin"
+      "password": "j0get@dmin"
     },
     "casesystem": {
       "username": "admin",
-      "password": "osdevadmin"
+      "password": "j0get@dmin"
     },
     "arbitral": {
       "username": "admin",
-      "password": "osdevadmin"
+      "password": "j0get@dmin"
     },
     "thac": {
       "username": "admin",
-      "password": "osdevadmin"
+      "password": "j0get@dmin"
     }
   }
 }
