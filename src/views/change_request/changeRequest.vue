@@ -2,9 +2,7 @@
   <div>
     <CCard>
       <CCardHeader>
-        <h4>
-          ตารางรายการจัดการการเปลี่ยนแปลง
-        </h4>
+        <h4>ตารางรายการจัดการการเปลี่ยนแปลง</h4>
       </CCardHeader>
       <CCardBody>
         <CDataTable
@@ -39,7 +37,7 @@
               {{ index + 1 }}
             </td>
           </template>
-          <template #processName="{item}">
+          <template #processName="{ item }">
             <td>
               <CBadge :color="getBadge(item.processName)">
                 {{ item.processName }}
@@ -76,8 +74,7 @@
                       v-if="item.processName !== 'เสร็จสิ้น'"
                     ></CDropdownDivider>
                   </div>
-                  <CDropdownItem
-                    @click="infoRequestPage(item.changeRequestId)"
+                  <CDropdownItem @click="infoRequestPage(item.changeRequestId)"
                     >ดูข้อมูล</CDropdownItem
                   >
                   <CDropdownItem
@@ -129,28 +126,25 @@
         <CCol>
           <CInputCheckbox
             v-for="(option, optionIndex) in systemOptions"
-            :key="option"
+            :key="optionIndex"
             :label="option"
             :value="option"
-            :custom="key > 1"
-            :name="key"
-            :checked="optionIndex === key"
+            custom
             @update:checked="onSystemChecked"
           />
         </CCol>
       </CRow>
       <CSelect
+        class="mt-3"
         label="เอกสารที่แนบท้ายมาด้วย"
         v-model="newChangeRequest.attachment"
         :options="[
           { value: '', label: 'ไม่มี' },
-          { value: 'Rollback Plan', label: 'Rollback Plan' }
+          { value: 'Rollback Plan', label: 'Rollback Plan' },
         ]"
         horizontal
       />
-      <CTextarea
-        label="รายละเอียดการเปลี่ยนแปลง"
-      />
+      <CTextarea label="รายละเอียดการเปลี่ยนแปลง" />
       <template #footer>
         <CButton color="secondary" @click="changeRequestCreateModal = false"
           >ยกเลิก</CButton
@@ -167,12 +161,12 @@ import { authHeader } from "@/helpers/auth-header";
 export default {
   components: {
     jogetService,
-    authHeader
+    authHeader,
   },
   data() {
     return {
       axiosOptions: {
-        headers: authHeader()
+        headers: authHeader(),
       },
       infoAuth: [],
       tableLoading: false,
@@ -184,35 +178,35 @@ export default {
         {
           key: "changeRequestId",
           label: "เลขที่เอกสาร",
-          _style: "min-width:5%"
+          _style: "min-width:5%",
         },
         {
           key: "dateCreated",
           label: "วันที่ร้องขอ",
-          _style: "min-width:10%"
+          _style: "min-width:10%",
         },
         {
           key: "subject",
           label: "ความประสงค์",
-          _style: "min-width:10%"
+          _style: "min-width:10%",
         },
         {
           key: "reason",
           label: "เหตุผล",
-          _style: "min-width:10%"
+          _style: "min-width:10%",
         },
         {
           key: "requester",
           label: "ผู้ร้องขอ",
-          _style: "min-width:10%"
+          _style: "min-width:10%",
         },
         { key: "processName", label: "สถานะ", _style: "min-width:5%" },
-        { key: "action", label: "", _style: "width:5%;" }
+        { key: "action", label: "", _style: "width:5%;" },
       ],
       reasonList: [
         { value: "new", label: "เพิ่มระบบใหม่" },
         { value: "edit", label: "ปรับปรุง/แก้ไข" },
-        { value: "other", label: "อื่นๆ" }
+        { value: "other", label: "อื่นๆ" },
       ],
       departmentList: [],
       newChangeRequest: {
@@ -225,11 +219,17 @@ export default {
         requester: "",
         changeRequestId: "",
         relatedSystem: [],
-        attachment: '',
+        attachment: "",
       },
 
       systemOptions: [
-        'PC', 'Network', 'Server', 'System Software', 'Application Software', 'Storage', 'Security'
+        "PC",
+        "Network",
+        "Server",
+        "System Software",
+        "Application Software",
+        "Storage",
+        "Security",
       ],
     };
   },
@@ -247,12 +247,12 @@ export default {
       const searchData = [
         {
           paramName: "changeRequestStatus",
-          paramValue: "active"
-        }
+          paramValue: "active",
+        },
       ];
       await jogetService
         .list("mophApp", "list_moph_change_request", searchData)
-        .then(res => {
+        .then((res) => {
           this.changeRequestList = res.data.data;
           this.tableLoading = false;
         });
@@ -260,7 +260,7 @@ export default {
     async changeRequestCreate() {
       await jogetService
         .startProcess("mophApp", "changeManagementProcess")
-        .then(async res => {
+        .then(async (res) => {
           console.log(res);
           this.newChangeRequest.processId = res.data.processId;
           if (this.newChangeRequest.reason == "new") {
@@ -278,7 +278,7 @@ export default {
               res.data.processId,
               this.newChangeRequest
             )
-            .then(res => {
+            .then((res) => {
               console.log(res);
               this.changeRequestCreateModal = false;
               this.getChangeRequest();
@@ -287,40 +287,40 @@ export default {
     },
     onSystemChecked(value, event) {
       if (value) {
-        this.newChangeRequest.relatedSystem.push(event.target.value)
+        this.newChangeRequest.relatedSystem.push(event.target.value);
       } else {
         this.newChangeRequest.relatedSystem.forEach((item, index) => {
           if (item === event.target.value) {
-            this.newChangeRequest.relatedSystem.splice(index, 1)
+            this.newChangeRequest.relatedSystem.splice(index, 1);
           }
-        })
+        });
       }
     },
     infoRequestPage(changeRequestId) {
       let routeData = this.$router.resolve({
         name: "InfoChangeRequest",
-        query: { data: changeRequestId }
+        query: { data: changeRequestId },
       });
       window.open(routeData.href, "_blank");
     },
     reviewRequestPage(changeRequestId) {
       let routeData = this.$router.resolve({
         name: "reviewChangeRequest",
-        query: { data: changeRequestId }
+        query: { data: changeRequestId },
       });
       window.open(routeData.href, "_blank");
     },
     considerRequestPage(changeRequestId) {
       let routeData = this.$router.resolve({
         name: "ConsiderChangeRequest",
-        query: { data: changeRequestId }
+        query: { data: changeRequestId },
       });
       window.open(routeData.href, "_blank");
     },
     approveRequestPage(changeRequestId) {
       let routeData = this.$router.resolve({
         name: "ApproveChangeRequest",
-        query: { data: changeRequestId }
+        query: { data: changeRequestId },
       });
       window.open(routeData.href, "_blank");
     },
@@ -337,7 +337,7 @@ export default {
         default:
           "primary";
       }
-    }
-  }
+    },
+  },
 };
 </script>
