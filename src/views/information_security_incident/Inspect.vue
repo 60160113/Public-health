@@ -1,5 +1,12 @@
 <template>
-  <div></div>
+  <div>
+    <CCard>
+      <CCardHeader>
+        <h4>ตรวจสอบ</h4>
+      </CCardHeader>
+      <CCardBody> </CCardBody>
+    </CCard>
+  </div>
 </template>
 
 <script>
@@ -8,7 +15,13 @@ import axios from "axios";
 
 export default {
   data() {
-    return {};
+    return {
+      loading: false,
+
+      axiosOptions: {
+        headers: authHeader(),
+      },
+    };
   },
   methods: {},
   computed: {
