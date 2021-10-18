@@ -17,6 +17,6 @@ export default [
     {
       path: "/information_security_incident/solving/:id/:process_id",
       name: "Solve Problem",
-      component: () => import("@/views/information_security_incident/AssignOperator.vue")
+      component: () => import("@/views/information_security_incident/SolveProblem.vue")
     },
 ]
