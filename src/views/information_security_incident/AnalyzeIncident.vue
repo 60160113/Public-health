@@ -304,17 +304,7 @@ export default {
         );
 
         // submit
-        switch (this.form.incident_effect) {
-          case "legal":
-            this.form.process_name = "Legal Action";
-            break;
-          case "BCP":
-            this.form.process_name = "BCP Action";
-            break;
-          default:
-            this.form.process_name = "Assign Operator";
-            break;
-        }
+        this.form.process_name = "Assign Operator"
         this.form.process_id = startProcess.data.processId;
         axiosData = {
           app: {
