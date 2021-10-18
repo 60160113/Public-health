@@ -30,7 +30,14 @@
           </template>
           <template #action="{ item }">
             <td>
-              {{ item.id }}
+              <CButton
+                color="info"
+                size="sm"
+                class="ml-1"
+                @click.prevent="action(item)"
+              >
+                view
+              </CButton>
             </td>
           </template>
         </CDataTable>
@@ -82,6 +89,11 @@ export default {
           _style: "min-width:10%",
         },
         {
+          key: "process_name",
+          label: "สถานะ",
+          _style: "min-width:10%",
+        },
+        {
           key: "action",
           label: "",
           _style: "min-width:10%",
@@ -107,6 +119,15 @@ export default {
         axiosData,
         this.axiosOptions
       );
+    },
+    action(item) {
+      this.$router.push({
+        name: item.process_name,
+        params: {
+          id: item.id,
+          process_id: item.process_id,
+        },
+      });
     },
   },
 };
