@@ -261,7 +261,6 @@ export default {
       await jogetService
         .startProcess("mophApp", "changeManagementProcess")
         .then(async (res) => {
-          console.log(res);
           this.newChangeRequest.processId = res.data.processId;
           if (this.newChangeRequest.reason == "new") {
             this.newChangeRequest.reason = "เพิ่มระบบใหม่";
@@ -270,7 +269,6 @@ export default {
           } else if (this.newChangeRequest.reason == "other") {
             this.newChangeRequest.reason = "อื่นๆ";
           }
-          console.log(this.newChangeRequest);
           await jogetService
             .formSubmit(
               "mophApp",
@@ -279,7 +277,6 @@ export default {
               this.newChangeRequest
             )
             .then((res) => {
-              console.log(res);
               this.changeRequestCreateModal = false;
               this.getChangeRequest();
             });

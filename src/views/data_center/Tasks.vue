@@ -149,7 +149,6 @@ export default {
       this.tableLoading = true;
       this.getItems().then((res) => {
         this.requests = res.data.data;
-        console.log(this.requests);
       });
       this.tableLoading = false;
     },
@@ -173,7 +172,6 @@ export default {
       );
     },
     considerRequirement(item) {
-      console.log(item)
       this.taskRoute.forEach((task) => {
         if (task.processName === item.processName) {
           this.$router.push(`/data-center/${task.routeName}/` + item.processId);

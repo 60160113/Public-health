@@ -225,13 +225,11 @@ export default {
           this.changeRequestList = res.data.data[0];
           this.newChangeRequest = res.data.data[0];
           this.newChangeRequest.processName = "รออนุมัติ";
-          console.log(this.newChangeRequest);
         });
     },
     async reviewConsider() {
       this.changeRequestConsider.processId = this.newChangeRequest.processId;
       this.changeRequestConsider.considerName = this.infoAuth.fullname;
-      console.log(this.changeRequestConsider);
       await jogetService
         .formSubmit(
           "mophApp",
@@ -246,7 +244,6 @@ export default {
             processName: processName,
             assignTo: assignTo
           };
-          console.log("change status");
           jogetService
             .formSubmit(
               "mophApp",

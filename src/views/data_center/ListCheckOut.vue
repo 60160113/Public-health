@@ -143,7 +143,6 @@ export default {
       this.tableLoading = true;
       this.getItems().then((res) => {
         this.requests = res.data.data;
-        console.log(this.requests);
       });
       this.tableLoading = false;
     },

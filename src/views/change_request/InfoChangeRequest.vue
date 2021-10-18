@@ -224,7 +224,6 @@ export default {
           this.changeRequestList = res.data.data[0];
           this.newChangeRequest = res.data.data[0];
           this.newChangeRequest.processName = "เสร็จสิ้น";
-          console.log(this.newChangeRequest);
         });
     },
     async getConsider() {
@@ -238,7 +237,6 @@ export default {
         .list("mophApp", "list_moph_change_request_approve", searchData)
         .then(res => {
           this.considerComment = res.data.data;
-          console.log(this.considerComment);
         });
     },
     async getSuccess() {
@@ -252,13 +250,11 @@ export default {
         .list("mophApp", "list_moph_change_request_success", searchData)
         .then(res => {
           this.successComment = res.data.data;
-          console.log(this.successComment);
         });
     },
     async reviewSuccess() {
       this.changeRequestSuccess.processId = this.newChangeRequest.processId;
       this.changeRequestSuccess.changeOperator = this.infoAuth.fullname;
-      console.log(this.changeRequestSuccess);
       await jogetService
         .formSubmit(
           "mophApp",
@@ -273,7 +269,6 @@ export default {
             processName: processName,
             assignTo: assignTo
           };
-          console.log("change status");
           jogetService
             .formSubmit(
               "mophApp",

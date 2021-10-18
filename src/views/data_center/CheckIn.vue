@@ -223,7 +223,7 @@ export default {
         date: new Date(),
         returnDate: null,
         checkInCard: "",
-        requestId: '',
+        requestId: "",
       },
 
       hardware: {
@@ -276,11 +276,10 @@ export default {
           this.axiosOptions
         )
         .then(async (res) => {
-          console.log(res);
           // this.checkIn.processName = "";
           this.checkIn.processName = "Approve Permission";
-          this.checkIn.requestId = ''
-          this.checkIn.processId = res.data.processId
+          this.checkIn.requestId = "";
+          this.checkIn.processId = res.data.processId;
           const axiosData = {
             app: {
               appId: "mophApp",
@@ -289,7 +288,6 @@ export default {
             primaryKey: res.data.processId,
             formData: this.checkIn,
           };
-          console.log(axiosData);
           await axios
             .post(
               `${process.env.VUE_APP_BACKEND_URL}/form/submit`,
@@ -297,7 +295,6 @@ export default {
               this.axiosOptions
             )
             .then(async (res) => {
-              console.log(res);
               // const hardwareData = {
               //   app: {
               //     appId: "mophApp",
@@ -310,7 +307,6 @@ export default {
               // .post
               await this.hardwareList.forEach(async (element) => {
                 element.processId = this.checkIn.processId;
-                console.log(element);
                 const hardwareData = {
                   // app: {
                   //   appId: "mophApp",
@@ -318,7 +314,7 @@ export default {
                   // },
                   app: {
                     appId: "mophApp",
-                    formId: "hardware"
+                    formId: "hardware",
                   },
                   primaryKey: "",
                   formData: {
@@ -331,16 +327,11 @@ export default {
                     type: element.type,
                   },
                 };
-                console.log(hardwareData);
-                await axios
-                  .post(
-                    `${process.env.VUE_APP_BACKEND_URL}/form/submit`,
-                    hardwareData,
-                    this.axiosOptions
-                  )
-                  .then(async (res) => {
-                    console.log("hw", res);
-                  });
+                await axios.post(
+                  `${process.env.VUE_APP_BACKEND_URL}/form/submit`,
+                  hardwareData,
+                  this.axiosOptions
+                );
               });
               const processData = {
                 processId: this.checkIn.processId,

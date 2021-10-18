@@ -214,11 +214,9 @@ export default {
           this.changeRequestList = res.data.data[0];
           this.newChangeRequest = res.data.data[0];
           this.newChangeRequest.processName = "รออนุมัติ";
-          console.log(this.newChangeRequest);
         });
     },
     async changeRequestCreate() {
-      console.log("this.newChangeRequest", this.newChangeRequest);
       if (this.newChangeRequest.changeType == "minor") {
         this.newChangeRequest.assignTo = "หัวหน้าทีมนั้นๆ";
       } else if (this.newChangeRequest.changeType == "major") {

@@ -231,13 +231,10 @@ export default {
   },
   created() {
     this.getCheckIn().then((res) => {
-      console.log(res);
       this.checkInContents = res.data.data;
-      console.log("ckc", this.checkInContents);
     });
     this.getHardware().then((res) => {
       this.hardwareList = res.data.data;
-      console.log(this.hardwareList);
     });
   },
   methods: {
@@ -253,7 +250,6 @@ export default {
         )
         .then((res) => {
           this.activityId = res.data.activityId;
-          console.log(this.activityId);
         });
     },
     async getCheckIn() {
@@ -325,7 +321,6 @@ export default {
           this.axiosOptions
         )
         .then(async (res) => {
-          console.log(res);
           const processData = {
             processId: this.checkInContents[0].processId,
           };
@@ -336,7 +331,6 @@ export default {
               this.axiosOptions
             )
             .then(async (res) => {
-              console.log(res);
               const activityId = res.data.activityId;
               const processData = {
                 activityId: activityId,
