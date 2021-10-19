@@ -32,6 +32,8 @@ export default {
         ISMR_opinion_date: new Date(),
 
         ISMR_name: user.fullname,
+
+        process_name: "Complete",
       },
 
       loading: false,

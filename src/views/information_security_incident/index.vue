@@ -89,6 +89,11 @@ export default {
           _style: "min-width:10%",
         },
         {
+          key: "incident_effect",
+          label: "ผลกระทบที่ได้รับ",
+          _style: "min-width:10%",
+        },
+        {
           key: "process_name",
           label: "สถานะ",
           _style: "min-width:10%",
