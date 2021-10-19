@@ -34,7 +34,7 @@
             <CInput
               horizontal
               label="โทรศัพท์"
-              v-model="form.informer_phone_number"
+              v-model="form.informer_phone_no"
             />
           </CCol>
           <CCol col="6">
@@ -143,7 +143,7 @@ export default {
         informer_name: "",
         informer_position: "",
         informer_institution: "",
-        informer_phone_number: "",
+        informer_phone_no: "",
         informer_email: "",
         informer_type: "ผู้ใช้งานระบบ",
 
