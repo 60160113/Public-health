@@ -6,7 +6,7 @@
       </CCardHeader>
       <CCardBody>
         <CSelect
-          label="รายละเอียด"
+          label="เรียน ISMR"
           placeholder="กรุณาเลือกรายละเอียด"
           :value.sync="form.inform_ISMR"
           horizontal
