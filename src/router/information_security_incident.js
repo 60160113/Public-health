@@ -23,11 +23,6 @@ export default [
       import("@/views/information_security_incident/SolveProblem.vue")
   },
   {
-    path: "/information_security_incident/inspect/:id/:process_id",
-    name: "Inspect",
-    component: () => import("@/views/information_security_incident/Inspect.vue")
-  },
-  {
     path: "/information_security_incident/summary/:id/:process_id",
     name: "Summary",
     component: () => import("@/views/information_security_incident/Summary.vue")

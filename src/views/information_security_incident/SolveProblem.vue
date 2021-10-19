@@ -78,7 +78,7 @@ export default {
         inform_ISM_solving_closed_detail: "",
 
         inform_ISM_date: new Date(),
-        process_name: "Inspect",
+        process_name: "Summary",
       },
 
       solving_preliminary_options: [
