@@ -8,45 +8,34 @@
       <CCardBody>
         <CRow>
           <CCol col="6">
-            <CInput horizontal label="ผู้ร้องขอ" v-model="checkIn.requester" />
+            <CInput label="ผู้ร้องขอ" v-model="checkIn.requester" />
           </CCol>
           <CCol col="6">
-            <CInput horizontal label="ตำแหน่ง" v-model="checkIn.position" />
+            <CInput label="ตำแหน่ง" v-model="checkIn.position" />
           </CCol>
 
           <CCol col="6">
-            <CInput horizontal label="สังกัด" v-model="checkIn.affiliation" />
+            <CInput label="สังกัด" v-model="checkIn.affiliation" />
           </CCol>
           <CCol col="6">
-            <CInput
-              horizontal
-              label="เลขที่บัตรประชาชน"
-              v-model="checkIn.idcard"
-            />
+            <CInput label="เลขที่บัตรประชาชน" v-model="checkIn.idcard" />
           </CCol>
 
           <CCol col="12">
-            <CTextarea
-              horizontal
-              label="วัตถุประสงค์"
-              v-model="checkIn.purpose"
-            />
+            <CTextarea label="วัตถุประสงค์" v-model="checkIn.purpose" />
           </CCol>
 
           <CCol col="6">
             <CInput
-              horizontal
               label="หมายเลขบัตร เข้า-ออก"
               v-model="checkIn.checkInCard"
             />
           </CCol>
           <CCol col="6">
             <CRow>
-              <CCol col="3">
-                <label style="margin-top: 6px">วันที่ส่งคืน</label>
-              </CCol>
-              <CCol
-                ><v-date-picker
+              <CCol>
+                <label>วันที่ส่งคืน</label>
+                <v-date-picker
                   :min-date="new Date()"
                   mode="date"
                   :masks="{
@@ -57,12 +46,15 @@
             </CRow>
           </CCol>
         </CRow>
-
-        <CInputCheckbox
-          inline
-          custom
-          label="เข้าศูนย์ปฏิบัติการ"
+        <hr />
+        <CInputRadioGroup
+          :options="[
+            { value: true, label: 'เข้าศูนย์ปฏิบัติการ' },
+            { value: false, label: 'ไม่เข้าศูนย์ปฏิบัติการ' },
+          ]"
           :checked.sync="enter"
+          custom
+          inline
         />
       </CCardBody>
     </CCard>
@@ -138,17 +130,17 @@
     >
       <CRow>
         <CCol col="6">
-          <CInput horizontal label="ชื่อ" v-model="hardware.name" />
+          <CInput label="ชื่อ" v-model="hardware.name" />
         </CCol>
         <CCol col="6">
-          <CInput horizontal label="ยี่ห้อ" v-model="hardware.brand" />
+          <CInput label="ยี่ห้อ" v-model="hardware.brand" />
         </CCol>
 
         <CCol col="6">
-          <CInput horizontal label="S/N" v-model="hardware.serialNumber" />
+          <CInput label="S/N" v-model="hardware.serialNumber" />
         </CCol>
         <CCol col="6">
-          <CInput horizontal label="จำนวน" v-model="hardware.unit" />
+          <CInput label="จำนวน" v-model="hardware.unit" />
         </CCol>
       </CRow>
 
