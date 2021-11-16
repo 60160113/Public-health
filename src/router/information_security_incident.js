@@ -31,5 +31,10 @@ export default [
     path: "/information_security_incident/review/:id/:process_id",
     name: "Review",
     component: () => import("@/views/information_security_incident/Review.vue")
+  },
+  {
+    path: "/information_security_incident/report/:id/:process_id",
+    name: "Information Security Report",
+    component: () => import("@/views/information_security_incident/Report.vue")
   }
 ];

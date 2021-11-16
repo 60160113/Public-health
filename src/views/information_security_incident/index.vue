@@ -126,8 +126,12 @@ export default {
       );
     },
     action(item) {
+      var route_name =
+        item.process_name !== "Complete"
+          ? item.process_name
+          : "Information Security Report";
       this.$router.push({
-        name: item.process_name,
+        name: route_name,
         params: {
           id: item.id,
           process_id: item.process_id,

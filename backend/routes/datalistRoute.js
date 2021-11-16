@@ -6,7 +6,6 @@ const datalistController = require('../controllers/datalistController')
 router.post('/getOne', auth.required, (req, res, next) => {
   datalistController.getOne(req)
     .then((response) => {
-      console.log(response.data)
       if (response.data.data.length > 1) {
         res.send('Result more than one record')
       } else if (response.data.data.length === 1) {
