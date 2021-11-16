@@ -1,6 +1,6 @@
 const axios = require('axios')
-const userApp = 'userAccountManagement'
-const listForLogin = 'forLogin'
+const userApp = 'mophApp'
+const listForLogin = 'list_account'
 const jogetUser = require('../configs/json/JogetUser.json')
 const juser = jogetUser.jogetUser
 
@@ -9,9 +9,7 @@ module.exports = {
   //   return true
   // },
   findUser: async (req, res, next) => {
-    console.log(req)
     const emailParam = `email=${req}`
-    console.log(encodeURI(`${process.env.VUE_APP_JOGET_URL}web/json/data/list/${userApp}/${listForLogin}?j_username=${juser['admin'].username}&j_password=${juser['admin'].password}&${emailParam}`))
     return await axios.post(encodeURI(`${process.env.VUE_APP_JOGET_URL}web/json/data/list/${userApp}/${listForLogin}?j_username=${juser['admin'].username}&j_password=${juser['admin'].password}&${emailParam}`))
     // await axios.post(encodeURI(`${process.env.APP_BACKEND_URL}web/json/data/list/${userApp}/${listForLogin}?j_username=${juser['admin'].username}&j_password=${juser['admin'].password}&${emailParam}`))
     //   .then((res) => {

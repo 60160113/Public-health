@@ -15,11 +15,9 @@ passport.use(new LocalStrategy({
 }, async (email, password, cb) => {
   // userController.test()
   //   .then((res) => {
-  //     console.log(res)
   //   })
     await userController.findUser(email)
       .then((response) => {
-        console.log(response)
         bcrypt.compare(password, response.data.data[0].password)
           .then((passwordIsValid) => {
             if (response.data.data[0].email !== email || !passwordIsValid) {
@@ -29,11 +27,11 @@ passport.use(new LocalStrategy({
                 id: response.data.data[0].id,
                 fullname: response.data.data[0].fullname,
                 email: response.data.data[0].email,
-                permission: response.data.data[0].permission,
-                groupPermission: response.data.data[0].groupPermission,
-                department: response.data.data[0].department,
-                departmentName: response.data.data[0]['user_department.departmentName'],
-                loginat: new Date()
+                // permission: response.data.data[0].permission,
+                // groupPermission: response.data.data[0].groupPermission,
+                // department: response.data.data[0].department,
+                // departmentName: response.data.data[0]['user_department.departmentName'],
+                // loginat: new Date()
               }
               return cb(null, user, {message: 'Logged In Successfully'}) 
             }
