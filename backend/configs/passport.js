@@ -28,6 +28,7 @@ passport.use(new LocalStrategy({
                 fullname: response.data.data[0].fullname,
                 email: response.data.data[0].email,
                 // permission: response.data.data[0].permission,
+                permission: "user"
                 // groupPermission: response.data.data[0].groupPermission,
                 // department: response.data.data[0].department,
                 // departmentName: response.data.data[0]['user_department.departmentName'],
