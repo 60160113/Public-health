@@ -170,7 +170,6 @@ export default {
   created() {
     this.getIncident().then((res) => {
       this.incident = res.data.data[0];
-      console.log(this.incident);
     });
   },
   data() {
