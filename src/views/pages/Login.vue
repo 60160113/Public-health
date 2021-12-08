@@ -99,13 +99,21 @@ export default {
           this.form,
           axiosHeader
         )
-        .then((res) => {
+        .then(async (res) => {
+          const alf_login = await axios.post(
+            `${process.env.VUE_APP_ALF_API}authentication/versions/1/tickets`,
+            {
+              userId: "jack",
+              password: "ivsoft"
+            }
+          );
           const user = res.data.user;
           user.token = res.data.token;
+          user.ticket = alf_login.data.entry.id
           localStorage.setItem("AuthUser", JSON.stringify(user));
           this.$router.push("/data-center/check-in");
         });
-    }
+    },
   },
 };
 </script>

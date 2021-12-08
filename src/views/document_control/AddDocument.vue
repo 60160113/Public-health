@@ -5,6 +5,7 @@
         <h4>การควบคุมเอกสาร</h4>
       </CCardHeader>
       <CCardBody>
+        <!-- คณะทำงานหรือผู้ร้องขอ -->
         <h5 class="text-primary">คณะทำงานหรือผู้ร้องขอ</h5>
         <CRow class="mt-3">
           <CCol col="6">
@@ -17,6 +18,7 @@
         </CRow>
 
         <hr />
+        <!-- มีความประสงค์ -->
         <h5 class="text-primary">มีความประสงค์</h5>
         <CInputRadioGroup
           class="mt-3"
@@ -30,7 +32,41 @@
         <CInput
           v-if="form.purpose_code == 'ADD'"
           type="file"
+          label="อัปโหลดไฟล์"
           @change="uploadHandler"
+        />
+
+        <hr />
+        <!-- รายละเอียดเพิ่มเติม -->
+        <h5 class="text-primary">รายละเอียดเพิ่มเติม</h5>
+        <CInputRadioGroup
+          class="mt-3"
+          :options="detail_options"
+          :checked.sync="handler.detail"
+          custom
+          inline
+        />
+        <CInput
+          class="mt-3"
+          v-if="!handler.detail"
+          label="ระบุรายละเอียด"
+          v-model="form.detail"
+        />
+        <hr />
+        <!-- ผลกระทบกับเอกสารอื่นที่เกี่ยวข้อง -->
+        <h5 class="text-primary">ผลกระทบกับเอกสารอื่นที่เกี่ยวข้อง</h5>
+        <CInputRadioGroup
+          class="mt-3"
+          :options="effect_options"
+          :checked.sync="handler.effect"
+          custom
+          inline
+        />
+        <CInput
+          class="mt-3"
+          v-if="!handler.effect"
+          label="ระบุรายละเอียด"
+          v-model="form.effect"
         />
       </CCardBody>
     </CCard>
@@ -53,12 +89,40 @@ export default {
 
         purpose: "จัดทำเอกสารใหม่",
         purpose_code: "ADD",
+
+        detail: "",
+        effect: "",
+
+        file_id: "",
+        origin_file_id: "",
+      },
+
+      handler: {
+        detail: "ปรับปรุงใหม่ให้เหมาะสมกับการปฏิบัติงาน",
+        effect: "ไม่มีผลกระทบ",
       },
 
       purpose_options: [
         { value: "ADD", label: "จัดทำเอกสารใหม่" },
         { value: "EDIT", label: "แก้ไขเอกสาร" },
         { value: "CANCEL", label: "ยกเลิกเอกสาร" },
+      ],
+
+      detail_options: [
+        {
+          value: "ปรับปรุงใหม่ให้เหมาะสมกับการปฏิบัติงาน",
+          label: "ปรับปรุงใหม่ให้เหมาะสมกับการปฏิบัติงาน",
+        },
+        { value: "ขอยกเลิกเอกสาร", label: "ขอยกเลิกเอกสาร" },
+        { value: false, label: "อื่นๆ (ระบุ)" },
+      ],
+
+      effect_options: [
+        {
+          value: "ไม่มีผลกระทบ",
+          label: "ไม่มีผลกระทบ",
+        },
+        { value: false, label: "มีผลกระทบ (ระบุ)" },
       ],
 
       document_list: [],
@@ -69,7 +133,7 @@ export default {
   methods: {
     async get_document_list() {
       var ticket = await this.alf_login({
-        username: "phurk",
+        username: "jack",
         password: "ivsoft",
       });
       var hasMoreItems = false;
