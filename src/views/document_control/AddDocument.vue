@@ -70,6 +70,8 @@
         />
       </CCardBody>
     </CCard>
+
+    <CButton style="width: 100%" color="primary">บันทึก</CButton>
   </div>
 </template>
 

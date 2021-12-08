@@ -46,7 +46,6 @@
         <CDataTable
           :items="list"
           :fields="fields"
-          column-filter
           :items-per-page="5"
           :itemsPerPageSelect="{
             label: 'แสดง',
@@ -127,40 +126,6 @@
               {{ new Date(item.modifiedAt).toLocaleTimeString() }}
             </td>
           </template>
-          <template #actions="{ item }">
-            <td>
-              <CButton
-                color="success"
-                v-c-tooltip="'ย้าย'"
-                :disabled="!permissionCheck(item, 'delete')"
-                @click="
-                  selectId = item.id;
-                  modalStatus.move = true;
-                "
-                ><CIcon name="cil-cursor" /></CButton
-              >&nbsp;
-              <CButton
-                color="warning"
-                v-c-tooltip="'คัดลอก'"
-                @click="
-                  selectId = item.id;
-                  modalStatus.copy = true;
-                "
-                ><CIcon name="cil-copy" /></CButton
-              >&nbsp;
-              <CButton
-                color="danger"
-                v-c-tooltip="'ลบ'"
-                :disabled="!permissionCheck(item, 'delete')"
-                @click="
-                  selectId = item.id;
-                  modalStatus.remove = true;
-                "
-                ><CIcon name="cil-trash"
-              /></CButton>
-            </td>
-          </template>
-          <template #actions-filter> <p></p> </template>
         </CDataTable>
       </CCardBody>
     </CCard>
@@ -333,7 +298,6 @@
 const fields = [
   { key: "name", label: "Name", _style: "min-width:40%" },
   { key: "modifiedAt", label: "Modified Date", _style: "min-width:20%;" },
-  { key: "actions", label: "Actions", _style: "min-width:20%;" },
 ];
 
 import Properties from "./Properties";
@@ -355,8 +319,8 @@ export default {
   },
   async created() {
     const id = () => {
-      if (this.$route.query.id) {
-        return this.$route.query.id;
+      if (this.$route.params.id) {
+        return this.$route.params.id;
       } else {
         switch (this.$route.name) {
           case "My Files":
@@ -378,7 +342,7 @@ export default {
       return this.list.filter((item) => item.isFolder).length.toString();
     },
     isRootPath() {
-      if (this.$route.query.id) {
+      if (this.$route.params.id) {
         const folderName = () => {
           switch (this.$route.name) {
             case "My Files":
@@ -501,7 +465,7 @@ export default {
       try {
         this.isTableLoaded = true;
         const currentFolder = await $http.get(
-          `${process.env.VUE_APP_ALFRESCO_API}alfresco/versions/1/nodes/${id}?include=allowableOperations,path,properties`
+          `${process.env.VUE_APP_ALF_API}alfresco/versions/1/nodes/${id}?include=allowableOperations,path,properties`
         );
         if (currentFolder.response) {
           throw currentFolder.response;
@@ -515,7 +479,7 @@ export default {
           responseList = [];
         do {
           const { data: list } = await $http.get(
-            `${process.env.VUE_APP_ALFRESCO_API}alfresco/versions/1/nodes/${id}/children?maxItems=${maxItems}&skipCount=${skipCount}&include=properties,allowableOperations&orderBy=modifiedAt DESC`
+            `${process.env.VUE_APP_ALF_API}alfresco/versions/1/nodes/${id}/children?maxItems=${maxItems}&skipCount=${skipCount}&include=properties,allowableOperations&orderBy=modifiedAt DESC`
           );
 
           responseList.push(
@@ -556,7 +520,7 @@ export default {
       this.modalLoaded = true;
       $http
         .post(
-          `${process.env.VUE_APP_ALFRESCO_API}alfresco/versions/1/nodes/${this.currentFolder.id}/children?autoRename=true`,
+          `${process.env.VUE_APP_ALF_API}alfresco/versions/1/nodes/${this.currentFolder.id}/children?autoRename=true`,
           {
             name: this.properties.name,
             nodeType: "cm:folder",
@@ -575,7 +539,7 @@ export default {
     remove() {
       $http
         .delete(
-          `${process.env.VUE_APP_ALFRESCO_API}alfresco/versions/1/nodes/${this.selectId}`
+          `${process.env.VUE_APP_ALF_API}alfresco/versions/1/nodes/${this.selectId}`
         )
         .then(() => {
           this.modalStatus.remove = false;
@@ -603,12 +567,12 @@ export default {
           this.file.name.slice(this.file.name.lastIndexOf("."))
       );
       const { data } = await $http.post(
-        `${process.env.VUE_APP_ALFRESCO_API}alfresco/versions/1/nodes/${this.currentFolder.id}/children?autoRename=true`,
+        `${process.env.VUE_APP_ALF_API}alfresco/versions/1/nodes/${this.currentFolder.id}/children?autoRename=true`,
         formData
       );
       await $http
         .put(
-          `${process.env.VUE_APP_ALFRESCO_API}alfresco/versions/1/nodes/${data.entry.id}`,
+          `${process.env.VUE_APP_ALF_API}alfresco/versions/1/nodes/${data.entry.id}`,
           {
             properties: {
               "cm:title": this.properties.title,
@@ -625,7 +589,7 @@ export default {
     moveFile(destination) {
       $http
         .post(
-          `${process.env.VUE_APP_ALFRESCO_API}alfresco/versions/1/nodes/${this.selectId}/move`,
+          `${process.env.VUE_APP_ALF_API}alfresco/versions/1/nodes/${this.selectId}/move`,
           {
             targetParentId: destination.id,
           }
@@ -638,7 +602,7 @@ export default {
     copyFile(destination) {
       $http
         .post(
-          `${process.env.VUE_APP_ALFRESCO_API}alfresco/versions/1/nodes/${this.selectId}/copy`,
+          `${process.env.VUE_APP_ALF_API}alfresco/versions/1/nodes/${this.selectId}/copy`,
           {
             targetParentId: destination.id,
           }

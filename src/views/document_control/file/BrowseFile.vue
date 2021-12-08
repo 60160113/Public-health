@@ -161,7 +161,7 @@ export default {
         this.loading = true;
 
         const currentFolder = await $http.get(
-          `${process.env.VUE_APP_ALFRESCO_API}alfresco/versions/1/nodes/${id}?include=path`
+          `${process.env.VUE_APP_ALF_API}alfresco/versions/1/nodes/${id}?include=path`
         );
 
         this.currentFolder = currentFolder.data.entry;
@@ -172,7 +172,7 @@ export default {
         var arr = [];
         do {
           const response = await $http.get(
-            `${process.env.VUE_APP_ALFRESCO_API}alfresco/versions/1/nodes/${id}/children?maxItems=${maxItems}&skipCount=${skipCount}&include=properties`
+            `${process.env.VUE_APP_ALF_API}alfresco/versions/1/nodes/${id}/children?maxItems=${maxItems}&skipCount=${skipCount}&include=properties`
           );
 
           arr.push(

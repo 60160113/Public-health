@@ -396,7 +396,7 @@ import { quillEditor } from "vue-quill-editor";
 
 import { DatePicker } from "v-calendar";
 
-import previewableTypes from "@/views/file/previewableTypes";
+import previewableTypes from "@/views/document_control/file/previewableTypes.json";
 
 import axios from "axios";
 
@@ -540,7 +540,7 @@ export default {
     getProperties() {
       $http
         .get(
-          `${process.env.VUE_APP_ALFRESCO_API}alfresco/versions/1/nodes/${this.id}?include=allowableOperations,path`
+          `${process.env.VUE_APP_ALF_API}alfresco/versions/1/nodes/${this.id}?include=allowableOperations,path`
         )
         .then((res) => {
           this.properties = res.data.entry;
@@ -569,7 +569,7 @@ export default {
       this.loading = true;
       $http
         .get(
-          `${process.env.VUE_APP_ALFRESCO_API}alfresco/versions/1/nodes/${this.id}/content`,
+          `${process.env.VUE_APP_ALF_API}alfresco/versions/1/nodes/${this.id}/content`,
           {
             responseType: "blob",
             onDownloadProgress: (evt) => {
@@ -604,7 +604,7 @@ export default {
     getComments() {
       $http
         .get(
-          `${process.env.VUE_APP_ALFRESCO_API}alfresco/versions/1/nodes/${this.id}/comments?include=properties`
+          `${process.env.VUE_APP_ALF_API}alfresco/versions/1/nodes/${this.id}/comments?include=properties`
         )
         .then((res) => {
           this.comments = res.data.list.entries.map((item) => {
@@ -615,7 +615,7 @@ export default {
     addComment() {
       $http
         .post(
-          `${process.env.VUE_APP_ALFRESCO_API}alfresco/versions/1/nodes/${this.id}/comments`,
+          `${process.env.VUE_APP_ALF_API}alfresco/versions/1/nodes/${this.id}/comments`,
           {
             content: this.commentInput,
           }
@@ -629,7 +629,7 @@ export default {
     removeComment() {
       $http
         .delete(
-          `${process.env.VUE_APP_ALFRESCO_API}alfresco/versions/1/nodes/${this.id}/comments/${this.commentId}`
+          `${process.env.VUE_APP_ALF_API}alfresco/versions/1/nodes/${this.id}/comments/${this.commentId}`
         )
         .then(() => {
           this.getComments();
@@ -644,7 +644,7 @@ export default {
     editComment() {
       $http
         .put(
-          `${process.env.VUE_APP_ALFRESCO_API}alfresco/versions/1/nodes/${this.id}/comments/${this.commentId}`,
+          `${process.env.VUE_APP_ALF_API}alfresco/versions/1/nodes/${this.id}/comments/${this.commentId}`,
           {
             content: this.commentInput,
           }
@@ -659,7 +659,7 @@ export default {
     getVersions() {
       $http
         .get(
-          `${process.env.VUE_APP_ALFRESCO_API}alfresco/versions/1/nodes/${this.id}/versions`
+          `${process.env.VUE_APP_ALF_API}alfresco/versions/1/nodes/${this.id}/versions`
         )
         .then((res) => {
           this.versions = res.data.list.entries.map((item) => {
@@ -669,7 +669,7 @@ export default {
     },
     // Download
     download(version = false) {
-      let requestURL = `${process.env.VUE_APP_ALFRESCO_API}alfresco/versions/1/nodes/${this.id}`;
+      let requestURL = `${process.env.VUE_APP_ALF_API}alfresco/versions/1/nodes/${this.id}`;
 
       if (version) {
         requestURL += `/versions/${version}`;
@@ -694,7 +694,7 @@ export default {
       };
       $http
         .post(
-          `${process.env.VUE_APP_ALFRESCO_API}alfresco/versions/1/nodes/${this.id}/versions/${this.versionId}/revert`,
+          `${process.env.VUE_APP_ALF_API}alfresco/versions/1/nodes/${this.id}/versions/${this.versionId}/revert`,
           data
         )
         .then(() => {
@@ -710,7 +710,7 @@ export default {
     upload() {
       $http
         .put(
-          `${process.env.VUE_APP_ALFRESCO_API}alfresco/versions/1/nodes/${this.id}/content?majorVersion=${this.versionProperties.majorVersion}&comment=${this.versionProperties.comment}&name=${this.file.name}`,
+          `${process.env.VUE_APP_ALF_API}alfresco/versions/1/nodes/${this.id}/content?majorVersion=${this.versionProperties.majorVersion}&comment=${this.versionProperties.comment}&name=${this.file.name}`,
           this.file
         )
         .then(() => {
@@ -743,7 +743,7 @@ export default {
       }
       $http
         .post(
-          `${process.env.VUE_APP_ALFRESCO_API}alfresco/versions/1/shared-links`,
+          `${process.env.VUE_APP_ALF_API}alfresco/versions/1/shared-links`,
           data
         )
         .then((response) => {
@@ -756,7 +756,7 @@ export default {
     deleteSharedLink() {
       $http
         .delete(
-          `${process.env.VUE_APP_ALFRESCO_API}alfresco/versions/1/shared-links/${this.sharedLink.id}`
+          `${process.env.VUE_APP_ALF_API}alfresco/versions/1/shared-links/${this.sharedLink.id}`
         )
         .then(() => {
           this.sharedLink = {

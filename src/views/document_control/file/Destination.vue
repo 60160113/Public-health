@@ -141,7 +141,7 @@ export default {
       try {
         this.isLoaded = true;
         const rootPath = await $http.get(
-          `${process.env.VUE_APP_ALFRESCO_API}alfresco/versions/1/nodes/${this.destination}?include=allowableOperations,path`
+          `${process.env.VUE_APP_ALF_API}alfresco/versions/1/nodes/${this.destination}?include=allowableOperations,path`
         );
         this.list = [];
         this.list.push({
@@ -161,7 +161,7 @@ export default {
 
         do {
           const { data } = await $http.post(
-            `${process.env.VUE_APP_ALFRESCO_API}search/versions/1/search`,
+            `${process.env.VUE_APP_ALF_API}search/versions/1/search`,
             {
               query: {
                 query: `SELECT * FROM cmis:folder WHERE IN_TREE('${rootPath.data.entry.id}')`,

@@ -11,8 +11,20 @@ export default [
     },
     {
       _name: "CSidebarNavItem",
-      name: "Tasks",
+      name: "My Tasks",
       to: "/document_control",
+      icon: "cil-circle"
+    },
+    {
+      _name: "CSidebarNavItem",
+      name: "Files",
+      to: `/files/${process.env.VUE_APP_ALF_DOCUMENT_FOLDER_ID}`,
+      icon: "cil-circle"
+    },
+    {
+      _name: "CSidebarNavItem",
+      name: "Draft",
+      to: `/files/${process.env.VUE_APP_ALF_DRAFT_FOLDER_ID}`,
       icon: "cil-circle"
     },
   ];
