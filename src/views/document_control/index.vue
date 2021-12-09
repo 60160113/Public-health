@@ -79,7 +79,7 @@ export default {
           _style: "min-width:10%",
         },
         {
-          key: "requestser_name",
+          key: "requester_name",
           label: "ผู้ร้องขอ",
           _style: "min-width:10%",
         },
