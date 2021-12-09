@@ -256,7 +256,6 @@ export default {
 
         this.form.file_id = upload.data.entry.id;
       }
-      console.log(this.form);
 
       // submit
       this.form.process_id = startProcess.data.processId;
