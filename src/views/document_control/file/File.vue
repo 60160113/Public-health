@@ -66,37 +66,6 @@
             ><div class="text-center">ไม่พบข้อมูล</div>
           </template>
 
-          <template #over-table>
-            <div style="margin-bottom: 10px">
-              <CButton
-                color="primary"
-                shape="pill"
-                :disabled="
-                  isRootPath || isTableLoaded || !currentFolder.parentId
-                "
-                @click="openFilePage(currentFolder.parentId)"
-                ><CIcon name="cil-arrow-left" /> ย้อนกลับ</CButton
-              >&nbsp;
-              <CButton
-                color="primary"
-                shape="pill"
-                :disabled="
-                  isTableLoaded || !permissionCheck(currentFolder, 'create')
-                "
-                @click="modalStatus.newFolder = true"
-                ><CIcon name="cil-folder" /> สร้างโฟลเดอร์ใหม่</CButton
-              >&nbsp;
-              <CButton
-                color="primary"
-                shape="pill"
-                :disabled="
-                  isTableLoaded || !permissionCheck(currentFolder, 'create')
-                "
-                @click="modalStatus.upload = true"
-                ><CIcon name="cil-file" /> อัปโหลด</CButton
-              >
-            </div>
-          </template>
           <template #name="{ item }">
             <td
               style="cursor: pointer"
