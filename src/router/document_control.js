@@ -10,6 +10,11 @@ export default [
       component: () => import("@/views/document_control/AddDocument.vue")
     },
     {
+      path: "/document_control/IST_secretary_review/:id/:process_id",
+      name: "IST Secretary Review",
+      component: () => import("@/views/document_control/ISTSecretaryReview.vue")
+    },
+    {
       path: "/files/:id",
       name: "Files",
       component: () => import("@/views/document_control/file/File.vue")
