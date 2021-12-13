@@ -40,7 +40,7 @@ export default {
         received_document: false,
         IST_secretary_date: new Date(),
 
-        process_name: "IST Verify",
+        process_name: "ISM Approve",
       },
 
       loading: false,
