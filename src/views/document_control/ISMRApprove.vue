@@ -47,7 +47,7 @@ export default {
   data() {
     return {
       form: {
-        ISMR_name: "",
+        ISMR_name: user.fullname,
         ISMR_approve: "อนุมัติการจัดทำ/แก้ไข/ยกเลิกเอกสาร ตามที่เสนอ",
         ISMR_approve_reason: "",
         ISMR_date: new Date(),

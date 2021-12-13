@@ -35,6 +35,11 @@ export default [
     component: () => import("@/views/document_control/DCReview.vue")
   },
   {
+    path: "/document_control/report/:id/:process_id",
+    name: "Document Control Report",
+    component: () => import("@/views/document_control/Report.vue")
+  },
+  {
     path: "/files/:id",
     name: "Files",
     component: () => import("@/views/document_control/file/File.vue")

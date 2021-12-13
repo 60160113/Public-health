@@ -45,7 +45,7 @@ export default {
   data() {
     return {
       form: {
-        ISM_name: "",
+        ISM_name: user.fullname,
         ISM_approve: "เห็นชอบ",
         ISM_approve_reason: "",
         ISM_date: new Date(),
