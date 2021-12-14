@@ -6,7 +6,7 @@
       </CCardHeader>
 
       <CCardBody>
-        <CRow>
+        <CRow v-if="checkInContents.length > 0">
           <CCol>
             <CRow>
               <CCol :md="{ size: '2' }">
@@ -56,7 +56,11 @@
               </CCol>
               <CCol>
                 <h6>
-                  {{ new Date(checkInContents[0].date).toLocaleDateString('th-TH') }}
+                  {{
+                    new Date(checkInContents[0].date).toLocaleDateString(
+                      "th-TH"
+                    )
+                  }}
                 </h6>
               </CCol>
             </CRow>
@@ -66,7 +70,11 @@
               </CCol>
               <CCol>
                 <h6>
-                  {{ new Date(checkInContents[0].returnDate).toLocaleDateString('th-TH') }}
+                  {{
+                    new Date(checkInContents[0].returnDate).toLocaleDateString(
+                      "th-TH"
+                    )
+                  }}
                 </h6>
               </CCol>
             </CRow>
