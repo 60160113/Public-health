@@ -99,7 +99,8 @@
           </CCol>
           <CCol sm="12">
             <p>
-              <strong>ผลพิจารณาอนุมัติให้ดำเนินการ</strong>
+              <strong>ผลพิจารณาอนุมัติให้ดำเนินการ</strong>:
+              {{ getConsiderStatus(considerComment[0].considerStatus) }}
             </p>
           </CCol>
           <CCol sm="12">
@@ -119,8 +120,15 @@
           <CCol sm="12">
             <p>
               <strong class="text-primary">
-                ส่วนที่ 3 รายงานผลการดำเนินการเปลี่ยนแปลง (ผู้ดำเนินการเปลี่ยนแปลง)</strong
+                ส่วนที่ 3 รายงานผลการดำเนินการเปลี่ยนแปลง
+                (ผู้ดำเนินการเปลี่ยนแปลง)</strong
               >
+            </p>
+          </CCol>
+          <CCol sm="12">
+            <p>
+              <strong>ผลดำเนินการ</strong>:
+              {{ getOperationStatus(successComment[0].operationStatus) }}
             </p>
           </CCol>
           <CCol sm="12">
@@ -128,7 +136,7 @@
               <CCol sm="12">
                 <div v-for="item in successComment" :key="item.id">
                   <div>
-                    {{ item.considerName }} :
+                    {{ item.changeOperator }} :
                     {{ item.operationDetail }}
                   </div>
                 </div></CCol
@@ -150,12 +158,12 @@ export default {
   components: {
     "v-date-picker": DatePicker,
     jogetService,
-    authHeader
+    authHeader,
   },
   data() {
     return {
       axiosOptions: {
-        headers: authHeader()
+        headers: authHeader(),
       },
       infoAuth: [],
       changeRequestList: [],
@@ -177,31 +185,29 @@ export default {
         operation: "",
         requester: "",
         teamLeader: "",
-        assignTo: ""
+        assignTo: "",
       },
       changeRequestSuccess: {
         processId: "",
         changeOperator: "",
         operationStatus: "",
         comment: "",
-        operationDetail: ""
+        operationDetail: "",
       },
       optionsSuccess: [
         { value: "success", label: "ดำเนินการสำเร็จ" },
         {
           value: "fail",
-          label: "ดำเนินการไม่สำเร็จ (โปรดระบุสาเหตุและการดำเนินงาน)"
-        }
+          label: "ดำเนินการไม่สำเร็จ (โปรดระบุสาเหตุและการดำเนินงาน)",
+        },
       ],
       considerComment: [],
-      successComment: []
+      successComment: [],
     };
   },
   created() {
     // this.tableLoading = true;
     this.getChangeRequest();
-    this.getConsider();
-    this.getSuccess();
 
     this.newChangeRequest.changeRequestId = this.$route.query.data;
     this.infoAuth = JSON.parse(localStorage.getItem("AuthUser"));
@@ -211,31 +217,34 @@ export default {
       const searchData = [
         {
           paramName: "changeRequestStatus",
-          paramValue: "active"
+          paramValue: "active",
         },
         {
           paramName: "changeRequestId",
-          paramValue: this.newChangeRequest.changeRequestId
-        }
+          paramValue: this.newChangeRequest.changeRequestId,
+        },
       ];
       await jogetService
         .list("mophApp", "list_moph_change_request", searchData)
-        .then(res => {
+        .then((res) => {
           this.changeRequestList = res.data.data[0];
           this.newChangeRequest = res.data.data[0];
           this.newChangeRequest.processName = "เสร็จสิ้น";
+
+          this.getConsider();
+          this.getSuccess();
         });
     },
     async getConsider() {
       const searchData = [
         {
           paramName: "processId",
-          paramValue: this.changeRequestList.processId
-        }
+          paramValue: this.changeRequestList.processId,
+        },
       ];
       await jogetService
         .list("mophApp", "list_moph_change_request_approve", searchData)
-        .then(res => {
+        .then((res) => {
           this.considerComment = res.data.data;
         });
     },
@@ -243,12 +252,12 @@ export default {
       const searchData = [
         {
           paramName: "processId",
-          paramValue: this.changeRequestList.processId
-        }
+          paramValue: this.changeRequestList.processId,
+        },
       ];
       await jogetService
         .list("mophApp", "list_moph_change_request_success", searchData)
-        .then(res => {
+        .then((res) => {
           this.successComment = res.data.data;
         });
     },
@@ -262,12 +271,12 @@ export default {
           "",
           this.changeRequestSuccess
         )
-        .then(res => {
+        .then((res) => {
           var assignTo = "";
           var processName = "เสร็จสิ้น";
           const formData = {
             processName: processName,
-            assignTo: assignTo
+            assignTo: assignTo,
           };
           jogetService
             .formSubmit(
@@ -276,30 +285,48 @@ export default {
               this.newChangeRequest.id,
               formData
             )
-            .then(res => {
+            .then((res) => {
               const processId = this.newChangeRequest.processId;
-              jogetService.getCurrentActivity(processId).then(res => {
+              jogetService.getCurrentActivity(processId).then((res) => {
                 const variableData = [
                   {
                     paramName: "result",
-                    paramValue: this.changeRequestSuccess.operationStatus
-                  }
+                    paramValue: this.changeRequestSuccess.operationStatus,
+                  },
                 ];
                 jogetService
                   .processCompleteWithVariable(
                     res.data.activityId,
                     variableData
                   )
-                  .then(res => {
+                  .then((res) => {
                     this.changeRequestMain();
                   });
               });
             });
         });
     },
+    getConsiderStatus(val) {
+      switch (val) {
+        case "reject":
+          return "อนุมัติให้ดำเนินการและทดสอบ";
+        case "nontest":
+          return "อนุมัติให้ดำเนินการโดยไม่ต้องทดสอบ";
+        default:
+          return "อนุมัติให้ดำเนินการและทดสอบ";
+      }
+    },
+    getOperationStatus(val) {
+      switch (val) {
+        case "success":
+          return "ดำเนินการสำเร็จ";
+        default:
+          return "ดำเนินการไม่สำเร็จ";
+      }
+    },
     changeRequestMain() {
       this.$router.push({ name: "changeRequest" });
-    }
-  }
+    },
+  },
 };
 </script>
