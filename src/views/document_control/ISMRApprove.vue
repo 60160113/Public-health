@@ -78,32 +78,34 @@ export default {
         this.loading = true;
 
         // data
+        const dc_data = await axios.post(
+          `${process.env.VUE_APP_BACKEND_URL}/list/getOne`,
+          {
+            app: {
+              appId: "mophApp",
+              listId: "list_document_control",
+            },
+            search: [
+              {
+                paramName: "process_id",
+                paramValue: this.$route.params.process_id,
+              },
+            ],
+          },
+          this.axiosOptions
+        );
+
+        const dc = dc_data.data.data[0];
+
         if (this.verify == "reject") {
           this.form.process_name = "Edit document";
           this.form["file_id"] = "";
 
-          const dc_data = await axios.post(
-            `${process.env.VUE_APP_BACKEND_URL}/list/getOne`,
-            {
-              app: {
-                appId: "mophApp",
-                listId: "list_document_control",
-              },
-              search: [
-                {
-                  paramName: "process_id",
-                  paramValue: this.$route.params.process_id,
-                },
-              ],
-            },
-            this.axiosOptions
-          );
-
-          const dc = dc_data.data.data[0];
-
           if (dc.purpose_code != "CANCEL") {
             this.removeFile(dc.file_id);
           }
+        } else if (dc.purpose_code == "CANCEL") {
+          this.removeFile(dc.file_id);
         }
 
         // submit
