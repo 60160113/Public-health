@@ -105,7 +105,13 @@ export default {
             this.removeFile(dc.file_id);
           }
         } else if (dc.purpose_code == "CANCEL") {
+          // CANCEL FILE
           this.removeFile(dc.file_id);
+        } else if (dc.purpose_code == "EDIT") {
+          // EDIT FILE
+          this.updateFile(dc.original_file_id, dc.file_id).then(() => {
+            this.removeFile(dc.file_id);
+          });
         }
 
         // submit
@@ -155,6 +161,23 @@ export default {
     removeFile(id) {
       return $http.delete(
         `${process.env.VUE_APP_ALF_API}alfresco/versions/1/nodes/${id}`
+      );
+    },
+    async updateFile(source_id, id) {
+      const file_data = await $http({
+        url: `${process.env.VUE_APP_ALF_API}alfresco/versions/1/nodes/${id}?fields=name`,
+        method: "GET",
+      });
+      const blob = await $http({
+        url: `${process.env.VUE_APP_ALF_API}alfresco/versions/1/nodes/${id}/content`,
+        method: "GET",
+        responseType: "blob",
+      });
+      const file = new File([blob.data], file_data.data.entry.name);
+
+      return await $http.put(
+        `${process.env.VUE_APP_ALF_API}alfresco/versions/1/nodes/${source_id}/content`,
+        file
       );
     },
   },
