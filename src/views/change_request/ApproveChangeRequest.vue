@@ -185,6 +185,8 @@
         >
       </CCardFooter>
     </CCard>
+
+    <CElementCover :opacity="0.8" v-if="loading" />
   </div>
 </template>
 
@@ -197,13 +199,14 @@ export default {
   components: {
     "v-date-picker": DatePicker,
     jogetService,
-    authHeader
+    authHeader,
   },
   data() {
     return {
       axiosOptions: {
-        headers: authHeader()
+        headers: authHeader(),
       },
+      loading: false,
       infoAuth: [],
       changeRequestList: [],
       newChangeRequest: {
@@ -224,27 +227,26 @@ export default {
         operation: "",
         requester: "",
         teamLeader: "",
-        assignTo: ""
+        assignTo: "",
       },
       changeRequestSuccess: {
         processId: "",
         changeOperator: "",
         operationStatus: "",
         comment: "",
-        operationDetail: ""
+        operationDetail: "",
       },
       optionsSuccess: [
         { value: "success", label: "ดำเนินการสำเร็จ" },
         {
           value: "fail",
-          label: "ดำเนินการไม่สำเร็จ (โปรดระบุสาเหตุและการดำเนินงาน)"
-        }
+          label: "ดำเนินการไม่สำเร็จ (โปรดระบุสาเหตุและการดำเนินงาน)",
+        },
       ],
-      considerComment: []
+      considerComment: [],
     };
   },
   created() {
-    // this.tableLoading = true;
     this.getChangeRequest();
     this.getConsider();
     this.newChangeRequest.changeRequestId = this.$route.query.data;
@@ -255,16 +257,16 @@ export default {
       const searchData = [
         {
           paramName: "changeRequestStatus",
-          paramValue: "active"
+          paramValue: "active",
         },
         {
           paramName: "changeRequestId",
-          paramValue: this.newChangeRequest.changeRequestId
-        }
+          paramValue: this.newChangeRequest.changeRequestId,
+        },
       ];
       await jogetService
         .list("mophApp", "list_moph_change_request", searchData)
-        .then(res => {
+        .then((res) => {
           this.changeRequestList = res.data.data[0];
           this.newChangeRequest = res.data.data[0];
           this.newChangeRequest.processName = "เสร็จสิ้น";
@@ -274,12 +276,12 @@ export default {
       const searchData = [
         {
           paramName: "processId",
-          paramValue: this.changeRequestList.processId
-        }
+          paramValue: this.changeRequestList.processId,
+        },
       ];
       await jogetService
         .list("mophApp", "list_moph_change_request_approve", searchData)
-        .then(res => {
+        .then((res) => {
           this.considerComment = res.data.data;
         });
     },
@@ -293,12 +295,12 @@ export default {
           "",
           this.changeRequestSuccess
         )
-        .then(res => {
+        .then((res) => {
           var assignTo = "";
           var processName = "เสร็จสิ้น";
           const formData = {
             processName: processName,
-            assignTo: assignTo
+            assignTo: assignTo,
           };
           jogetService
             .formSubmit(
@@ -307,21 +309,12 @@ export default {
               this.newChangeRequest.id,
               formData
             )
-            .then(res => {
+            .then((res) => {
               const processId = this.newChangeRequest.processId;
-              jogetService.getCurrentActivity(processId).then(res => {
-                const variableData = [
-                  {
-                    paramName: "result",
-                    paramValue: this.changeRequestSuccess.operationStatus
-                  }
-                ];
+              jogetService.getCurrentActivity(processId).then((res) => {
                 jogetService
-                  .processCompleteWithVariable(
-                    res.data.activityId,
-                    variableData
-                  )
-                  .then(res => {
+                  .processComplete(res.data.activityId)
+                  .then((res) => {
                     this.changeRequestMain();
                   });
               });
@@ -330,7 +323,7 @@ export default {
     },
     changeRequestMain() {
       this.$router.push({ name: "changeRequest" });
-    }
-  }
+    },
+  },
 };
 </script>
