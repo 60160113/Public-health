@@ -19,73 +19,73 @@
           <CCol sm="12">
             <CRow>
               <CCol sm="3">ผู้ร้องขอ</CCol>
-              <CCol sm="9">{{ changeRequestList.requester }}</CCol>
+              <CCol sm="9">{{ form.requester }}</CCol>
             </CRow>
           </CCol>
           <CCol sm="12">
             <CRow>
               <CCol sm="3">วันที่ร้องขอ</CCol>
-              <CCol sm="9">{{ changeRequestList.dateCreated }}</CCol>
+              <CCol sm="9">{{ form.dateCreated }}</CCol>
             </CRow>
           </CCol>
           <CCol sm="12">
             <CRow>
               <CCol sm="3">มีความประสงค์ขอเปลี่ยนแปลงเรื่อง</CCol>
-              <CCol sm="9">{{ changeRequestList.subject }}</CCol>
+              <CCol sm="9">{{ form.subject }}</CCol>
             </CRow>
           </CCol>
           <CCol sm="12">
             <CRow>
               <CCol sm="3">เหตุผลที่ขอเปลี่ยนแปลง</CCol>
-              <CCol sm="9">{{ changeRequestList.reason }}</CCol>
+              <CCol sm="9">{{ form.reason }}</CCol>
             </CRow>
           </CCol>
           <CCol sm="12">
             <CRow>
               <CCol sm="3">วันที่เริ่มดำเนินการ</CCol>
-              <CCol sm="9">{{ changeRequestList.startDateTime }}</CCol>
+              <CCol sm="9">{{ form.startDateTime }}</CCol>
             </CRow>
           </CCol>
           <CCol sm="12">
             <CRow>
               <CCol sm="3">วันที่คาดว่าแล้วเสร็จ</CCol>
-              <CCol sm="9">{{ changeRequestList.endDateTime }}</CCol>
+              <CCol sm="9">{{ form.endDateTime }}</CCol>
             </CRow>
           </CCol>
           <CCol sm="12">
             <CRow>
               <CCol sm="3">ประเภทของการเปลี่ยนแปลง</CCol>
-              <CCol sm="9">{{ changeRequestList.changeType }}</CCol>
+              <CCol sm="9">{{ form.changeType }}</CCol>
             </CRow>
           </CCol>
           <CCol sm="12">
             <CRow>
               <CCol sm="3">ระบบที่เกี่ยวข้อง</CCol>
-              <CCol sm="9">{{ changeRequestList.relatedSystem }}</CCol>
+              <CCol sm="9">{{ form.relatedSystem }}</CCol>
             </CRow>
           </CCol>
           <CCol sm="12">
             <CRow>
               <CCol sm="3">เอกสารที่แนบมาด้วย</CCol>
-              <CCol sm="9">{{ changeRequestList.attachment }}</CCol>
+              <CCol sm="9">{{ form.attachment }}</CCol>
             </CRow>
           </CCol>
           <CCol sm="12">
             <CRow>
               <CCol sm="3">รายละเอียดการเปลี่ยนแปลง</CCol>
-              <CCol sm="9">{{ changeRequestList.detail }}</CCol>
+              <CCol sm="9">{{ form.detail }}</CCol>
             </CRow>
           </CCol>
           <CCol sm="12">
             <CRow>
               <CCol sm="3">ผลกระทบจากการเปลี่ยนแปลง</CCol>
-              <CCol sm="9">{{ changeRequestList.effect }}</CCol>
+              <CCol sm="9">{{ form.effect }}</CCol>
             </CRow>
           </CCol>
           <CCol sm="12">
             <CRow>
               <CCol sm="3">แนวทาง / ขั้นตอนการดำเนินงาน</CCol>
-              <CCol sm="9">{{ changeRequestList.operation }}</CCol>
+              <CCol sm="9">{{ form.operation }}</CCol>
             </CRow>
           </CCol>
         </CRow>
@@ -141,11 +141,12 @@
           size="sm"
           color="success"
           block
-          @click="reviewConsider()"
+          @click="submit()"
           >บันทึก</CButton
         >
       </CCardFooter>
     </CCard>
+    <CElementCover :opacity="0.8" v-if="loading" />
   </div>
 </template>
 
@@ -154,20 +155,22 @@ import { jogetService } from "@/helpers/joget-helper";
 import { authHeader } from "@/helpers/auth-header";
 import { DatePicker } from "v-calendar";
 
+import axios from "axios";
+
 export default {
   components: {
     "v-date-picker": DatePicker,
     jogetService,
-    authHeader
+    authHeader,
   },
   data() {
     return {
       axiosOptions: {
-        headers: authHeader()
+        headers: authHeader(),
       },
       infoAuth: [],
-      changeRequestList: [],
-      newChangeRequest: {
+      loading: false,
+      form: {
         id: "",
         changeRequestId: "",
         subject: "",
@@ -185,96 +188,124 @@ export default {
         operation: "",
         requester: "",
         teamLeader: "",
-        assignTo: ""
+        assignTo: "",
       },
       changeRequestConsider: {
         processId: "",
         considerName: "",
         considerStatus: "",
-        comment: ""
+        comment: "",
       },
       optionsConsider: [
         { value: "consider", label: "อนุมัติให้ดำเนินการและทดสอบ" },
         { value: "nontest", label: "อนุมัติให้ดำเนินการโดยไม่ต้องทดสอบ" },
-        { value: "reject", label: "ไม่อนุมัติ" }
-      ]
+        { value: "reject", label: "ไม่อนุมัติ" },
+      ],
     };
   },
   created() {
-    // this.tableLoading = true;
     this.getChangeRequest();
-    this.newChangeRequest.changeRequestId = this.$route.query.data;
+    this.form.changeRequestId = this.$route.query.data;
     this.infoAuth = JSON.parse(localStorage.getItem("AuthUser"));
-    // this.changeRequestConsider.considerName = this.infoAuth.fullname;
   },
   methods: {
     async getChangeRequest() {
       const searchData = [
         {
           paramName: "changeRequestStatus",
-          paramValue: "active"
+          paramValue: "active",
         },
         {
           paramName: "changeRequestId",
-          paramValue: this.newChangeRequest.changeRequestId
-        }
+          paramValue: this.form.changeRequestId,
+        },
       ];
       await jogetService
         .list("mophApp", "list_moph_change_request", searchData)
-        .then(res => {
-          this.changeRequestList = res.data.data[0];
-          this.newChangeRequest = res.data.data[0];
-          this.newChangeRequest.processName = "รออนุมัติ";
+        .then((res) => {
+          this.form = res.data.data[0];
+          this.form.processName = "รออนุมัติ";
         });
     },
-    async reviewConsider() {
-      this.changeRequestConsider.processId = this.newChangeRequest.processId;
+    async submit() {
+      this.loading = true;
+      //data
+      this.changeRequestConsider.processId = this.form.processId;
       this.changeRequestConsider.considerName = this.infoAuth.fullname;
-      await jogetService
-        .formSubmit(
-          "mophApp",
-          "moph_change_request_approve",
-          "",
-          this.changeRequestConsider
-        )
-        .then(res => {
-          var assignTo = "";
-          var processName = "รอผลดำเนินการ";
-          const formData = {
-            processName: processName,
-            assignTo: assignTo
-          };
-          jogetService
-            .formSubmit(
-              "mophApp",
-              "moph_change_request",
-              this.newChangeRequest.id,
-              formData
-            )
-            .then(res => {
-              const processId = this.newChangeRequest.processId;
-              jogetService.getCurrentActivity(processId).then(res => {
-                const variableData = [
-                  {
-                    paramName: "approveChange",
-                    paramValue: this.changeRequestConsider.considerStatus
-                  }
-                ];
-                jogetService
-                  .processCompleteWithVariable(
-                    res.data.activityId,
-                    variableData
-                  )
-                  .then(res => {
-                    this.changeRequestMain();
-                  });
-              });
-            });
-        });
+
+      // submit approve
+      var axiosData = {
+        app: {
+          appId: "mophApp",
+          formId: "moph_change_request_approve",
+        },
+        primaryKey: "",
+        formData: this.changeRequestConsider,
+      };
+
+      await axios.post(
+        `${process.env.VUE_APP_BACKEND_URL}/form/submit`,
+        axiosData,
+        this.axiosOptions
+      );
+
+      // submit
+      var assignTo = "";
+      var processName =
+        this.changeRequestConsider.considerStatus == "reject"
+          ? "เสร็จสิ้น"
+          : "รอผลดำเนินการ";
+      const formData = {
+        processName: processName,
+        assignTo: assignTo,
+      };
+
+      axiosData = {
+        app: {
+          appId: "mophApp",
+          formId: "moph_change_request",
+        },
+        primaryKey: this.form.id,
+        formData: formData,
+      };
+
+      await axios.post(
+        `${process.env.VUE_APP_BACKEND_URL}/form/submit`,
+        axiosData,
+        this.axiosOptions
+      );
+
+      // process/view
+      const viewProcess = await axios.post(
+        `${process.env.VUE_APP_BACKEND_URL}/process/view`,
+        {
+          processId: this.form.processId,
+        },
+        this.axiosOptions
+      );
+
+      await axios.post(
+        `${process.env.VUE_APP_BACKEND_URL}/process/completeWithVariable`,
+        {
+          activityId: viewProcess.data.activityId,
+          variables: [
+            {
+              paramName: "change_approve",
+              paramValue:
+                this.changeRequestConsider.considerStatus == "reject"
+                  ? "reject"
+                  : "approve",
+            },
+          ],
+        },
+        this.axiosOptions
+      );
+      this.loading = false;
+      this.changeRequestMain();
     },
     changeRequestMain() {
       this.$router.push({ name: "changeRequest" });
-    }
-  }
+    },
+  },
 };
 </script>
