@@ -77,11 +77,6 @@
                   <CDropdownItem @click="infoRequestPage(item.changeRequestId)"
                     >ดูข้อมูล</CDropdownItem
                   >
-                  <CDropdownItem
-                    @click="checkDelete(item)"
-                    v-if="item.processName == 'รอตรวจสอบ'"
-                    >ลบคำร้อง</CDropdownItem
-                  >
                 </div></CDropdown
               >
             </td>
@@ -99,19 +94,19 @@
       <CTextarea
         label="มีความประสงค์ขอเปลี่ยนแปลงเรื่อง"
         horizontal
-        v-model="newChangeRequest.subject"
+        v-model="form.subject"
       />
       <CSelect
         label="เหตุผลที่ขอเปลี่ยนแปลง"
         placeholder="กรุณาเลือกเหตุผลที่ขอเปลี่ยนแปลง"
-        :value.sync="newChangeRequest.reason"
+        :value.sync="form.reason"
         horizontal
         :options="reasonList"
       />
       <CSelect
         label="ประเภทของการเปลี่ยนแปลง"
         placeholder="กรุณาเลือกประเภทของการเปลี่ยนแปลง"
-        :value.sync="newChangeRequest.reason"
+        :value.sync="form.changeType"
         horizontal
         :options="[
           { value: 'Minor', label: 'Minor' },
@@ -132,32 +127,46 @@
             custom
             @update:checked="onSystemChecked"
           />
+          <CInput
+            v-if="handler.relatedSystem.includes('Other')"
+            horizontal
+            label="ชื่อระบบที่เกี่ยวข้อง"
+            v-model="handler.other_relatedSystem"
+          />
         </CCol>
       </CRow>
       <CSelect
         class="mt-3"
         label="เอกสารที่แนบท้ายมาด้วย"
-        v-model="newChangeRequest.attachment"
+        :value.sync="handler.attachment"
         :options="[
-          { value: '', label: 'ไม่มี' },
           { value: 'Rollback Plan', label: 'Rollback Plan' },
+          { value: 'other', label: 'อื่น ๆ' },
         ]"
         horizontal
       />
-      <CTextarea label="รายละเอียดการเปลี่ยนแปลง" />
+      <CInput
+        v-if="handler.attachment == 'other'"
+        horizontal
+        label="ชื่อเอกสารแนบ"
+        v-model="form.attachment"
+      />
+      <CTextarea label="รายละเอียดการเปลี่ยนแปลง" v-model="form.detail" />
       <template #footer>
         <CButton color="secondary" @click="changeRequestCreateModal = false"
           >ยกเลิก</CButton
         >
-        <CButton color="success" @click="changeRequestCreate()">ยืนยัน</CButton>
+        <CButton color="success" @click="submit()">ยืนยัน</CButton>
       </template>
     </CModal>
   </div>
 </template>
 <script>
 import { jogetService } from "@/helpers/joget-helper";
+import axios from "axios";
 import { authHeader } from "@/helpers/auth-header";
 
+const user = JSON.parse(localStorage.getItem("AuthUser"));
 export default {
   components: {
     jogetService,
@@ -168,7 +177,6 @@ export default {
       axiosOptions: {
         headers: authHeader(),
       },
-      infoAuth: [],
       tableLoading: false,
       changeRequestCreateModal: false,
       changeRequestEditModal: false,
@@ -208,18 +216,25 @@ export default {
         { value: "edit", label: "ปรับปรุง/แก้ไข" },
         { value: "other", label: "อื่นๆ" },
       ],
-      departmentList: [],
-      newChangeRequest: {
+      form: {
         subject: "",
         reason: "",
-        createBy: "",
-        modiflyBy: "",
+        createBy: user.fullname,
+        modiflyBy: user.fullname,
         processId: "",
         processName: "รอตรวจสอบ",
-        requester: "",
+        requester: user.fullname,
         changeRequestId: "",
-        relatedSystem: [],
+        relatedSystem: "",
         attachment: "",
+        changeType: "",
+        detail: "",
+      },
+
+      handler: {
+        relatedSystem: [],
+        other_relatedSystem: "",
+        attachment: "Rollback Plan",
       },
 
       systemOptions: [
@@ -230,18 +245,14 @@ export default {
         "Application Software",
         "Storage",
         "Security",
+        "Other",
       ],
     };
   },
   created() {
     this.tableLoading = true;
-    this.infoAuth = JSON.parse(localStorage.getItem("AuthUser"));
-    this.newChangeRequest.createBy = this.infoAuth.fullname;
-    this.newChangeRequest.modiflyBy = this.infoAuth.fullname;
-    this.newChangeRequest.requester = this.infoAuth.fullname;
     this.getChangeRequest();
   },
-  watch: {},
   methods: {
     async getChangeRequest() {
       const searchData = [
@@ -257,38 +268,85 @@ export default {
           this.tableLoading = false;
         });
     },
-    async changeRequestCreate() {
-      await jogetService
-        .startProcess("mophApp", "changeManagementProcess")
-        .then(async (res) => {
-          this.newChangeRequest.processId = res.data.processId;
-          if (this.newChangeRequest.reason == "new") {
-            this.newChangeRequest.reason = "เพิ่มระบบใหม่";
-          } else if (this.newChangeRequest.reason == "edit") {
-            this.newChangeRequest.reason = "ปรับปรุง/แก้ไข";
-          } else if (this.newChangeRequest.reason == "other") {
-            this.newChangeRequest.reason = "อื่นๆ";
-          }
-          await jogetService
-            .formSubmit(
-              "mophApp",
-              "moph_change_request",
-              res.data.processId,
-              this.newChangeRequest
-            )
-            .then((res) => {
-              this.changeRequestCreateModal = false;
-              this.getChangeRequest();
-            });
-        });
+    async submit() {
+      this.tableLoading = true;
+      // start Process
+      var axiosData = {
+        app: {
+          appId: "mophApp",
+          processDefId: "changeManagementProcess",
+        },
+      };
+      const startProcess = await axios.post(
+        `${process.env.VUE_APP_BACKEND_URL}/process/start`,
+        axiosData,
+        this.axiosOptions
+      );
+
+      // manage form
+      if (this.form.reason == "new") {
+        this.form.reason = "เพิ่มระบบใหม่";
+      } else if (this.form.reason == "edit") {
+        this.form.reason = "ปรับปรุง/แก้ไข";
+      } else if (this.form.reason == "other") {
+        this.form.reason = "อื่นๆ";
+      }
+
+      if (!this.form.attachment) {
+        this.form.attachment = this.handler.attachment;
+      }
+
+      if (this.handler.other_relatedSystem) {
+        this.handler.relatedSystem.push(this.handler.other_relatedSystem);
+      }
+
+      var relatedSystem = this.handler.relatedSystem.filter(
+        (item) => item != "Other"
+      );
+      this.form.relatedSystem = relatedSystem.toString();
+
+      // submit
+      this.form.processId = startProcess.data.processId;
+      axiosData = {
+        app: {
+          appId: "mophApp",
+          formId: "moph_change_request",
+        },
+        primaryKey: this.form.processId,
+        formData: this.form,
+      };
+      await axios.post(
+        `${process.env.VUE_APP_BACKEND_URL}/form/submit`,
+        axiosData,
+        this.axiosOptions
+      );
+
+      // process/view
+      const viewProcess = await axios.post(
+        `${process.env.VUE_APP_BACKEND_URL}/process/view`,
+        {
+          processId: this.form.processId,
+        },
+        this.axiosOptions
+      );
+
+      await axios.post(
+        `${process.env.VUE_APP_BACKEND_URL}/process/complete`,
+        {
+          activityId: viewProcess.data.activityId,
+        },
+        this.axiosOptions
+      );
+      this.changeRequestCreateModal = false;
+      this.getChangeRequest();
     },
     onSystemChecked(value, event) {
       if (value) {
-        this.newChangeRequest.relatedSystem.push(event.target.value);
+        this.handler.relatedSystem.push(event.target.value);
       } else {
-        this.newChangeRequest.relatedSystem.forEach((item, index) => {
+        this.handler.relatedSystem.forEach((item, index) => {
           if (item === event.target.value) {
-            this.newChangeRequest.relatedSystem.splice(index, 1);
+            this.handler.relatedSystem.splice(index, 1);
           }
         });
       }
