@@ -2,6 +2,100 @@
   <div>
     <CCard>
       <CCardHeader>
+        <h4>แบบควบคุมเอกสาร</h4>
+      </CCardHeader>
+      <CCardBody>
+        <!-- คณะทำงานหรือผู้ร้องขอ -->
+        <h5 class="text-primary">คณะทำงานหรือผู้ร้องขอ</h5>
+        <CRow class="mt-3">
+          <CCol col="6">
+            <CInput label="ชื่อ - สกุล" v-model="dc.requester_name" disabled />
+          </CCol>
+
+          <CCol col="6">
+            <CInput label="ตำแหน่ง" v-model="dc.requester_position" disabled />
+          </CCol>
+        </CRow>
+
+        <hr />
+        <!-- มีความประสงค์ -->
+        <h5 class="text-primary">มีความประสงค์</h5>
+        <CInput
+          class="mt-3"
+          v-model="dc.purpose"
+          label="มีความประสงค์"
+          disabled
+        />
+
+        <!-- title, doc id -->
+        <CInput v-model="dc.document_id" label="รหัสเอกสาร" disabled />
+        <CInput v-model="dc.title" label="เรื่อง" disabled />
+
+        <hr />
+        <!-- รายละเอียดเพิ่มเติม -->
+        <h5 class="text-primary">รายละเอียดเพิ่มเติม</h5>
+        <CInput class="mt-3" label="รายละเอียด" v-model="dc.detail" disabled />
+        <hr />
+        <!-- ผลกระทบกับเอกสารอื่นที่เกี่ยวข้อง -->
+        <h5 class="text-primary">ผลกระทบกับเอกสารอื่นที่เกี่ยวข้อง</h5>
+        <CInput class="mt-3" label="รายละเอียด" v-model="dc.effect" disabled />
+        <div class="mt-4 text-right">
+          <b>ลงชื่อ</b>&nbsp;{{ dc.requester_name }}&nbsp; <b>ผู้ร้องขอ</b>
+          <br /><b>วันที่</b>&nbsp;{{
+            new Date(dc.dateCreated).toLocaleDateString()
+          }}
+        </div>
+
+        <hr />
+        <h5 class="text-primary">รับเอกสารร้องขอ</h5>
+        <p>รับเอกสารเรียบร้อยแล้ว</p>
+
+        <div class="mt-4 text-right">
+          <b>ลงชื่อ</b>&nbsp;{{ dc.IST_secretary_name }}&nbsp;
+          <b>เลขาคณะทำงาน</b> <br /><b>วันที่</b>&nbsp;{{
+            new Date(dc.IST_secretary_date).toLocaleDateString()
+          }}
+        </div>
+
+        <hr />
+
+        <h5 class="text-primary">มติคณะกรรมการ</h5>
+        <CInput
+          class="mt-3"
+          label="คณะทำงานพิจารณาการจัดทำ/แก้ไข/ยกเลิกเอกสารในระบบ ISMS แล้ว"
+          v-model="dc.ISM_approve"
+          disabled
+        />
+        <div class="mt-4 text-right">
+          <b>ลงชื่อ</b>&nbsp;{{ dc.ISM_name }}&nbsp; <b>ประธานคณะทำงาน</b>
+          <br /><b>วันที่</b>&nbsp;{{
+            new Date(dc.ISM_date).toLocaleDateString()
+          }}
+        </div>
+
+        <hr />
+        <CInput
+          class="mt-3"
+          label="คณะทำงานพิจารณาการจัดทำ/แก้ไข/ยกเลิกเอกสารในระบบ ISMS แล้ว"
+          v-model="dc.ISMR_approve"
+          disabled
+        />
+        <CTextarea
+          v-if="dc.ISMR_approve_reason"
+          class="mt-3"
+          label="รายละเอียด"
+          v-model="dc.ISMR_approve_reason"
+          disabled
+        />
+        <div class="mt-4 text-right">
+          <b>ลงชื่อ</b>&nbsp;{{ dc.ISMR_name }}&nbsp; <b>ISMR</b> <br /><b
+            >วันที่</b
+          >&nbsp;{{ new Date(dc.ISMR_date).toLocaleDateString() }}
+        </div>
+      </CCardBody>
+    </CCard>
+    <CCard>
+      <CCardHeader>
         <h4>Document Controller</h4>
       </CCardHeader>
       <CCardBody>
@@ -52,8 +146,14 @@ import axios from "axios";
 const user = JSON.parse(localStorage.getItem("AuthUser"));
 
 export default {
+  created() {
+    this.getDC().then((res) => {
+      this.dc = res.data.data[0];
+    });
+  },
   data() {
     return {
+      dc: {},
       form: {
         DC_name: user.fullname,
         hard_copy_list: "",
@@ -156,6 +256,25 @@ export default {
           }
         });
       }
+    },
+    getDC() {
+      const axiosData = {
+        app: {
+          appId: "mophApp",
+          listId: "list_document_control",
+        },
+        search: [
+          {
+            paramName: "process_id",
+            paramValue: this.$route.params.process_id,
+          },
+        ],
+      };
+      return axios.post(
+        `${process.env.VUE_APP_BACKEND_URL}/list/getOne`,
+        axiosData,
+        this.axiosOptions
+      );
     },
   },
 };
