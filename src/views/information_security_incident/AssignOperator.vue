@@ -2,6 +2,71 @@
   <div>
     <CCard>
       <CCardHeader>
+        <h4>แบบแจ้งเหตุการณ์ด้านความมั่นคงปลอดภัยสารสนเทศ</h4>
+      </CCardHeader>
+      <CCardBody>
+        <h5 class="text-primary">รายละเอียดผู้แจ้ง</h5>
+        <br />
+        <CRow class="mt-2">
+          <CCol><b>ชื่อ – สกุล:</b>&nbsp;{{ incident.informer_name }} </CCol>
+        </CRow>
+        <CRow class="mt-2">
+          <CCol><b>ตำแหน่ง:</b>&nbsp;{{ incident.informer_position }} </CCol>
+          <CCol
+            ><b>สำนัก/หน่วยงาน:</b>&nbsp;{{ incident.informer_institution }}
+          </CCol>
+        </CRow>
+        <CRow class="mt-2">
+          <CCol><b>โทรศัพท์:</b>&nbsp;{{ incident.informer_phone_no }} </CCol>
+          <CCol><b>E-Mail:</b>&nbsp;{{ incident.informer_email }} </CCol>
+        </CRow>
+        <CRow class="mt-2">
+          <CCol><b>แจ้งในฐานะ:</b>&nbsp;{{ incident.informer_type }} </CCol>
+        </CRow>
+
+        <hr />
+        <h5 class="text-primary">ประเภทของปัญหา</h5>
+        <br />
+        <CRow class="mt-2">
+          <CCol><b>ประเภทของปัญหา:</b>&nbsp;{{ incident.incident_type }} </CCol>
+        </CRow>
+        <CRow class="mt-2">
+          <CCol
+            ><b>รายละเอียดเหตุการณ์:</b>&nbsp;{{ incident.incident_detail }}
+          </CCol>
+        </CRow>
+
+        <hr />
+        <h5 class="text-primary">ระดับความสำคัญของเหตุขัดข้อง</h5>
+        <br />
+        <CRow class="mt-2">
+          <CCol
+            ><b>ระดับความสำคัญของเหตุขัดข้อง:</b>&nbsp;{{
+              incident.incident_priority
+            }}
+          </CCol>
+          <CCol
+            ><b>ระยะเวลาเป้าหมาย:</b>&nbsp;{{ incident.incident_duration }}
+          </CCol>
+        </CRow>
+        <CRow class="mt-2">
+          <CCol
+            ><b>ระบบที่เกี่ยวข้อง/ผลกระทบที่ได้รับ:</b>&nbsp;{{
+              incidentEffectLabel[incident.incident_effect]
+            }}</CCol
+          >
+        </CRow>
+
+        <div class="mt-4 text-right">
+          <b>ลงชื่อ</b>&nbsp;{{ incident.IST_name }}
+        </div>
+        <div class="mt-2 text-right">
+          IST (ผู้รับแจ้งหรือผู้ดูแลระบบที่ตรวจพบ)
+        </div>
+      </CCardBody>
+    </CCard>
+    <CCard>
+      <CCardHeader>
         <h4>มอบหมายงาน</h4>
       </CCardHeader>
       <CCardBody>
@@ -43,8 +108,21 @@ import axios from "axios";
 
 const user = JSON.parse(localStorage.getItem("AuthUser"));
 export default {
+  created() {
+    this.getIncident().then((res) => {
+      this.incident = res.data.data[0];
+    });
+  },
   data() {
     return {
+      incident: {},
+
+      incidentEffectLabel: {
+        legal: "เกี่ยวข้องกับการดำเนินคดีด้านกฎหมาย",
+        BCP: "เกี่ยวข้องกับ BCP",
+        neither: "ไม่เกี่ยวข้องกับการดำเนินคดีทางกฎหมาย และ BCP",
+      },
+
       form: {
         operator_name: "",
         operator_assignment: "",
@@ -119,6 +197,25 @@ export default {
       } catch (error) {
         this.loading = false;
       }
+    },
+    getIncident() {
+      const axiosData = {
+        app: {
+          appId: "mophApp",
+          listId: "list_information_security_incident",
+        },
+        search: [
+          {
+            paramName: "id",
+            paramValue: this.$route.params.id,
+          },
+        ],
+      };
+      return axios.post(
+        `${process.env.VUE_APP_BACKEND_URL}/list/getOne`,
+        axiosData,
+        this.axiosOptions
+      );
     },
   },
   watch: {
