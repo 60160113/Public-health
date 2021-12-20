@@ -28,7 +28,7 @@
               <CCol sm="8"
                 >{{
                   new Date(changeRequestList.dateCreated).toLocaleDateString()
-                }}&nbsp;{{
+                }}&emsp;{{
                   new Date(changeRequestList.dateCreated).toLocaleTimeString()
                 }}</CCol
               >
