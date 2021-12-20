@@ -95,6 +95,34 @@
             </div>
           </CCol>
         </CRow>
+        <hr />
+        <CRow class="mt-2">
+          <CCol>
+            <b>(4) เรียน ISM</b> <br />
+            <div class="mt-2">
+              <b>(2.1)</b>&nbsp;{{ incident.inform_ISM_solving_preliminary }}
+            </div>
+            <div class="mt-2">
+              {{ incident.inform_ISM_solving_preliminary_detail }}
+            </div>
+
+            <div class="mt-2">
+              <b>(2.2)</b>&nbsp;{{ incident.inform_ISM_solving_closed }}
+            </div>
+            <div class="mt-2">
+              {{ incident.inform_ISM_solving_closed_detail }}
+            </div>
+
+            <div class="mt-2 text-right">
+              <b>ลงชื่อ</b>&nbsp;{{ incident.operator_name }}&nbsp;<b
+                >ผู้ดำเนินการ</b
+              ><br />
+              <b>วันที่</b>&nbsp;{{
+                new Date(incident.inform_ISM_date).toLocaleDateString()
+              }}
+            </div>
+          </CCol>
+        </CRow>
       </CCardBody>
     </CCard>
     <CCard>
