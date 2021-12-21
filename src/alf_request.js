@@ -5,7 +5,7 @@ import router from "@/router";
 const header = () => {
   const user = JSON.parse(localStorage.getItem("AuthUser"));
 
-  if (user.ticket) {
+  if (user) {
     return { Authorization: "Basic " + window.btoa(user.ticket) };
   } else {
     return {};
