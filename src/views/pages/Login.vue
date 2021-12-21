@@ -104,12 +104,15 @@ export default {
             `${process.env.VUE_APP_ALF_API}authentication/versions/1/tickets`,
             {
               userId: "jack",
-              password: "ivsoft"
+              password: "ivsoft",
             }
           );
+          this.$alf_request.defaults.headers[
+            "Authorization"
+          ] = `Basic ${window.btoa(alf_login.data.entry.id)}`;
           const user = res.data.user;
           user.token = res.data.token;
-          user.ticket = alf_login.data.entry.id
+          user.ticket = alf_login.data.entry.id;
           localStorage.setItem("AuthUser", JSON.stringify(user));
           this.$router.push("/data-center/check-in");
         });
