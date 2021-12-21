@@ -131,12 +131,6 @@ import axios from "axios";
 
 import BrowseFile from "./file/BrowseFile.vue";
 
-const user = JSON.parse(localStorage.getItem("AuthUser"));
-
-const $http = axios.create({
-  headers: { Authorization: "Basic " + window.btoa(user.ticket) },
-});
-
 export default {
   components: {
     BrowseFile,
@@ -204,7 +198,7 @@ export default {
       var formData = new FormData();
       formData.append("filedata", this.file);
 
-      return $http.post(
+      return this.$alf_request.post(
         `${process.env.VUE_APP_ALF_API}alfresco/versions/1/nodes/${folderId}/children?autoRename=true`,
         formData
       );

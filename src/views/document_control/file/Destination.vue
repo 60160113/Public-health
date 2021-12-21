@@ -62,14 +62,6 @@ import { VTree, VSelectTree } from "vue-tree-halower";
 
 const arrayToTree = require("array-to-tree");
 
-import axios from "axios";
-
-const user = JSON.parse(localStorage.getItem("AuthUser"));
-
-const $http = axios.create({
-  headers: { Authorization: "Basic " + window.btoa(user.ticket) },
-});
-
 export default {
   props: {
     button: {
@@ -140,7 +132,7 @@ export default {
     async getDestinationList() {
       try {
         this.isLoaded = true;
-        const rootPath = await $http.get(
+        const rootPath = await this.$alf_request.get(
           `${process.env.VUE_APP_ALF_API}alfresco/versions/1/nodes/${this.destination}?include=allowableOperations,path`
         );
         this.list = [];
@@ -160,7 +152,7 @@ export default {
           skipCount = 0;
 
         do {
-          const { data } = await $http.post(
+          const { data } = await this.$alf_request.post(
             `${process.env.VUE_APP_ALF_API}search/versions/1/search`,
             {
               query: {

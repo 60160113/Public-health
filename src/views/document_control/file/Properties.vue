@@ -398,14 +398,6 @@ import { DatePicker } from "v-calendar";
 
 import previewableTypes from "@/views/document_control/file/previewableTypes.json";
 
-import axios from "axios";
-
-const user = JSON.parse(localStorage.getItem("AuthUser"));
-
-const $http = axios.create({
-  headers: { Authorization: "Basic " + window.btoa(user.ticket) },
-});
-
 const fields = [
   { key: "id", label: "Version" },
   { key: "actions", label: "Actions" },
@@ -538,7 +530,7 @@ export default {
   methods: {
     // Properties
     getProperties() {
-      $http
+      this.$alf_request
         .get(
           `${process.env.VUE_APP_ALF_API}alfresco/versions/1/nodes/${this.id}?include=allowableOperations,path`
         )
@@ -567,7 +559,7 @@ export default {
     // Preview
     getContent() {
       this.loading = true;
-      $http
+      this.$alf_request
         .get(
           `${process.env.VUE_APP_ALF_API}alfresco/versions/1/nodes/${this.id}/content`,
           {
@@ -602,7 +594,7 @@ export default {
     },
     // comment
     getComments() {
-      $http
+      this.$alf_request
         .get(
           `${process.env.VUE_APP_ALF_API}alfresco/versions/1/nodes/${this.id}/comments?include=properties`
         )
@@ -613,7 +605,7 @@ export default {
         });
     },
     addComment() {
-      $http
+      this.$alf_request
         .post(
           `${process.env.VUE_APP_ALF_API}alfresco/versions/1/nodes/${this.id}/comments`,
           {
@@ -627,7 +619,7 @@ export default {
         });
     },
     removeComment() {
-      $http
+      this.$alf_request
         .delete(
           `${process.env.VUE_APP_ALF_API}alfresco/versions/1/nodes/${this.id}/comments/${this.commentId}`
         )
@@ -642,7 +634,7 @@ export default {
       this.commentId = id;
     },
     editComment() {
-      $http
+      this.$alf_request
         .put(
           `${process.env.VUE_APP_ALF_API}alfresco/versions/1/nodes/${this.id}/comments/${this.commentId}`,
           {
@@ -657,7 +649,7 @@ export default {
     },
     // Versions
     getVersions() {
-      $http
+      this.$alf_request
         .get(
           `${process.env.VUE_APP_ALF_API}alfresco/versions/1/nodes/${this.id}/versions`
         )
@@ -677,7 +669,7 @@ export default {
 
       requestURL += "/content";
 
-      $http.get(requestURL, { responseType: "blob" }).then((res) => {
+      this.$alf_request.get(requestURL, { responseType: "blob" }).then((res) => {
         const url = URL.createObjectURL(res.data);
 
         let link = document.createElement("a");
@@ -692,7 +684,7 @@ export default {
         majorVersion: JSON.parse(this.versionProperties.majorVersion),
         comment: this.versionProperties.comment,
       };
-      $http
+      this.$alf_request
         .post(
           `${process.env.VUE_APP_ALF_API}alfresco/versions/1/nodes/${this.id}/versions/${this.versionId}/revert`,
           data
@@ -708,7 +700,7 @@ export default {
       this.file = event.currentTarget.files[0];
     },
     upload() {
-      $http
+      this.$alf_request
         .put(
           `${process.env.VUE_APP_ALF_API}alfresco/versions/1/nodes/${this.id}/content?majorVersion=${this.versionProperties.majorVersion}&comment=${this.versionProperties.comment}&name=${this.file.name}`,
           this.file
@@ -741,7 +733,7 @@ export default {
 
         data.expiresAt = expiresAt.toISOString().replace("Z", "+0000");
       }
-      $http
+      this.$alf_request
         .post(
           `${process.env.VUE_APP_ALF_API}alfresco/versions/1/shared-links`,
           data
@@ -754,7 +746,7 @@ export default {
     },
     // Deletes a shared link
     deleteSharedLink() {
-      $http
+      this.$alf_request
         .delete(
           `${process.env.VUE_APP_ALF_API}alfresco/versions/1/shared-links/${this.sharedLink.id}`
         )

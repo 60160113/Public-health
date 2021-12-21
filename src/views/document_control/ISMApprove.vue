@@ -113,10 +113,6 @@ import axios from "axios";
 
 const user = JSON.parse(localStorage.getItem("AuthUser"));
 
-const $http = axios.create({
-  headers: { Authorization: "Basic " + window.btoa(user.ticket) },
-});
-
 export default {
   created() {
     this.getDC().then((res) => {
@@ -227,7 +223,7 @@ export default {
       }
     },
     removeFile(id) {
-      return $http.delete(
+      return this.$alf_request.delete(
         `${process.env.VUE_APP_ALF_API}alfresco/versions/1/nodes/${id}`
       );
     },

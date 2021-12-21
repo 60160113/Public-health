@@ -60,13 +60,6 @@
 </template>
 
 <script>
-import axios from "axios";
-
-const user = JSON.parse(localStorage.getItem("AuthUser"));
-
-const $http = axios.create({
-  headers: { Authorization: "Basic " + window.btoa(user.ticket) },
-});
 export default {
   props: {
     onComplete: {
@@ -112,7 +105,7 @@ export default {
       try {
         this.loading = true;
 
-        const currentFolder = await $http.get(
+        const currentFolder = await this.$alf_request.get(
           `${process.env.VUE_APP_ALF_API}alfresco/versions/1/nodes/${id}?include=path`
         );
 
@@ -123,7 +116,7 @@ export default {
         var skipCount = 0;
         var arr = [];
         do {
-          const response = await $http.get(
+          const response = await this.$alf_request.get(
             `${process.env.VUE_APP_ALF_API}alfresco/versions/1/nodes/${id}/children?maxItems=${maxItems}&skipCount=${skipCount}&include=properties`
           );
 

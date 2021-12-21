@@ -273,14 +273,6 @@ import Properties from "./Properties";
 
 import Destination from "./Destination";
 
-import axios from "axios";
-
-const user = JSON.parse(localStorage.getItem("AuthUser"));
-
-const $http = axios.create({
-  headers: { Authorization: "Basic " + window.btoa(user.ticket) },
-});
-
 export default {
   components: {
     Properties,
@@ -433,7 +425,7 @@ export default {
     async getList(id) {
       try {
         this.isTableLoaded = true;
-        const currentFolder = await $http.get(
+        const currentFolder = await this.$alf_request.get(
           `${process.env.VUE_APP_ALF_API}alfresco/versions/1/nodes/${id}?include=allowableOperations,path,properties`
         );
         if (currentFolder.response) {
@@ -447,7 +439,7 @@ export default {
           skipCount = 0,
           responseList = [];
         do {
-          const { data: list } = await $http.get(
+          const { data: list } = await this.$alf_request.get(
             `${process.env.VUE_APP_ALF_API}alfresco/versions/1/nodes/${id}/children?maxItems=${maxItems}&skipCount=${skipCount}&include=properties,allowableOperations&orderBy=modifiedAt DESC`
           );
 
@@ -487,7 +479,7 @@ export default {
     },
     createFolder() {
       this.modalLoaded = true;
-      $http
+      this.$alf_request
         .post(
           `${process.env.VUE_APP_ALF_API}alfresco/versions/1/nodes/${this.currentFolder.id}/children?autoRename=true`,
           {
@@ -506,7 +498,7 @@ export default {
       this.modalLoaded = false;
     },
     remove() {
-      $http
+      this.$alf_request
         .delete(
           `${process.env.VUE_APP_ALF_API}alfresco/versions/1/nodes/${this.selectId}`
         )
@@ -535,11 +527,11 @@ export default {
         this.properties.name +
           this.file.name.slice(this.file.name.lastIndexOf("."))
       );
-      const { data } = await $http.post(
+      const { data } = await this.$alf_request.post(
         `${process.env.VUE_APP_ALF_API}alfresco/versions/1/nodes/${this.currentFolder.id}/children?autoRename=true`,
         formData
       );
-      await $http
+      await this.$alf_request
         .put(
           `${process.env.VUE_APP_ALF_API}alfresco/versions/1/nodes/${data.entry.id}`,
           {
@@ -556,7 +548,7 @@ export default {
       this.modalLoaded = false;
     },
     moveFile(destination) {
-      $http
+      this.$alf_request
         .post(
           `${process.env.VUE_APP_ALF_API}alfresco/versions/1/nodes/${this.selectId}/move`,
           {
@@ -569,7 +561,7 @@ export default {
         });
     },
     copyFile(destination) {
-      $http
+      this.$alf_request
         .post(
           `${process.env.VUE_APP_ALF_API}alfresco/versions/1/nodes/${this.selectId}/copy`,
           {

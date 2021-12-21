@@ -132,9 +132,6 @@ import axios from "axios";
 
 const user = JSON.parse(localStorage.getItem("AuthUser"));
 
-const $http = axios.create({
-  headers: { Authorization: "Basic " + window.btoa(user.ticket) },
-});
 export default {
   created() {
     this.getDC().then((res) => {
@@ -257,23 +254,23 @@ export default {
       }
     },
     removeFile(id) {
-      return $http.delete(
+      return this.$alf_request.delete(
         `${process.env.VUE_APP_ALF_API}alfresco/versions/1/nodes/${id}`
       );
     },
     async updateFile(source_id, id) {
-      const file_data = await $http({
+      const file_data = await this.$alf_request({
         url: `${process.env.VUE_APP_ALF_API}alfresco/versions/1/nodes/${id}?fields=name`,
         method: "GET",
       });
-      const blob = await $http({
+      const blob = await this.$alf_request({
         url: `${process.env.VUE_APP_ALF_API}alfresco/versions/1/nodes/${id}/content`,
         method: "GET",
         responseType: "blob",
       });
       const file = new File([blob.data], file_data.data.entry.name);
 
-      return await $http.put(
+      return await this.$alf_request.put(
         `${process.env.VUE_APP_ALF_API}alfresco/versions/1/nodes/${source_id}/content`,
         file
       );
