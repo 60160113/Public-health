@@ -3,12 +3,12 @@ export default [
       _name: "CSidebarNavTitle",
       _children: ["Data Center"]
     },
-    {
-      _name: "CSidebarNavItem",
-      name: "List All",
-      to: "/data-center/list-all",
-      icon: "cilLayers"
-    },
+    // {
+    //   _name: "CSidebarNavItem",
+    //   name: "List All",
+    //   to: "/data-center/list-all",
+    //   icon: "cilLayers"
+    // },
     {
       _name: "CSidebarNavItem",
       name: "Check-in",
