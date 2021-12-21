@@ -14,12 +14,11 @@ import VueKonva from "vue-konva";
 
 import alf_request from "./alf_request";
 
+Vue.prototype.$alf_request = alf_request;
 Vue.use(VueKonva);
 Vue.use(CoreuiVuePro);
 Vue.use(Vuex);
 Vue.prototype.$log = console.log.bind(console);
-
-Vue.prototype.$alf_request = alf_request;
 
 new Vue({
   el: "#app",

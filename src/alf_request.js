@@ -2,18 +2,10 @@
 import axios from "axios";
 import router from "@/router";
 
-const header = () => {
-  const user = JSON.parse(localStorage.getItem("AuthUser"));
-
-  if (user) {
-    return { Authorization: "Basic " + window.btoa(user.ticket) };
-  } else {
-    return {};
-  }
-};
+import { alfHeader } from "@/helpers/alf_header.js";
 
 const request = axios.create({
-  headers: header()
+  headers: alfHeader()
 });
 
 request.interceptors.response.use(
