@@ -201,6 +201,33 @@ export default {
     // jogetService,
     // authHeader,
   },
+  created() {
+    if (this.$route.query.id) {
+      const axiosData = {
+        app: {
+          appId: "mophApp",
+          listId: "list_checkIn",
+        },
+        search: [
+          {
+            paramName: "id",
+            paramValue: this.$route.query.id,
+          },
+        ],
+      };
+      axios
+        .post(
+          `${process.env.VUE_APP_BACKEND_URL}/list/get`,
+          axiosData,
+          this.axiosOptions
+        )
+        .then((res) => {
+          this.checkIn = res.data.data[0];
+          this.checkIn.date = new Date();
+          this.checkIn.returnDate = null;
+        });
+    }
+  },
   data() {
     return {
       loadingPage: false,

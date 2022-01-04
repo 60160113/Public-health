@@ -32,13 +32,13 @@
           </template>
           <template #date="{ item }">
             <td>
-              {{ new Date(item.date).toLocaleDateString('th-TH') }}
+              {{ new Date(item.date).toLocaleDateString("th-TH") }}
             </td>
           </template>
 
           <template #returnDate="{ item }">
             <td>
-              {{ new Date(item.returnDate).toLocaleDateString('th-TH') }}
+              {{ new Date(item.returnDate).toLocaleDateString("th-TH") }}
             </td>
           </template>
           <template #action="{ item }">
@@ -116,7 +116,7 @@ export default {
       dataField: [
         { key: "index", label: "#" },
         // { key: "id", label: "ID", _style: "width:20%" },
-        { key: "requestId", label: "ID", _style: "width:20%"},
+        { key: "requestId", label: "ID", _style: "width:20%" },
         { key: "requester", label: "Requester", _style: "width:20%" },
         { key: "position", label: "Position", _style: "width:10%" },
         { key: "affiliation", label: "Affiliation", _style: "width:10%" },
@@ -133,11 +133,14 @@ export default {
       ],
 
       taskRoute: [
-        { processName: 'Approve Permission', routeName: 'approve-permission' },
-        { processName: 'Consider Requirement', routeName: 'consider-requirement' },
-        { processName: 'Check Out', routeName: 'check-out' },
-        { processName: 'Review Check Out', routeName: 'review' },
-        { processName: 'Complete', routeName: 'view-report' },
+        { processName: "Approve Permission", routeName: "approve-permission" },
+        {
+          processName: "Consider Requirement",
+          routeName: "consider-requirement",
+        },
+        { processName: "Check Out", routeName: "check-out" },
+        { processName: "Review Check Out", routeName: "review" },
+        { processName: "Complete", routeName: "view-report" },
       ],
     };
   },
@@ -172,12 +175,17 @@ export default {
       );
     },
     considerRequirement(item) {
-      this.taskRoute.forEach((task) => {
-        if (task.processName === item.processName) {
-          this.$router.push(`/data-center/${task.routeName}/` + item.processId);
-        }
-      })
-      
+      if (item.processName) {
+        this.taskRoute.forEach((task) => {
+          if (task.processName === item.processName) {
+            this.$router.push(
+              `/data-center/${task.routeName}/${item.processId}`
+            );
+          }
+        });
+      } else {
+        this.$router.push(`/data-center/check-in/?id=${item.id}`);
+      }
     },
   },
 };
