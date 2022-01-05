@@ -1,5 +1,6 @@
 <template>
   <div>
+    <!-- data center -->
     <CCard>
       <CCardHeader>
         <strong class="text-primary">ติดต่อเข้าอาคาร</strong>
@@ -7,6 +8,14 @@
 
       <CCardBody>
         <CRow>
+          <CCol col="12">
+            <CInput
+              label="หมายเลขบัตร เข้า-ออก"
+              v-model="checkIn.checkInCard"
+            />
+            <hr />
+          </CCol>
+
           <CCol col="6">
             <CInput label="ผู้ร้องขอ" v-model="checkIn.requester" />
           </CCol>
@@ -18,20 +27,35 @@
             <CInput label="สังกัด" v-model="checkIn.affiliation" />
           </CCol>
           <CCol col="6">
-            <CInput label="เลขที่บัตรประชาชน" v-model="checkIn.idcard" />
+            <CInput
+              label="เลขที่บัตรประชาชน"
+              v-model="checkIn.idcard"
+              maxlength="13"
+            />
           </CCol>
 
           <CCol col="12">
-            <CTextarea label="วัตถุประสงค์" v-model="checkIn.purpose" />
+            <hr />
+            <CRow>
+              <CCol :md="handler.purpose == 'other' ? 6 : 12">
+                <CSelect
+                  label="วัตถุประสงค์"
+                  placeholder="กรุณาเลือกวัตถุประสงค์"
+                  :value.sync="handler.purpose"
+                  :options="objectiveOptions"
+                />
+              </CCol>
+              <CCol :md="handler.purpose == 'other' ? 6 : 12">
+                <CTextarea
+                  v-if="handler.purpose == 'other'"
+                  label="วัตถุประสงค์"
+                  v-model="checkIn.purpose"
+                />
+              </CCol>
+            </CRow>
           </CCol>
 
-          <CCol col="6">
-            <CInput
-              label="หมายเลขบัตร เข้า-ออก"
-              v-model="checkIn.checkInCard"
-            />
-          </CCol>
-          <CCol col="6">
+          <CCol col="12">
             <CRow>
               <CCol>
                 <label>วันที่ส่งคืน</label>
@@ -49,8 +73,8 @@
         <hr />
         <CInputRadioGroup
           :options="[
-            { value: true, label: 'เข้าศูนย์ปฏิบัติการ' },
-            { value: false, label: 'ไม่เข้าศูนย์ปฏิบัติการ' },
+            { value: 'true', label: 'เข้าศูนย์ปฏิบัติการ' },
+            { value: 'false', label: 'ไม่เข้าศูนย์ปฏิบัติการ' },
           ]"
           :checked.sync="enter"
           custom
@@ -59,7 +83,8 @@
       </CCardBody>
     </CCard>
 
-    <CCard v-if="enter">
+    <!-- hardware -->
+    <CCard v-if="JSON.parse(enter)">
       <CCardHeader>
         <strong class="text-primary">รายการ Hardwares</strong>
       </CCardHeader>
@@ -193,13 +218,10 @@
 <script>
 import { DatePicker } from "v-calendar";
 import axios from "axios";
-// import { jogetService } from "@/helpers/joget-helper";
 import { authHeader } from "@/helpers/auth-header";
 export default {
   components: {
     "v-date-picker": DatePicker,
-    // jogetService,
-    // authHeader,
   },
   created() {
     if (this.$route.query.id) {
@@ -227,6 +249,14 @@ export default {
           this.checkIn.returnDate = null;
         });
     }
+
+    this.getObjectives().then((res) => {
+      this.objectiveOptions = res.data.data.map((item) => item.objective);
+      this.objectiveOptions.push({
+        value: "other",
+        label: "อื่น ๆ",
+      });
+    });
   },
   data() {
     return {
@@ -245,6 +275,10 @@ export default {
         requestId: "",
       },
 
+      handler: {
+        purpose: "",
+      },
+
       hardware: {
         processId: "",
         name: "",
@@ -259,14 +293,35 @@ export default {
         headers: authHeader(),
       },
 
-      enter: false,
+      enter: "false",
 
       modal: false,
 
       hardwareList: [],
+
+      objectiveOptions: [],
     };
   },
   methods: {
+    getObjectives() {
+      const axiosData = {
+        app: {
+          appId: "mophApp",
+          listId: "list_data_center_objectives",
+        },
+        search: [
+          {
+            paramName: "status",
+            paramValue: "active",
+          },
+        ],
+      };
+      return axios.post(
+        `${process.env.VUE_APP_BACKEND_URL}/list/get`,
+        axiosData,
+        this.axiosOptions
+      );
+    },
     addHardware() {
       this.hardwareList.push(this.hardware);
       this.hardware = {
@@ -295,7 +350,6 @@ export default {
           this.axiosOptions
         )
         .then(async (res) => {
-          // this.checkIn.processName = "";
           this.checkIn.processName = "Approve Permission";
           this.checkIn.requestId = "";
           this.checkIn.processId = res.data.processId;
@@ -314,23 +368,9 @@ export default {
               this.axiosOptions
             )
             .then(async (res) => {
-              // const hardwareData = {
-              //   app: {
-              //     appId: "mophApp",
-              //     formId: "hardware",
-              //   },
-              //   primaryKey: "",
-              //   formData: this.checkIn,
-              // };
-              // await axios
-              // .post
               await this.hardwareList.forEach(async (element) => {
                 element.processId = this.checkIn.processId;
                 const hardwareData = {
-                  // app: {
-                  //   appId: "mophApp",
-                  //   formId: "formHardware",
-                  // },
                   app: {
                     appId: "mophApp",
                     formId: "hardware",
@@ -368,7 +408,7 @@ export default {
                     variables: [
                       {
                         paramName: "enterStatus",
-                        paramValue: this.enter,
+                        paramValue: JSON.parse(this.enter),
                       },
                     ],
                   };
@@ -381,11 +421,19 @@ export default {
                     .then(() => {
                       this.loadingPage = false;
                       this.$router.push("/data-center/view-tasks/");
-                      // }
                     });
                 });
             });
         });
+    },
+  },
+  watch: {
+    "handler.purpose": function (val) {
+      if (val == "other") {
+        this.checkIn.purpose = "";
+      } else {
+        this.checkIn.purpose = val;
+      }
     },
   },
 };
