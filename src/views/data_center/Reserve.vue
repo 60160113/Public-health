@@ -71,7 +71,7 @@ import axios from "axios";
 export default {
   created() {
     this.loading = true;
-    this.login("kotchaporn.s@thac.or.th", "thac")
+    this.login("application", "application")
       .then((login_res) => {
         this.headers = {
           headers: { Authorization: "Bearer " + login_res.data.token },
