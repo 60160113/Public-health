@@ -83,10 +83,9 @@
       :show.sync="modal"
       :no-close-on-backdrop="true"
       :centered="true"
-      size="md"
       :color="form.status == 'add' ? 'success' : 'warning'"
     >
-      <CInput label="วัตถุประสงค์" v-model="form.objective" />
+      <CTextarea label="วัตถุประสงค์" v-model="form.objective" />
       <template #header>
         <h6 class="modal-title">
           {{ form.status == "add" ? "เพิ่ม" : "แก้ไข" }}วัตถุประสงค์
