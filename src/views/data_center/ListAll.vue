@@ -31,7 +31,11 @@
           </template>
           <template #contact_date="{ item }">
             <td>
-              {{ new Date(item.contact_date).toLocaleDateString("th-TH") }}
+              {{
+                item.contact_date
+                  ? new Date(item.contact_date).toLocaleDateString("th-TH")
+                  : "-"
+              }}
             </td>
           </template>
 
