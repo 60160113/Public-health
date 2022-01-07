@@ -10,16 +10,20 @@
         <CRow>
           <CCol md="6" v-if="form.checkin_card">
             <span
-              ><b>หมายเลขบัตรเข้า - ออกอาคาร:</b>&nbsp;{{
-                form.checkin_card
-              }}</span
+              ><b>หมายเลขบัตรเข้า - ออกอาคาร:</b>&nbsp;<CBadge
+                color="success"
+                style="font-size: 15px"
+                >{{ form.checkin_card }}</CBadge
+              ></span
             >
           </CCol>
           <CCol md="6" v-if="form.data_center_card">
             <span
-              ><b>หมายเลขบัตรเข้า - ออกศูนย์ปฏิบัติการ:</b>&nbsp;{{
-                form.data_center_card
-              }}</span
+              ><b>หมายเลขบัตรเข้า - ออกศูนย์ปฏิบัติการ:</b>&nbsp;<CBadge
+                color="warning"
+                style="font-size: 15px"
+                >{{ form.data_center_card }}</CBadge
+              ></span
             >
           </CCol>
         </CRow>
