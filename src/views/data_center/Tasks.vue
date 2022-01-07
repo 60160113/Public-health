@@ -41,7 +41,9 @@
 
           <template #processName="{ item }">
             <td>
-              {{ processNameLabel[item.processName] }}
+              <CBadge :color="badgeColor(item)" style="font-size: 15px">{{
+                processNameLabel[item.processName]
+              }}</CBadge>
             </td>
           </template>
 
@@ -89,37 +91,10 @@ export default {
     return {
       requests: [],
       loadingPage: false,
-      checkIn: {
-        requester: "",
-        position: "",
-        affiliation: "",
-        idcard: "",
-        processId: "",
-        processName: "",
-        purpose: "",
-        date: new Date(),
-        returnDate: null,
-        checkInCard: "",
-      },
-
-      hardware: {
-        name: "",
-        brand: "",
-        serialNumber: "",
-        unit: "",
-        direction: "เข้า",
-        type: "ชั่วคราว",
-      },
 
       axiosOptions: {
         headers: authHeader(),
       },
-      AuthUser: JSON.parse(localStorage.getItem("AuthUser")),
-      enter: false,
-
-      modal: false,
-
-      hardwareList: [],
 
       dataField: [
         { key: "index", label: "#" },
@@ -182,6 +157,17 @@ export default {
             id: item.id,
           },
         });
+      }
+    },
+    badgeColor(item) {
+      if (item.processName !== "Complete") {
+        if (item.data_center_card) {
+          return "warning";
+        } else {
+          return "success";
+        }
+      } else {
+        return "info";
       }
     },
   },
