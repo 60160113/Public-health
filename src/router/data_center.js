@@ -16,14 +16,6 @@ export default [
     }
   },
   {
-    path: "/data-center/approve-permission/:processId",
-    name: "Approve Permission",
-    component: () => import("@/views/data_center/ApprovePermission.vue"),
-    meta: {
-      requiresAuth: true
-    }
-  },
-  {
     path: "/data-center/consider-requirement/:processId",
     name: "Consider Requirement",
     component: () => import("@/views/data_center/ConsiderRequirement.vue"),
@@ -35,14 +27,6 @@ export default [
     path: "/data-center/check-out/:processId",
     name: "Check Out",
     component: () => import("@/views/data_center/CheckOut.vue"),
-    meta: {
-      requiresAuth: true
-    }
-  },
-  {
-    path: "/data-center/review/:processId",
-    name: "Entering Data Center Review",
-    component: () => import("@/views/data_center/Review.vue"),
     meta: {
       requiresAuth: true
     }

@@ -18,6 +18,8 @@
           :itemsPerPageSelect="{
             label: 'แสดง',
           }"
+          :responsive="false"
+          :loading="loadingPage"
         >
           <template #no-items-view
             ><div class="text-center">ไม่พบข้อมูล</div>
@@ -41,19 +43,33 @@
 
           <template #action="{ item }">
             <td>
-              <CButton
-                color="info"
+              <CDropdown
+                color="secondary"
                 size="sm"
-                class="ml-1"
-                @click="considerRequirement(item)"
+                toggler-text=""
+                class="m-2"
               >
-                view
-              </CButton>
+                <template slot="toggler-content">
+                  <CIcon name="cil-options" />
+                </template>
+                <CDropdownItem
+                  v-c-tooltip="'ดำเนินการ'"
+                  @click="considerRequirement(item)"
+                  >ดำเนินการ</CDropdownItem
+                >
+                <CDropdownDivider />
+                <CDropdownItem
+                  v-c-tooltip="'ดูข้อมูล'"
+                  @click="
+                    $router.push('/data-center/view-report/' + item.processId)
+                  "
+                  >ดูข้อมูล</CDropdownItem
+                >
+              </CDropdown>
             </td>
           </template>
         </CDataTable>
       </CCardBody>
-      <CElementCover :opacity="0.8" v-if="loadingPage" />
     </CCard>
   </div>
 </template>
@@ -119,11 +135,11 @@ export default {
   },
   methods: {
     loadTable() {
-      this.tableLoading = true;
+      this.loadingPage = true;
       this.getItems().then((res) => {
         this.requests = res.data.data;
+        this.loadingPage = false;
       });
-      this.tableLoading = false;
     },
     async getItems() {
       const axiosData = {
