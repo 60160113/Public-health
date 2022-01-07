@@ -310,6 +310,9 @@ export default {
         contact_date: new Date(),
         checkin_card: "",
 
+        IST_id: "",
+        IST_name: "",
+
         note: "",
       },
 
@@ -491,6 +494,10 @@ export default {
       } else {
         this.checkIn.purpose = val;
       }
+    },
+    IST_index: function (val) {
+      this.checkIn.IST_id = this.IST_options[val].data.id;
+      this.checkIn.IST_name = this.IST_options[val].data.fullname;
     },
   },
 };
