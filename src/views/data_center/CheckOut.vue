@@ -1,8 +1,6 @@
 <template>
   <div>
-    <DetailForm :id="$route.params.processId" />
-
-    <HardwareTables />
+    <PreviewData :id="$route.params.processId" />
 
     <CCard>
       <CCardFooter>
@@ -24,14 +22,11 @@
 import axios from "axios";
 import { authHeader } from "@/helpers/auth-header";
 
-import HardwareTables from "@/views/data_center/components/HardwareTables.vue";
-
-import DetailForm from "@/views/data_center/components/DetailForm.vue";
+import PreviewData from "@/views/data_center/components/PreviewData.vue";
 
 export default {
   components: {
-    HardwareTables,
-    DetailForm,
+    PreviewData,
   },
   data() {
     return {
