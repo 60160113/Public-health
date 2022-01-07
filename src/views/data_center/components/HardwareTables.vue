@@ -40,7 +40,7 @@
 
           <template #return_date="{ item }">
             <td>
-                {{ new Date(item.return_date).toLocaleDateString() }}
+                {{ item.return_date ? new Date(item.return_date).toLocaleDateString() : '-' }}
             </td>
           </template>
         </CDataTable>
