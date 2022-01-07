@@ -10,8 +10,8 @@
         <CRow>
           <CCol col="12">
             <CInput
-              label="หมายเลขบัตร เข้า-ออก"
-              v-model="checkIn.checkInCard"
+              label="หมายเลขบัตร เข้า-ออกอาคาร"
+              v-model="checkIn.checkin_card"
             />
             <hr />
           </CCol>
@@ -52,22 +52,20 @@
                   v-model="checkIn.purpose"
                 />
               </CCol>
+
+              <CCol md="12">
+                <CSelect
+                  label="ผู้ติดต่อ"
+                  placeholder="กรุณาเลือกผู้ติดต่อ"
+                  :value.sync="IST_index"
+                  :options="IST_options"
+                />
+              </CCol>
             </CRow>
           </CCol>
 
           <CCol col="12">
-            <CRow>
-              <CCol>
-                <label>วันที่ส่งคืน</label>
-                <v-date-picker
-                  :min-date="new Date()"
-                  mode="date"
-                  :masks="{
-                    input: 'DD/MM/YYYY',
-                  }"
-                  v-model="checkIn.returnDate"
-              /></CCol>
-            </CRow>
+            <CTextarea label="หมายเหตุ" v-model="checkIn.note" />
           </CCol>
         </CRow>
         <hr />
@@ -81,6 +79,7 @@
           inline
         />
       </CCardBody>
+      <CElementCover :opacity="0.8" v-if="loadingPage" />
     </CCard>
 
     <!-- hardware -->
@@ -93,16 +92,16 @@
         ><CDataTable
           :items="hardwareList"
           :fields="[
-            { key: 'name', label: 'Name', _style: 'width:25%' },
-            { key: 'brand', label: 'Brand', _style: 'width:10%' },
+            { key: 'name', label: 'รายการ', _style: 'width:25%' },
+            { key: 'brand', label: 'ยี่ห้อ/รุ่น', _style: 'width:10%' },
             {
-              key: 'serialNumber',
-              label: 'Serial Number',
+              key: 'serial_number',
+              label: 'S/N',
               _style: 'width:10%',
             },
-            { key: 'unit', label: 'Unit', _style: 'width:15%' },
-            { key: 'direction', label: 'Direction', _style: 'width:15%' },
-            { key: 'type', label: 'Type', _style: 'width:15%' },
+            { key: 'unit', label: 'จำนวน (ชุด)', _style: 'width:15%' },
+            { key: 'status', label: 'เข้า - ออก', _style: 'width:15%' },
+            { key: 'type', label: 'ชั่วคราว - ถาวร', _style: 'width:15%' },
           ]"
           :tableFilter="{
             label: 'ค้นหา: ',
@@ -140,6 +139,7 @@
           </template>
         </CDataTable>
       </CCardBody>
+      <CElementCover :opacity="0.8" v-if="loadingPage" />
     </CCard>
 
     <CButton block color="primary" class="mt-3" @click="checkingIn()"
@@ -162,27 +162,10 @@
         </CCol>
 
         <CCol col="6">
-          <CInput label="S/N" v-model="hardware.serialNumber" />
+          <CInput label="S/N" v-model="hardware.serial_number" />
         </CCol>
         <CCol col="6">
-          <CInput label="จำนวน" v-model="hardware.unit" />
-        </CCol>
-      </CRow>
-
-      <CRow class="mt-3">
-        <CCol col="3">
-          <label style="margin-top: 6px">ดำเนินการ</label>
-        </CCol>
-        <CCol>
-          <CInputRadioGroup
-            :options="[
-              { value: 'เข้า', label: 'เข้า' },
-              { value: 'ออก', label: 'ออก' },
-            ]"
-            :checked.sync="hardware.direction"
-            custom
-            inline
-          />
+          <CInput label="จำนวน" type="number" v-model="hardware.unit" />
         </CCol>
       </CRow>
 
@@ -202,6 +185,19 @@
           />
         </CCol>
       </CRow>
+      <CRow class="mt-3" v-if="hardware.type == 'ชั่วคราว'">
+        <CCol>
+          <label>วันที่ส่งคืน</label>
+          <v-date-picker
+            :min-date="new Date()"
+            mode="date"
+            :masks="{
+              input: 'DD/MM/YYYY',
+            }"
+            v-model="hardware.return_date"
+        /></CCol>
+      </CRow>
+
       <template #header>
         <h6 class="modal-title">นำเข้าสิ่งของเข้าศูนย์ปฏิบัติการฯ</h6>
         <CButtonClose @click="modal = false" class="text-white" />
@@ -211,7 +207,6 @@
         <CButton @click="modal = false" color="secondary">ปิด</CButton>
       </template>
     </CModal>
-    <CElementCover :opacity="0.8" v-if="loadingPage" />
   </div>
 </template>
 
@@ -223,12 +218,32 @@ export default {
   components: {
     "v-date-picker": DatePicker,
   },
-  created() {
+  async created() {
+    this.loadingPage = true;
+    // get user account
+    await this.getAccounts().then((res) => {
+      this.IST_options = res.data.data.map((item, index) => {
+        return {
+          value: index,
+          label: item.fullname,
+          data: item,
+        };
+      });
+    });
+    // get objective
+    await this.getObjectives().then((res) => {
+      this.objectiveOptions = res.data.data.map((item) => item.objective);
+      this.objectiveOptions.push({
+        value: "other",
+        label: "อื่น ๆ",
+      });
+    });
+    // get data
     if (this.$route.query.id) {
       const axiosData = {
         app: {
           appId: "mophApp",
-          listId: "list_checkIn",
+          listId: "list_data_center",
         },
         search: [
           {
@@ -237,26 +252,35 @@ export default {
           },
         ],
       };
-      axios
+      await axios
         .post(
           `${process.env.VUE_APP_BACKEND_URL}/list/get`,
           axiosData,
           this.axiosOptions
         )
         .then((res) => {
-          this.checkIn = res.data.data[0];
-          this.checkIn.date = new Date();
-          this.checkIn.returnDate = null;
+          this.checkIn = { ...res.data.data[0] };
+          this.checkIn.contact_date = new Date();
+
+          this.IST_index = this.IST_options.findIndex(
+            (item) => item.data.id == res.data.data[0].IST_id
+          );
+
+          if (
+            this.objectiveOptions.findIndex(
+              (item) => item == res.data.data[0].purpose
+            ) == -1
+          ) {
+            this.handler.purpose = "other";
+          } else {
+            this.handler.purpose = res.data.data[0].purpose;
+          }
+          setTimeout(() => {
+            this.checkIn.purpose = res.data.data[0].purpose;
+          }, 200);
         });
     }
-
-    this.getObjectives().then((res) => {
-      this.objectiveOptions = res.data.data.map((item) => item.objective);
-      this.objectiveOptions.push({
-        value: "other",
-        label: "อื่น ๆ",
-      });
-    });
+    this.loadingPage = false;
   },
   data() {
     return {
@@ -269,24 +293,27 @@ export default {
         processId: "",
         processName: "",
         purpose: "",
-        date: new Date(),
-        returnDate: null,
-        checkInCard: "",
-        requestId: "",
+        contact_date: new Date(),
+        checkin_card: "",
+
+        note: "",
       },
 
       handler: {
         purpose: "",
       },
 
+      IST_index: "",
+
       hardware: {
         processId: "",
         name: "",
         brand: "",
-        serialNumber: "",
+        serial_number: "",
         unit: "",
-        direction: "เข้า",
+        status: "เข้า",
         type: "ชั่วคราว",
+        return_date: null,
       },
 
       axiosOptions: {
@@ -300,6 +327,8 @@ export default {
       hardwareList: [],
 
       objectiveOptions: [],
+
+      IST_options: [],
     };
   },
   methods: {
@@ -322,16 +351,30 @@ export default {
         this.axiosOptions
       );
     },
+    getAccounts() {
+      const axiosData = {
+        app: {
+          appId: "mophApp",
+          listId: "user_accounts",
+        },
+      };
+      return axios.post(
+        `${process.env.VUE_APP_BACKEND_URL}/list/getAll`,
+        axiosData,
+        this.axiosOptions
+      );
+    },
     addHardware() {
       this.hardwareList.push(this.hardware);
       this.hardware = {
         processId: "",
         name: "",
         brand: "",
-        serialNumber: "",
+        serial_number: "",
         unit: "",
-        direction: "เข้า",
+        status: "เข้า",
         type: "ชั่วคราว",
+        return_date: null,
       };
       this.modal = false;
     },
@@ -340,7 +383,7 @@ export default {
       const axiosData = {
         app: {
           appId: "mophApp",
-          processDefId: "checkInOutProcess",
+          processDefId: "data_center_process",
         },
       };
       await axios
@@ -350,16 +393,24 @@ export default {
           this.axiosOptions
         )
         .then(async (res) => {
-          this.checkIn.processName = "Approve Permission";
-          this.checkIn.requestId = "";
+          if (JSON.parse(this.enter)) {
+            this.checkIn.processName = "Consider Requirement";
+          } else {
+            this.checkIn.processName = "Check Out";
+          }
+
           this.checkIn.processId = res.data.processId;
+          var formData = { ...this.checkIn };
+          if (this.handler.purpose !== "other") {
+            formData.purpose = this.handler.purpose;
+          }
           const axiosData = {
             app: {
               appId: "mophApp",
-              formId: "checkIn",
+              formId: "data_center",
             },
             primaryKey: res.data.processId,
-            formData: this.checkIn,
+            formData: formData,
           };
           await axios
             .post(
@@ -373,18 +424,10 @@ export default {
                 const hardwareData = {
                   app: {
                     appId: "mophApp",
-                    formId: "hardware",
+                    formId: "data_center_hardware",
                   },
                   primaryKey: "",
-                  formData: {
-                    processId: element.processId,
-                    name: element.name,
-                    brand: element.brand,
-                    serialNumber: element.serialNumber,
-                    unit: element.unit,
-                    direction: element.direction,
-                    type: element.type,
-                  },
+                  formData: element,
                 };
                 await axios.post(
                   `${process.env.VUE_APP_BACKEND_URL}/form/submit`,
@@ -407,7 +450,7 @@ export default {
                     activityId: activityId,
                     variables: [
                       {
-                        paramName: "enterStatus",
+                        paramName: "enter_operation_center",
                         paramValue: JSON.parse(this.enter),
                       },
                     ],

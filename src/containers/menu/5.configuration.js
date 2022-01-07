@@ -5,7 +5,7 @@ export default [
   },
   {
     _name: "CSidebarNavItem",
-    name: "จุดประสงค์",
+    name: "วัตถุประสงค์",
     to: "/configuration/data_center/objectives",
     icon: "cil-circle"
   }

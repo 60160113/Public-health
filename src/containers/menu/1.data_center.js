@@ -5,19 +5,19 @@ export default [
     },
     {
       _name: "CSidebarNavItem",
-      name: "List All",
+      name: "รายการทั้งหมด",
       to: "/data-center/list-all",
       icon: "cilLayers"
     },
     {
       _name: "CSidebarNavItem",
-      name: "Check-in",
+      name: "เช็คอิน",
       to: "/data-center/check-in",
       icon: "cilLocationPin"
     },
     {
       _name: "CSidebarNavItem",
-      name: "My Tasks",
+      name: "งานของฉัน",
       to: "/data-center/view-tasks",
       icon: "cilInbox"
     }

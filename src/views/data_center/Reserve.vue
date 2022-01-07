@@ -26,6 +26,18 @@
           </CCol>
         </CRow>
 
+        <hr />
+        <CRow>
+          <CCol md="12">
+            <CSelect
+              label="ผู้ติดต่อ"
+              placeholder="กรุณาเลือกผู้ติดต่อ"
+              :value.sync="IST_index"
+              :options="IST_options"
+            />
+          </CCol>
+        </CRow>
+
         <CRow>
           <CCol :md="handler.purpose == 'other' ? 6 : 12">
             <CSelect
@@ -41,6 +53,12 @@
               label="วัตถุประสงค์"
               v-model="form.purpose"
             />
+          </CCol>
+        </CRow>
+
+        <CRow>
+          <CCol col="12">
+            <CTextarea label="หมายเหตุ" v-model="form.note" />
           </CCol>
         </CRow>
       </CCardBody>
@@ -69,31 +87,38 @@
 import axios from "axios";
 
 export default {
-  created() {
-    this.loading = true;
-    this.login("application", "application")
-      .then((login_res) => {
-        this.headers = {
-          headers: { Authorization: "Bearer " + login_res.data.token },
+  async created() {
+    try {
+      this.loading = true;
+
+      // login
+      const login_res = await this.login("application", "application");
+      this.headers = {
+        headers: { Authorization: "Bearer " + login_res.data.token },
+      };
+
+      // IST
+      const IST_res = await this.getAccounts();
+      this.IST_options = IST_res.data.data.map((item, index) => {
+        return {
+          value: index,
+          label: item.fullname,
+          data: item,
         };
-        this.getObjectives()
-          .then((obj_res) => {
-            this.objectiveOptions = obj_res.data.data.map(
-              (item) => item.objective
-            );
-            this.objectiveOptions.push({
-              value: "other",
-              label: "อื่น ๆ",
-            });
-            this.loading = false;
-          })
-          .catch((err) => {
-            this.loading = false;
-          });
-      })
-      .catch((err) => {
-        this.loading = false;
       });
+
+      // objective
+      const obj_res = await this.getObjectives();
+      this.objectiveOptions = obj_res.data.data.map((item) => item.objective);
+      this.objectiveOptions.push({
+        value: "other",
+        label: "อื่น ๆ",
+      });
+
+      this.loading = false;
+    } catch (error) {
+      this.loading = false;
+    }
   },
   data() {
     return {
@@ -103,13 +128,21 @@ export default {
         affiliation: "",
         idcard: "",
         purpose: "",
+
+        IST_id: "",
+        IST_name: "",
+
+        note: "",
       },
 
       handler: {
         purpose: "",
       },
 
+      IST_index: "",
+
       objectiveOptions: [],
+      IST_options: [],
 
       headers: {},
 
@@ -152,6 +185,19 @@ export default {
         this.headers
       );
     },
+    getAccounts() {
+      const axiosData = {
+        app: {
+          appId: "mophApp",
+          listId: "user_accounts",
+        },
+      };
+      return axios.post(
+        `${process.env.VUE_APP_BACKEND_URL}/list/getAll`,
+        axiosData,
+        this.headers
+      );
+    },
     submit() {
       this.loading = true;
       var formData = { ...this.form };
@@ -161,7 +207,7 @@ export default {
       const axiosData = {
         app: {
           appId: "mophApp",
-          formId: "checkIn",
+          formId: "data_center",
         },
         primaryKey: "",
         formData: formData,
@@ -190,6 +236,12 @@ export default {
         form[key] = this.handler[key];
       });
       return Object.values(form).includes("");
+    },
+  },
+  watch: {
+    IST_index: function (val) {
+      this.form.IST_id = this.IST_options[val].data.id;
+      this.form.IST_name = this.IST_options[val].data.fullname;
     },
   },
 };
