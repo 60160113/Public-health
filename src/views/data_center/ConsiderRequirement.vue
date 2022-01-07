@@ -1,6 +1,8 @@
 <template>
   <div>
     <PreviewData :id="$route.params.processId" />
+
+    <CElementCover :opacity="0.8" v-if="loading" />
   </div>
 </template>
 
@@ -15,127 +17,35 @@ export default {
   },
   data() {
     return {
-      loadingPage: false,
-      checkIn: {
-        requester: "",
-        position: "",
-        affiliation: "",
-        idcard: "",
-        processId: "",
-        processName: "",
-        purpose: "",
-        date: new Date(),
-        returnDate: null,
-        checkInCard: "",
-      },
+      loading: false,
+      form: {
+        ISM_name: "",
+        ISM_approve: "",
+        ISM_comment: "",
+        ISM_approve_date: new Date(),
 
-      hardware: {
-        checkInId: "",
-        name: "",
-        brand: "",
-        serialNumber: "",
-        unit: "",
-        direction: "เข้า",
-        type: "ชั่วคราว",
+        processName: "",
       },
 
       axiosOptions: {
         headers: authHeader(),
       },
-
-      enter: false,
-
-      modal: false,
-
-      hardwareList: [],
-      checkInContents: [],
-      activityId: "",
     };
   },
-  created() {
-    this.getCheckIn().then((res) => {
-      this.checkInContents = res.data.data;
-    });
-    this.getHardware().then((res) => {
-      this.hardwareList = res.data.data;
-    });
-  },
   methods: {
-    async getActivityId() {
-      const processData = {
-        processId: this.$route.params.processId,
-      };
-      await axios
-        .post(
-          `${process.env.VUE_APP_BACKEND_URL}/process/view`,
-          processData,
-          this.axiosOptions
-        )
-        .then((res) => {
-          this.activityId = res.data.activityId;
-        });
-    },
-    async getCheckIn() {
-      const axiosData = {
-        app: {
-          appId: "mophApp",
-          listId: "list_data_center",
-        },
-        search: [
-          {
-            paramName: "processId",
-            paramValue: this.$route.params.processId,
-          },
-        ],
-      };
-      return await axios.post(
-        `${process.env.VUE_APP_BACKEND_URL}/list/get`,
-        axiosData,
-        this.axiosOptions
-      );
-    },
-    async getHardware() {
-      const axiosData = {
-        app: {
-          appId: "mophApp",
-          listId: "list_data_center_hardware",
-        },
-        search: [
-          {
-            paramName: "processId",
-            paramValue: this.$route.params.processId,
-          },
-        ],
-      };
-      return await axios.post(
-        `${process.env.VUE_APP_BACKEND_URL}/list/get`,
-        axiosData,
-        this.axiosOptions
-      );
-    },
-    addHardware() {
-      this.hardwareList.push(this.hardware);
-      this.hardware = {
-        name: "",
-        brand: "",
-        serialNumber: "",
-        unit: "",
-        direction: "เข้า",
-        type: "ชั่วคราว",
-      };
-      this.modal = false;
-    },
-    async approvePermission() {
-      this.loadingPage = true;
+    async submit() {
+      this.loading = true;
+
+      // submit
+      var formData = { ...this.form };
+
       const axiosData = {
         app: {
           appId: "mophApp",
           formId: "data_center",
         },
-        primaryKey: this.checkInContents[0].id,
-        formData: {
-          processName: "Check Out",
-        },
+        primaryKey: this.$route.params.processId,
+        formData: formData,
       };
       await axios
         .post(
@@ -143,9 +53,9 @@ export default {
           axiosData,
           this.axiosOptions
         )
-        .then(async (res) => {
+        .then(async () => {
           const processData = {
-            processId: this.checkInContents[0].processId,
+            processId: this.$route.params.processId,
           };
           await axios
             .post(
@@ -171,9 +81,8 @@ export default {
                   this.axiosOptions
                 )
                 .then(() => {
-                  this.loadingPage = false;
+                  this.loading = false;
                   this.$router.push("/data-center/view-tasks/");
-                  // }
                 });
             });
         });

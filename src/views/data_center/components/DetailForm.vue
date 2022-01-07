@@ -7,11 +7,24 @@
       </CCardHeader>
 
       <CCardBody>
-        <span
-          ><b>หมายเลขบัตรเข้า - ออกอาคาร:</b>&nbsp;{{ form.checkin_card }}</span
-        >
-        <hr />
-        <CRow class="mt-2">
+        <CRow>
+          <CCol md="6" v-if="form.checkin_card">
+            <span
+              ><b>หมายเลขบัตรเข้า - ออกอาคาร:</b>&nbsp;{{
+                form.checkin_card
+              }}</span
+            >
+          </CCol>
+          <CCol md="6" v-if="form.data_center_card">
+            <span
+              ><b>หมายเลขบัตรเข้า - ออกศูนย์ปฏิบัติการ:</b>&nbsp;{{
+                form.data_center_card
+              }}</span
+            >
+          </CCol>
+        </CRow>
+        <hr class="mb-2" v-if="form.checkin_card" />
+        <CRow>
           <CCol md="6">
             <span><b>ผู้ร้องขอ:</b>&nbsp;{{ form.requester }}</span>
           </CCol>
@@ -25,6 +38,20 @@
           </CCol>
           <CCol md="6">
             <span><b>เลขที่บัตรประชาชน:</b>&nbsp;{{ form.idcard }}</span>
+          </CCol>
+        </CRow>
+        <hr />
+        <CRow class="mt-2">
+          <CCol md="6">
+            <span><b>วัตถุประสงค์:</b>&nbsp;{{ form.purpose }}</span>
+          </CCol>
+          <CCol md="6">
+            <span><b>ผู้ติดต่อ:</b>&nbsp;{{ form.IST_name }}</span>
+          </CCol>
+        </CRow>
+        <CRow class="mt-2">
+          <CCol md="12">
+            <span><b>หมายเหตุ:</b>&nbsp;{{ form.note }}</span>
           </CCol>
         </CRow>
       </CCardBody>
