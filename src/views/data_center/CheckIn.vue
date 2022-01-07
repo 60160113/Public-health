@@ -85,7 +85,7 @@
     <!-- hardware -->
     <CCard v-if="JSON.parse(enter)">
       <CCardHeader>
-        <strong class="text-primary">รายการ Hardwares</strong>
+        <strong class="text-primary">รายการ Hardwares ที่ต้องการนำเข้า</strong>
       </CCardHeader>
 
       <CCardBody
@@ -100,8 +100,8 @@
               _style: 'width:10%',
             },
             { key: 'unit', label: 'จำนวน (ชุด)', _style: 'width:15%' },
-            { key: 'status', label: 'เข้า - ออก', _style: 'width:15%' },
             { key: 'type', label: 'ชั่วคราว - ถาวร', _style: 'width:15%' },
+            { key: 'action', label: '', _style: 'width:10%' },
           ]"
           :tableFilter="{
             label: 'ค้นหา: ',
@@ -126,8 +126,16 @@
               </CButton>
             </div>
           </template>
-          <template #action="{ index }">
+          <template #type="{ item }">
             <td>
+              {{ item.type }}
+              <p v-if="item.return_date">
+                (ส่งคืนวันที่ {{ item.return_date.toLocaleDateString() }})
+              </p>
+            </td>
+          </template>
+          <template #action="{ index }">
+            <td class="text-center">
               <CButton
                 color="danger"
                 shape="pill"
@@ -142,7 +150,12 @@
       <CElementCover :opacity="0.8" v-if="loadingPage" />
     </CCard>
 
-    <CButton block color="primary" class="mt-3" @click="checkingIn()"
+    <CButton
+      block
+      color="primary"
+      class="mt-3"
+      @click.prevent="checkingIn()"
+      :disabled="loadingPage"
       >บันทึก</CButton
     >
 
@@ -168,12 +181,10 @@
           <CInput label="จำนวน" type="number" v-model="hardware.unit" />
         </CCol>
       </CRow>
-
-      <CRow class="mt-3">
-        <CCol col="3">
-          <label style="margin-top: 6px">รูปแบบ</label>
-        </CCol>
+      <hr />
+      <CRow class="mt-2">
         <CCol>
+          <label style="margin-top: 6px">รูปแบบ</label>
           <CInputRadioGroup
             :options="[
               { value: 'ชั่วคราว', label: 'ชั่วคราว' },
@@ -185,19 +196,22 @@
           />
         </CCol>
       </CRow>
-      <CRow class="mt-3" v-if="hardware.type == 'ชั่วคราว'">
-        <CCol>
-          <label>วันที่ส่งคืน</label>
-          <v-date-picker
-            :min-date="new Date()"
-            mode="date"
-            :masks="{
-              input: 'DD/MM/YYYY',
-            }"
-            v-model="hardware.return_date"
-        /></CCol>
-      </CRow>
 
+      <div v-if="hardware.type == 'ชั่วคราว'">
+        <hr />
+        <CRow class="mt-3">
+          <CCol>
+            <label>วันที่ส่งคืน</label>
+            <v-date-picker
+              :min-date="new Date()"
+              mode="date"
+              :masks="{
+                input: 'DD/MM/YYYY',
+              }"
+              v-model="hardware.return_date"
+          /></CCol>
+        </CRow>
+      </div>
       <template #header>
         <h6 class="modal-title">นำเข้าสิ่งของเข้าศูนย์ปฏิบัติการฯ</h6>
         <CButtonClose @click="modal = false" class="text-white" />

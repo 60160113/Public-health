@@ -19,9 +19,6 @@
             label: 'แสดง',
           }"
         >
-          <!-- hover
-          striped
-          border -->
           <template #no-items-view
             ><div class="text-center">ไม่พบข้อมูล</div>
           </template>
@@ -30,17 +27,18 @@
               {{ index + 1 }}
             </td>
           </template>
-          <template #date="{ item }">
+          <template #contact_date="{ item }">
             <td>
-              {{ new Date(item.date).toLocaleDateString("th-TH") }}
+              {{ new Date(item.contact_date).toLocaleDateString("th-TH") }}
             </td>
           </template>
 
-          <template #returnDate="{ item }">
+          <template #processName="{ item }">
             <td>
-              {{ new Date(item.returnDate).toLocaleDateString("th-TH") }}
+              {{ getProcessLabel(item.processName) }}
             </td>
           </template>
+
           <template #action="{ item }">
             <td>
               <CButton
@@ -49,7 +47,6 @@
                 class="ml-1"
                 @click="considerRequirement(item)"
               >
-                <!-- <CIcon :content="$options.freeSet.cilPeople" /> -->
                 view
               </CButton>
             </td>
@@ -62,24 +59,13 @@
 </template>
 
 <script>
-// import { DatePicker } from "v-calendar";
 import axios from "axios";
-// import { jogetService } from "@/helpers/joget-helper";
 import { authHeader } from "@/helpers/auth-header";
-import { freeSet } from "@coreui/icons";
-import thaiMonth from "@/assets/json/thaidate.json";
 
 export default {
-  components: {
-    // "v-date-picker": DatePicker,
-    // jogetService,
-    // authHeader,
-  },
-  freeSet,
   data() {
     return {
       requests: [],
-      thaiMonth: thaiMonth.thmonth,
       loadingPage: false,
       checkIn: {
         requester: "",
@@ -115,21 +101,16 @@ export default {
 
       dataField: [
         { key: "index", label: "#" },
-        // { key: "id", label: "ID", _style: "width:20%" },
-        { key: "requestId", label: "ID", _style: "width:20%" },
-        { key: "requester", label: "Requester", _style: "width:20%" },
-        { key: "position", label: "Position", _style: "width:10%" },
-        { key: "affiliation", label: "Affiliation", _style: "width:10%" },
-        { key: "purpose", label: "Purpose", _style: "width:15%" },
-        { key: "date", label: "Date", _style: "width:10%" },
+        { key: "requester", label: "ผู้ร้องขอ", _style: "width:20%" },
+        { key: "purpose", label: "วัตถุประสงค์", _style: "width:15%" },
+        { key: "contact_date", label: "วันที่ร้องขอ", _style: "width:10%" },
         {
-          key: "returnDate",
-          label: "Return Date",
-          _style: "width:10%",
+          key: "idcard",
+          label: "เลขที่บัตรประชาชน",
+          _style: "width:15%",
         },
-        { key: "checkInCard", label: "Card", _style: "width:15%" },
-        { key: "processName", label: "ProcessName", _style: "width:15%" },
-        { key: "action", label: "Action", _style: "width:10%" },
+        { key: "processName", label: "กระบวนการ", _style: "width:15%" },
+        { key: "action", label: "ดำเนินการ", _style: "width:10%" },
       ],
     };
   },
@@ -150,12 +131,6 @@ export default {
           appId: "mophApp",
           listId: "list_data_center",
         },
-        // search: [
-        //   {
-        //     paramName: "processName",
-        //     paramValue: "Complete",
-        //   },
-        // ],
       };
       return await axios.post(
         `${process.env.VUE_APP_BACKEND_URL}/list/getAll`,
@@ -168,6 +143,18 @@ export default {
         this.$router.push("/data-center/view-report/" + item.processId);
       } else {
         this.$router.push(`/data-center/check-in/?id=${item.id}`);
+      }
+    },
+    getProcessLabel(processName) {
+      switch (processName) {
+        case "Check In":
+          return "เช็คอิน";
+        case "Check Out":
+          return "เช็คเอาท์";
+        case "Consider Requirement":
+          return "พิจารณาความต้องการเข้าศูนย์ปฏิบัติการ";
+        default:
+          return "-";
       }
     },
   },

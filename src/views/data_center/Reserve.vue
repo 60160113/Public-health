@@ -133,6 +133,8 @@ export default {
         IST_name: "",
 
         note: "",
+
+        processName: "Check In"
       },
 
       handler: {

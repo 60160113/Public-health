@@ -9,7 +9,7 @@ export default [
   },
   {
     path: "/data-center/check-in",
-    name: "Check-in",
+    name: "Check In",
     component: () => import("@/views/data_center/CheckIn.vue"),
     meta: {
       requiresAuth: true
@@ -49,7 +49,7 @@ export default [
   },
   {
     path: "/data-center/view-report/:processId",
-    name: "Entering Data Center Report",
+    name: "Data Center Report",
     component: () => import("@/views/data_center/ViewReport.vue"),
     meta: {
       requiresAuth: true
