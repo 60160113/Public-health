@@ -41,7 +41,7 @@
 
           <template #processName="{ item }">
             <td>
-              {{ getProcessLabel(item.processName) }}
+              {{ processNameLabel[item.processName] }}
             </td>
           </template>
 
@@ -81,6 +81,8 @@
 <script>
 import axios from "axios";
 import { authHeader } from "@/helpers/auth-header";
+
+import processNameLabel from "@/views/data_center/json/processNameLabel.json";
 
 export default {
   data() {
@@ -132,6 +134,8 @@ export default {
         { key: "processName", label: "กระบวนการ", _style: "width:15%" },
         { key: "action", label: "ดำเนินการ", _style: "width:10%" },
       ],
+
+      processNameLabel,
     };
   },
   created() {
@@ -178,18 +182,6 @@ export default {
             id: item.id,
           },
         });
-      }
-    },
-    getProcessLabel(processName) {
-      switch (processName) {
-        case "Check In":
-          return "เช็คอิน";
-        case "Check Out":
-          return "เช็คเอาท์";
-        case "Consider Requirement":
-          return "พิจารณาความต้องการเข้าศูนย์ปฏิบัติการ";
-        default:
-          return "-";
       }
     },
   },
