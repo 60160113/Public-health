@@ -163,12 +163,22 @@ export default {
         item.processName !== "Complete"
           ? item.processName
           : "Data Center Report";
-      this.$router.push({
-        name: route_name,
-        params: {
-          processId: item.processId,
-        },
-      });
+
+      if (route_name != "Check In") {
+        this.$router.push({
+          name: route_name,
+          params: {
+            processId: item.processId,
+          },
+        });
+      } else {
+        this.$router.push({
+          name: route_name,
+          query: {
+            id: item.id,
+          },
+        });
+      }
     },
     getProcessLabel(processName) {
       switch (processName) {
