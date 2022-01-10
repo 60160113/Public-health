@@ -24,11 +24,6 @@
           <template #no-items-view
             ><div class="text-center">ไม่พบข้อมูล</div>
           </template>
-          <template #index="{ index }">
-            <td width="5%">
-              {{ index + 1 }}
-            </td>
-          </template>
           <template #contact_date="{ item }">
             <td>
               {{
@@ -97,15 +92,16 @@ export default {
       },
 
       dataField: [
-        { key: "index", label: "#" },
+        { key: "id", label: "ID" },
         { key: "requester", label: "ผู้ร้องขอ", _style: "width:20%" },
-        { key: "purpose", label: "วัตถุประสงค์", _style: "width:15%" },
-        { key: "contact_date", label: "วันที่ร้องขอ", _style: "width:10%" },
         {
           key: "idcard",
           label: "เลขที่บัตรประชาชน",
           _style: "width:15%",
         },
+        { key: "contact_date", label: "วันที่ร้องขอ", _style: "width:10%" },
+
+        { key: "purpose", label: "วัตถุประสงค์", _style: "width:15%" },
         { key: "processName", label: "กระบวนการ", _style: "width:15%" },
         { key: "action", label: "ดำเนินการ", _style: "width:10%" },
       ],
