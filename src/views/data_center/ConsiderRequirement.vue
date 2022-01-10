@@ -127,9 +127,15 @@ export default {
         );
 
         await axios.post(
-          `${process.env.VUE_APP_BACKEND_URL}/process/complete`,
+          `${process.env.VUE_APP_BACKEND_URL}/process/completeWithVariable`,
           {
             activityId: viewProcess.data.activityId,
+            variables: [
+              {
+                paramName: "ISM_approve",
+                paramValue: formData.ISM_approve,
+              },
+            ],
           },
           this.axiosOptions
         );
