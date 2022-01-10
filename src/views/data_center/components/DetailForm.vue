@@ -92,6 +92,35 @@
             >
           </div>
         </div>
+
+        <!-- IST approve -->
+        <div id="ISM" v-if="form.ISM_approve">
+          <hr />
+          <h5 class="text-primary">ผลการเช็คอินเข้าศูนย์ปฏิบัติการ</h5>
+          <br />
+          <CRow>
+            <CCol md="6">
+              <span><b>IST:</b>&nbsp;{{ form.IST_name }}</span>
+            </CCol>
+            <CCol md="6">
+              <span
+                ><b>สถานะการเข้าศูนย์ปฏิบัติการ:</b>&nbsp;{{
+                  form.IST_approve !== "approve" ? "ยกเลิกการ" : ""
+                }}เข้าศูนย์ปฏิบัติการ</span
+              >
+            </CCol>
+          </CRow>
+          <div class="mt-2">
+            <span><b>ความคิดเห็น:</b>&nbsp;{{ form.IST_comment }}</span>
+          </div>
+          <div class="mt-2">
+            <span
+              ><b>วันที่:</b>&nbsp;{{
+                new Date(form.IST_approve_date).toLocaleDateString()
+              }}</span
+            >
+          </div>
+        </div>
       </CCardBody>
       <CElementCover :opacity="0.8" v-if="loading" />
     </CCard>
