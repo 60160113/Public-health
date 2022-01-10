@@ -7,6 +7,7 @@
       </CCardHeader>
 
       <CCardBody>
+        <!-- Card(s) ID -->
         <CRow>
           <CCol md="6" v-if="form.checkin_card">
             <span
@@ -28,36 +29,69 @@
           </CCol>
         </CRow>
         <hr class="mb-2" v-if="form.checkin_card" />
-        <CRow>
-          <CCol md="6">
-            <span><b>ผู้ร้องขอ:</b>&nbsp;{{ form.requester }}</span>
-          </CCol>
-          <CCol md="6">
-            <span><b>ตำแหน่ง:</b>&nbsp;{{ form.position }}</span>
-          </CCol>
-        </CRow>
-        <CRow class="mt-2">
-          <CCol md="6">
-            <span><b>สังกัด:</b>&nbsp;{{ form.affiliation }}</span>
-          </CCol>
-          <CCol md="6">
-            <span><b>เลขที่บัตรประชาชน:</b>&nbsp;{{ form.idcard }}</span>
-          </CCol>
-        </CRow>
-        <hr />
-        <CRow class="mt-2">
-          <CCol md="6">
-            <span><b>วัตถุประสงค์:</b>&nbsp;{{ form.purpose }}</span>
-          </CCol>
-          <CCol md="6">
-            <span><b>ผู้ติดต่อ:</b>&nbsp;{{ form.IST_name }}</span>
-          </CCol>
-        </CRow>
-        <CRow class="mt-2">
-          <CCol md="12">
-            <span><b>หมายเหตุ:</b>&nbsp;{{ form.note }}</span>
-          </CCol>
-        </CRow>
+
+        <!-- Check-in form -->
+        <div id="check-in-form">
+          <CRow>
+            <CCol md="6">
+              <span><b>ผู้ร้องขอ:</b>&nbsp;{{ form.requester }}</span>
+            </CCol>
+            <CCol md="6">
+              <span><b>ตำแหน่ง:</b>&nbsp;{{ form.position }}</span>
+            </CCol>
+          </CRow>
+          <CRow class="mt-2">
+            <CCol md="6">
+              <span><b>สังกัด:</b>&nbsp;{{ form.affiliation }}</span>
+            </CCol>
+            <CCol md="6">
+              <span><b>เลขที่บัตรประชาชน:</b>&nbsp;{{ form.idcard }}</span>
+            </CCol>
+          </CRow>
+          <hr />
+          <CRow class="mt-2">
+            <CCol md="6">
+              <span><b>วัตถุประสงค์:</b>&nbsp;{{ form.purpose }}</span>
+            </CCol>
+            <CCol md="6">
+              <span><b>ผู้ติดต่อ:</b>&nbsp;{{ form.IST_name }}</span>
+            </CCol>
+          </CRow>
+          <CRow class="mt-2">
+            <CCol md="12">
+              <span><b>หมายเหตุ:</b>&nbsp;{{ form.note }}</span>
+            </CCol>
+          </CRow>
+        </div>
+
+        <!-- ISM approve -->
+        <div id="ISM" v-if="form.ISM_approve">
+          <hr />
+          <h5 class="text-primary">ผลการอนุมัติโดย ISM</h5>
+          <br />
+          <CRow>
+            <CCol md="6">
+              <span><b>ISM:</b>&nbsp;{{ form.ISM_name }}</span>
+            </CCol>
+            <CCol md="6">
+              <span
+                ><b>ผลการอนุมัติ:</b>&nbsp;{{
+                  form.ISM_approve !== "approve" ? "ไม่" : ""
+                }}อนุมัติให้เข้าศูนย์ปฏิบัติการ</span
+              >
+            </CCol>
+          </CRow>
+          <div class="mt-2">
+            <span><b>ความคิดเห็น:</b>&nbsp;{{ form.ISM_comment }}</span>
+          </div>
+          <div class="mt-2">
+            <span
+              ><b>วันที่:</b>&nbsp;{{
+                new Date(form.ISM_approve_date).toLocaleDateString()
+              }}</span
+            >
+          </div>
+        </div>
       </CCardBody>
       <CElementCover :opacity="0.8" v-if="loading" />
     </CCard>
