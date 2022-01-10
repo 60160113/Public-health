@@ -40,6 +40,14 @@ export default [
     }
   },
   {
+    path: "/data-center/data-center-check-out/:processId",
+    name: "Data Center Check Out",
+    component: () => import("@/views/data_center/DataCenterCheckOut.vue"),
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
     path: "/data-center/check-out/:processId",
     name: "Check Out",
     component: () => import("@/views/data_center/CheckOut.vue"),
@@ -54,5 +62,5 @@ export default [
     meta: {
       requiresAuth: true
     }
-  },
+  }
 ];
