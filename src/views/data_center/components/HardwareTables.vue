@@ -30,6 +30,7 @@
           :itemsPerPageSelect="{
             label: 'แสดง',
           }"
+          :loading="loading"
           hover
           striped
           border
@@ -59,12 +60,17 @@ import { authHeader } from "@/helpers/auth-header";
 
 export default {
   created() {
+    this.loading = true
     this.getHardwares().then((res) => {
       this.hardwares = res.data.data;
-    });
+      this.loading = false
+    }).catch(err => {
+      this.loading = false
+    })
   },
   data() {
     return {
+      loading: false,
       hardwares: [],
 
       axiosOptions: {

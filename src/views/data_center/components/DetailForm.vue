@@ -110,10 +110,14 @@ export default {
   },
   created() {
     this.loading = true;
-    this.getData().then((res) => {
-      this.form = res.data.data[0];
-    });
-    this.loading = false;
+    this.getData()
+      .then((res) => {
+        this.form = res.data.data[0];
+        this.loading = false;
+      })
+      .catch((err) => {
+        this.loading = false;
+      });
   },
   data() {
     return {
