@@ -32,6 +32,14 @@ export default [
     }
   },
   {
+    path: "/data-center/data-center-check-in/:processId",
+    name: "Data Center Check In",
+    component: () => import("@/views/data_center/DataCenterCheckIn.vue"),
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
     path: "/data-center/check-out/:processId",
     name: "Check Out",
     component: () => import("@/views/data_center/CheckOut.vue"),
