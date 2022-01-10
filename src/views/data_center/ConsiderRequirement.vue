@@ -97,7 +97,7 @@ export default {
         // submit
         var formData = { ...this.form };
         if (formData.ISM_approve == "approve") {
-          formData.processName = "Operation Center Check In";
+          formData.processName = "Data Center Check In";
         } else {
           formData.processName = "Check Out";
         }

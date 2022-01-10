@@ -467,7 +467,7 @@ export default {
                     activityId: activityId,
                     variables: [
                       {
-                        paramName: "enter_operation_center",
+                        paramName: "enter_data_center",
                         paramValue: JSON.parse(this.enter),
                       },
                     ],

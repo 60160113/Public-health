@@ -8,6 +8,14 @@ export default [
     }
   },
   {
+    path: "/data-center/view-tasks",
+    name: "Tasks - Data Center",
+    component: () => import("@/views/data_center/Tasks.vue"),
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
     path: "/data-center/check-in",
     name: "Check In",
     component: () => import("@/views/data_center/CheckIn.vue"),
@@ -39,12 +47,4 @@ export default [
       requiresAuth: true
     }
   },
-  {
-    path: "/data-center/view-tasks",
-    name: "Tasks - Data Center",
-    component: () => import("@/views/data_center/Tasks.vue"),
-    meta: {
-      requiresAuth: true
-    }
-  }
 ];
