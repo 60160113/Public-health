@@ -92,7 +92,7 @@ export default {
       },
 
       dataField: [
-        { key: "id", label: "ID" },
+        { key: "request_id", label: "ID" },
         { key: "requester", label: "ผู้ร้องขอ", _style: "width:20%" },
         {
           key: "idcard",
