@@ -37,39 +37,32 @@
                         >Login</CButton
                       >
                     </CCol>
-                    <CCol col="6" class="text-right">
-                      <CButton color="link" class="px-0"
-                        >Forgot password?</CButton
-                      >
-                      <CButton color="link" class="d-lg-none"
-                        >Register now!</CButton
-                      >
-                    </CCol>
                   </CRow>
                 </CForm>
-              </CCardBody>
-            </CCard>
-            <CCard
-              color="primary"
-              text-color="white"
-              class="text-center py-5 d-md-down-none"
-              body-wrapper
-            >
-              <CCardBody>
-                <h2>Sign up</h2>
-                <p>
-                  Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                </p>
-                <CButton color="light" variant="outline" size="lg">
-                  Register Now!
-                </CButton>
               </CCardBody>
             </CCard>
           </CCardGroup>
         </CCol>
       </CRow>
     </CContainer>
+
+    <CModal
+      title="ข้อมูลไม่ถูกต้อง"
+      color="danger"
+      size="lg"
+      :show.sync="loginErrorModal"
+      centered
+    >
+      <p>อีเมลหรือรหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง</p>
+      <template #footer>
+        <CButton
+          color="danger"
+          class="float-right"
+          @click="loginErrorModal = false"
+          >ปิด</CButton
+        >
+      </template>
+    </CModal>
   </div>
 </template>
 
@@ -90,6 +83,8 @@ export default {
         email: "",
         password: "",
       },
+
+      loginErrorModal: false,
     };
   },
   methods: {
@@ -106,21 +101,28 @@ export default {
           axiosHeader
         )
         .then(async (res) => {
-          const alf_login = await axios.post(
-            `${process.env.VUE_APP_ALF_API}authentication/versions/1/tickets`,
-            {
-              userId: "jack",
-              password: "ivsoft",
-            }
-          );
-          this.$alf_request.defaults.headers[
-            "Authorization"
-          ] = `Basic ${window.btoa(alf_login.data.entry.id)}`;
-          const user = res.data.user;
-          user.token = res.data.token;
-          user.ticket = alf_login.data.entry.id;
-          localStorage.setItem("AuthUser", JSON.stringify(user));
-          this.$router.push("/home");
+          try {
+            const alf_login = await axios.post(
+              `${process.env.VUE_APP_ALF_API}authentication/versions/1/tickets`,
+              {
+                userId: "jack",
+                password: "ivsoft",
+              }
+            );
+            this.$alf_request.defaults.headers[
+              "Authorization"
+            ] = `Basic ${window.btoa(alf_login.data.entry.id)}`;
+            const user = res.data.user;
+            user.token = res.data.token;
+            user.ticket = alf_login.data.entry.id;
+            localStorage.setItem("AuthUser", JSON.stringify(user));
+            this.$router.push("/home");
+          } catch (error) {
+            this.loginErrorModal = true;
+          }
+        })
+        .catch((err) => {
+          this.loginErrorModal = true;
         });
     },
   },
