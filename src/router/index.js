@@ -100,7 +100,7 @@ router.beforeEach((to, from, next) => {
     const user = JSON.parse(localStorage.getItem("AuthUser"));
     if (user) {
       if (to.name == "Login") {
-        return next("/data-center/check-in");
+        return next("/home");
       } else {
         return next();
       }

@@ -78,6 +78,12 @@ import axios from "axios";
 
 export default {
   name: "Login",
+  created() {
+    const user = JSON.parse(localStorage.getItem("AuthUser"));
+    if (user) {
+      this.$router.push("/home");
+    }
+  },
   data() {
     return {
       form: {
@@ -114,7 +120,7 @@ export default {
           user.token = res.data.token;
           user.ticket = alf_login.data.entry.id;
           localStorage.setItem("AuthUser", JSON.stringify(user));
-          this.$router.push("/data-center/check-in");
+          this.$router.push("/home");
         });
     },
   },
