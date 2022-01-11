@@ -54,11 +54,12 @@
                   <CIcon name="cil-options" />
                 </template>
                 <CDropdownItem
+                  v-if="item.processName !== 'Complete'"
                   v-c-tooltip="'ดำเนินการ'"
                   @click="considerRequirement(item)"
                   >ดำเนินการ</CDropdownItem
                 >
-                <CDropdownDivider />
+                <CDropdownDivider v-if="item.processName !== 'Complete'" />
                 <CDropdownItem
                   v-c-tooltip="'ดูข้อมูล'"
                   @click="
