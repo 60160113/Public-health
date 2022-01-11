@@ -116,7 +116,9 @@ export default {
     loadTable() {
       this.loadingPage = true;
       this.getItems().then((res) => {
-        this.requests = res.data.data;
+        this.requests = res.data.data.filter(
+          (item) => item.processName !== "Complete"
+        );
         this.loadingPage = false;
       });
     },
