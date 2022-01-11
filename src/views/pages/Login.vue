@@ -101,25 +101,21 @@ export default {
           axiosHeader
         )
         .then(async (res) => {
-          try {
-            const alf_login = await axios.post(
-              `${process.env.VUE_APP_ALF_API}authentication/versions/1/tickets`,
-              {
-                userId: "jack",
-                password: "ivsoft",
-              }
-            );
-            this.$alf_request.defaults.headers[
-              "Authorization"
-            ] = `Basic ${window.btoa(alf_login.data.entry.id)}`;
-            const user = res.data.user;
-            user.token = res.data.token;
-            user.ticket = alf_login.data.entry.id;
-            localStorage.setItem("AuthUser", JSON.stringify(user));
-            this.$router.push("/home");
-          } catch (error) {
-            this.loginErrorModal = true;
-          }
+          const alf_login = await axios.post(
+            `${process.env.VUE_APP_ALF_API}authentication/versions/1/tickets`,
+            {
+              userId: "jack",
+              password: "ivsoft",
+            }
+          );
+          this.$alf_request.defaults.headers[
+            "Authorization"
+          ] = `Basic ${window.btoa(alf_login.data.entry.id)}`;
+          const user = res.data.user;
+          user.token = res.data.token;
+          user.ticket = alf_login.data.entry.id;
+          localStorage.setItem("AuthUser", JSON.stringify(user));
+          this.$router.push("/home");
         })
         .catch((err) => {
           this.loginErrorModal = true;
