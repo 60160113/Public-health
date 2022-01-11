@@ -7,6 +7,15 @@
       </CCardHeader>
 
       <CCardBody>
+        <!-- Request ID -->
+        <div id="request_id" v-if="form.request_id">
+          <span
+            ><b>ID:</b>&nbsp;<CBadge color="primary" style="font-size: 15px">{{
+              form.request_id
+            }}</CBadge></span
+          >
+          <hr class="mb-2" />
+        </div>
         <!-- Card(s) ID -->
         <CRow>
           <CCol md="6" v-if="form.checkin_card">
