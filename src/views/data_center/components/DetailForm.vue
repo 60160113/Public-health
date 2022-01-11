@@ -103,7 +103,7 @@
         </div>
 
         <!-- IST approve -->
-        <div id="ISM" v-if="form.ISM_approve">
+        <div id="IST" v-if="form.IST_approve">
           <hr />
           <h5 class="text-primary">ผลการเช็คอินเข้าศูนย์ปฏิบัติการ</h5>
           <br />
@@ -132,7 +132,7 @@
         </div>
 
         <!-- Security Guard -->
-        <div id="ISM" v-if="form.security_guard_review_date">
+        <div id="security-guard" v-if="form.security_guard_review_date">
           <hr />
           <h5 class="text-primary">รปภ. ตรวจสอบความถูกต้อง (กรณีนำของออก)</h5>
           <br />
