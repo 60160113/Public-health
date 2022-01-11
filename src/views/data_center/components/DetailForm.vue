@@ -130,6 +130,32 @@
             >
           </div>
         </div>
+
+        <!-- Security Guard -->
+        <div id="ISM" v-if="form.security_guard_review_date">
+          <hr />
+          <h5 class="text-primary">รปภ. ตรวจสอบความถูกต้อง (กรณีนำของออก)</h5>
+          <br />
+          <CInputCheckbox
+            custom
+            checked
+            disabled
+            readonly
+            inline
+            style="padding-top: 5px"
+          />
+          <b>ตรวจสอบแล้ว</b>
+          <div class="mt-2">
+            <span><b>รปภ.:</b>&nbsp;{{ form.security_guard_name }}</span>
+          </div>
+          <div class="mt-2">
+            <span
+              ><b>วันที่:</b>&nbsp;{{
+                new Date(form.security_guard_review_date).toLocaleDateString()
+              }}</span
+            >
+          </div>
+        </div>
       </CCardBody>
       <CElementCover :opacity="0.8" v-if="loading" />
     </CCard>
