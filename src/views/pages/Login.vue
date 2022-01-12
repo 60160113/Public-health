@@ -15,7 +15,7 @@
                   <CInput
                     placeholder="Username"
                     autocomplete="username email"
-                    v-model="form.email"
+                    v-model.trim="form.email"
                   >
                     <template #prepend-content
                       ><CIcon name="cil-user"
@@ -25,7 +25,7 @@
                     placeholder="Password"
                     type="password"
                     autocomplete="curent-password"
-                    v-model="form.password"
+                    v-model.trim="form.password"
                   >
                     <template #prepend-content
                       ><CIcon name="cil-lock-locked"
@@ -33,7 +33,10 @@
                   </CInput>
                   <CRow>
                     <CCol col="6" class="text-left">
-                      <CButton color="primary" class="px-4" @click="login"
+                      <CButton
+                        color="primary"
+                        class="px-4"
+                        @click.prevent="login"
                         >Login</CButton
                       >
                     </CCol>
