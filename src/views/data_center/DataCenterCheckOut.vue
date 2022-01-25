@@ -63,6 +63,9 @@ export default {
         id: "",
 
         processName: "Check Out",
+
+        assignTo: "guard",
+        assignType: "group",
       },
 
       axiosOptions: {

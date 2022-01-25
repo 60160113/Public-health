@@ -314,6 +314,9 @@ export default {
         IST_name: "",
 
         note: "",
+
+        assignTo: "",
+        assignType: "group",
       },
 
       handler: {
@@ -412,8 +415,10 @@ export default {
         .then(async (res) => {
           if (JSON.parse(this.enter)) {
             this.checkIn.processName = "Consider Requirement";
+            this.checkIn.assignTo = "ISM"
           } else {
             this.checkIn.processName = "Check Out";
+            this.checkIn.assignTo = "guard"
           }
 
           this.checkIn.processId = res.data.processId;

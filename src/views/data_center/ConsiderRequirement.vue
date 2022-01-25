@@ -82,6 +82,9 @@ export default {
 
         processName: "",
         id: "",
+
+        assignTo: "",
+        assignType: "group",
       },
 
       axiosOptions: {
@@ -98,8 +101,10 @@ export default {
         var formData = { ...this.form };
         if (formData.ISM_approve == "approve") {
           formData.processName = "Data Center Check In";
+          formData.assignTo = "ISS";
         } else {
           formData.processName = "Check Out";
+          formData.assignTo = "guard";
         }
 
         var axiosData = {
