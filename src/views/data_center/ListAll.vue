@@ -54,12 +54,20 @@
                   <CIcon name="cil-options" />
                 </template>
                 <CDropdownItem
-                  v-if="item.processName !== 'Complete'"
+                  v-if="
+                    item.processName !== 'Complete' &&
+                    showTask(item.assignTo, item.assignType)
+                  "
                   v-c-tooltip="'ดำเนินการ'"
                   @click="considerRequirement(item)"
                   >ดำเนินการ</CDropdownItem
                 >
-                <CDropdownDivider v-if="item.processName !== 'Complete'" />
+                <CDropdownDivider
+                  v-if="
+                    item.processName !== 'Complete' &&
+                    showTask(item.assignTo, item.assignType)
+                  "
+                />
                 <CDropdownItem
                   v-c-tooltip="'ดูข้อมูล'"
                   @click="
@@ -91,6 +99,8 @@ export default {
       axiosOptions: {
         headers: authHeader(),
       },
+
+      user: JSON.parse(localStorage.getItem("AuthUser")),
 
       dataField: [
         { key: "request_id", label: "ID" },
@@ -165,6 +175,13 @@ export default {
         }
       } else {
         return "info";
+      }
+    },
+    showTask(assignTo, assignType = "group") {
+      if (assignType == "group") {
+        return this.user.position == assignTo;
+      } else {
+        return this.user.id == assignTo;
       }
     },
   },
