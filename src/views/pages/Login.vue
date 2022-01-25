@@ -104,6 +104,24 @@ export default {
           axiosHeader
         )
         .then(async (res) => {
+          const userData = await axios.post(
+            `${process.env.VUE_APP_BACKEND_URL}/list/get`,
+            {
+              app: {
+                appId: "mophApp",
+                listId: "user_accounts",
+              },
+              search: [
+                {
+                  paramName: "id",
+                  paramValue: res.data.user.id,
+                },
+              ],
+            },
+            {
+              headers: { Authorization: "Bearer " + res.data.token },
+            }
+          );
           const alf_login = await axios.post(
             `${process.env.VUE_APP_ALF_API}authentication/versions/1/tickets`,
             {
@@ -117,6 +135,7 @@ export default {
           const user = res.data.user;
           user.token = res.data.token;
           user.ticket = alf_login.data.entry.id;
+          user.position = userData.data.data[0].position;
           localStorage.setItem("AuthUser", JSON.stringify(user));
           this.$router.push("/home");
         })
