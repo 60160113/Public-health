@@ -377,9 +377,15 @@ export default {
           appId: "mophApp",
           listId: "user_accounts",
         },
+        search: [
+          {
+            paramName: "position",
+            paramValue: "ISS",
+          },
+        ],
       };
       return axios.post(
-        `${process.env.VUE_APP_BACKEND_URL}/list/getAll`,
+        `${process.env.VUE_APP_BACKEND_URL}/list/get`,
         axiosData,
         this.axiosOptions
       );
@@ -415,10 +421,10 @@ export default {
         .then(async (res) => {
           if (JSON.parse(this.enter)) {
             this.checkIn.processName = "Consider Requirement";
-            this.checkIn.assignTo = "ISM"
+            this.checkIn.assignTo = "ISM";
           } else {
             this.checkIn.processName = "Check Out";
-            this.checkIn.assignTo = "guard"
+            this.checkIn.assignTo = "guard";
           }
 
           this.checkIn.processId = res.data.processId;

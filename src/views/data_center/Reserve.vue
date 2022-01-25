@@ -134,7 +134,10 @@ export default {
 
         note: "",
 
-        processName: "Check In"
+        processName: "Check In",
+
+        assignTo: "guard",
+        assignType: "group",
       },
 
       handler: {
@@ -193,9 +196,15 @@ export default {
           appId: "mophApp",
           listId: "user_accounts",
         },
+        search: [
+          {
+            paramName: "position",
+            paramValue: "ISS",
+          },
+        ],
       };
       return axios.post(
-        `${process.env.VUE_APP_BACKEND_URL}/list/getAll`,
+        `${process.env.VUE_APP_BACKEND_URL}/list/get`,
         axiosData,
         this.headers
       );
