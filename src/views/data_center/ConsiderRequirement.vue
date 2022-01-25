@@ -69,12 +69,15 @@ export default {
       )
       .then((res) => {
         this.form.id = res.data.data[0].id;
+        this.form.IST_id = res.data.data[0].IST_id;
       });
   },
   data() {
     return {
       loading: false,
       form: {
+        IST_id: "",
+
         ISM_name: user.fullname,
         ISM_approve: "approve",
         ISM_comment: "",
@@ -101,9 +104,11 @@ export default {
         var formData = { ...this.form };
         if (formData.ISM_approve == "approve") {
           formData.processName = "Data Center Check In";
-          formData.assignTo = "ISS";
+          formData.assignType = "person";
+          formData.assignTo = formData.IST_id;
         } else {
           formData.processName = "Check Out";
+          formData.assignType = "group";
           formData.assignTo = "guard";
         }
 
