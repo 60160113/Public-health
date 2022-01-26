@@ -72,3 +72,7 @@ typings/
 
 # FuseBox cache
 .fusebox/
+
+# build
+dist
+moph
