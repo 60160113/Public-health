@@ -33,7 +33,7 @@ export default {
   methods: {
     logout() {
       localStorage.removeItem("AuthUser");
-      this.$router.push({ name: "Login" });
+      location.reload()
     },
   },
 };
