@@ -22,6 +22,17 @@
               label="เลขที่บัตรประชาชน"
               v-model="form.idcard"
               maxlength="13"
+              @keypress="
+                ($event) => {
+                  let keyCode = $event.keyCode ? $event.keyCode : $event.which;
+                  if (
+                    (keyCode > 31 && (keyCode < 48 || keyCode > 57)) ||
+                    keyCode == 46
+                  ) {
+                    $event.preventDefault();
+                  }
+                }
+              "
             />
           </CCol>
         </CRow>
