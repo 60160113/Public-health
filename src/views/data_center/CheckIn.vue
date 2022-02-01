@@ -31,6 +31,18 @@
               label="เลขที่บัตรประชาชน"
               v-model="checkIn.idcard"
               maxlength="13"
+              @keypress="
+                ($event) => {
+                  let keyCode = $event.keyCode ? $event.keyCode : $event.which;
+                  if (
+                    keyCode > 31 &&
+                    (keyCode < 48 || keyCode > 57) ||
+                    keyCode == 46
+                  ) {
+                    $event.preventDefault();
+                  }
+                }
+              "
             />
           </CCol>
 
@@ -228,6 +240,7 @@
 import { DatePicker } from "v-calendar";
 import axios from "axios";
 import { authHeader } from "@/helpers/auth-header";
+
 export default {
   components: {
     "v-date-picker": DatePicker,
