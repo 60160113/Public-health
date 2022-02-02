@@ -59,14 +59,22 @@ import axios from "axios";
 import { authHeader } from "@/helpers/auth-header";
 
 export default {
+  props: {
+    id: {
+      type: String,
+      default: "",
+    },
+  },
   created() {
-    this.loading = true
-    this.getHardwares().then((res) => {
-      this.hardwares = res.data.data;
-      this.loading = false
-    }).catch(err => {
-      this.loading = false
-    })
+    this.loading = true;
+    this.getHardwares()
+      .then((res) => {
+        this.hardwares = res.data.data;
+        this.loading = false;
+      })
+      .catch((err) => {
+        this.loading = false;
+      });
   },
   data() {
     return {
@@ -88,7 +96,7 @@ export default {
         search: [
           {
             paramName: "processId",
-            paramValue: this.$route.params.processId,
+            paramValue: this.id,
           },
         ],
       };
