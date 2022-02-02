@@ -18,7 +18,6 @@
           :itemsPerPageSelect="{
             label: 'แสดง',
           }"
-          :responsive="false"
           :loading="loadingPage"
         >
           <template #no-items-view
