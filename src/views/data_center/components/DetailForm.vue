@@ -171,6 +171,10 @@ export default {
       type: String,
       default: "",
     },
+    taskId: {
+      type: String,
+      default: "",
+    },
   },
   created() {
     this.loading = true;
@@ -196,17 +200,25 @@ export default {
   },
   methods: {
     getData() {
+      const search = () => {
+        if (this.id) {
+          return {
+            paramName: "processId",
+            paramValue: this.id,
+          };
+        } else {
+          return {
+            paramName: "id",
+            paramValue: this.taskId,
+          };
+        }
+      };
       const axiosData = {
         app: {
           appId: "mophApp",
           listId: "list_data_center",
         },
-        search: [
-          {
-            paramName: "processId",
-            paramValue: this.id,
-          },
-        ],
+        search: [search()],
       };
       return axios.post(
         `${process.env.VUE_APP_BACKEND_URL}/list/get`,

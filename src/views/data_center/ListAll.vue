@@ -71,7 +71,7 @@
                 <CDropdownItem
                   v-c-tooltip="'ดูข้อมูล'"
                   @click="
-                    $router.push('/data-center/view-report/' + item.processId)
+                    $router.push('/data-center/view-report/' + item.id)
                   "
                   >ดูข้อมูล</CDropdownItem
                 >

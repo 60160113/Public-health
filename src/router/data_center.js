@@ -56,7 +56,7 @@ export default [
     }
   },
   {
-    path: "/data-center/view-report/:processId",
+    path: "/data-center/view-report/:id",
     name: "Data Center Report",
     component: () => import("@/views/data_center/ViewReport.vue"),
     meta: {
