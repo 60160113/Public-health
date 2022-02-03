@@ -1,9 +1,14 @@
 const nodemailer = require('nodemailer')
 const transporter = nodemailer.createTransport({
-  service: 'gmail',
+  host: 'smtp.office365.com',
+  port: 587,
+  secure: false,
   auth: {
-    user: 'witcha@osdev.co.th',
-    pass: 'jotijvxbltmybwvf'
+    user: 'jrk-crm@jorakay.co.th',
+    pass: 'Jorakay2021'
+  },
+  tls: {
+    ciphers: 'SSLv3'
   }
 })
 

@@ -303,6 +303,8 @@ export default {
             (item) => item.data.id == res.data.data[0].IST_id
           );
 
+          this.checkIn.IST_email = this.IST_options[this.IST_index].data.email;
+
           if (
             this.objectiveOptions.findIndex(
               (item) => item == res.data.data[0].purpose
@@ -335,6 +337,7 @@ export default {
 
         IST_id: "",
         IST_name: "",
+        IST_email: "",
 
         note: "",
 
@@ -513,12 +516,36 @@ export default {
                       this.axiosOptions
                     )
                     .then(() => {
+                      if (JSON.parse(this.enter)) {
+                        this.sendMail(
+                          this.checkIn.IST_email,
+                          "ขอเข้าศูนย์ปฏิบัติการ",
+                          `<p>ข้าพเจ้า ${this.checkIn.requester} มีความประสงค์ขอเข้าศูนย์ปฏิบัติการ</p>`
+                        );
+                        this.sendMail(
+                          "suwanna@health.moph.go.th",
+                          "ขอเข้าศูนย์ปฏิบัติการ",
+                          `<p>ข้าพเจ้า ${this.checkIn.requester} มีความประสงค์ขอเข้าศูนย์ปฏิบัติการ</p>`
+                        );
+                      }
                       this.loadingPage = false;
                       this.$router.push("/data-center/view-tasks/");
                     });
                 });
             });
         });
+    },
+    sendMail(to, subject, html) {
+      axios.post(
+        `${process.env.VUE_APP_BACKEND_URL}/mail/send`,
+        {
+          from: process.env.VUE_APP_MAIL,
+          to,
+          subject,
+          html,
+        },
+        this.axiosOptions
+      );
     },
   },
   watch: {
@@ -532,6 +559,8 @@ export default {
     IST_index: function (val) {
       this.checkIn.IST_id = this.IST_options[val].data.id;
       this.checkIn.IST_name = this.IST_options[val].data.fullname;
+
+      this.checkIn.IST_email = this.IST_options[val].data.email;
     },
   },
 };
