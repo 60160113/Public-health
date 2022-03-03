@@ -323,6 +323,8 @@ export default {
   },
   data() {
     return {
+      ISM_email: "suwanna@health.moph.go.th",
+
       loadingPage: false,
       checkIn: {
         requester: "",
@@ -523,7 +525,7 @@ export default {
                           `<p>ข้าพเจ้า ${this.checkIn.requester} มีความประสงค์ขอเข้าศูนย์ปฏิบัติการ</p>`
                         );
                         this.sendMail(
-                          "suwanna@health.moph.go.th",
+                          this.ISM_email,
                           "ขอเข้าศูนย์ปฏิบัติการ",
                           `<p>ข้าพเจ้า ${this.checkIn.requester} มีความประสงค์ขอเข้าศูนย์ปฏิบัติการ</p>`
                         );
