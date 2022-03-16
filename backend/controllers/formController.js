@@ -11,8 +11,8 @@ module.exports = {
     let formParam = "";
 
     if (Array.isArray(formData)) {
-      var resultArr = []
-      formData.forEach(async form => {
+      var resultArr = [];
+      formData.forEach(async (form, index) => {
         Object.keys(form).forEach(function(key) {
           formParam = `${formParam}&${key}=${form[key]}`;
         });
@@ -21,9 +21,11 @@ module.exports = {
             `${process.env.VUE_APP_JOGET_URL}web/json/data/form/store/${reqApp.appId}/${reqApp.formId}/${primaryKey}?j_username=${juser[permission].username}&j_password=${juser[permission].password}${formParam}`
           )
         );
-        resultArr.push(result.data)
+        resultArr.push(result.data);
+        if (index == formData.length - 1) {
+          return resultArr;
+        }
       });
-      return resultArr
     } else {
       Object.keys(formData).forEach(function(key) {
         formParam = `${formParam}&${key}=${formData[key]}`;
