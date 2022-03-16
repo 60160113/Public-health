@@ -13,18 +13,25 @@ module.exports = {
     if (Array.isArray(formData)) {
       var resultArr = [];
       formData.forEach(async (form, index) => {
-        Object.keys(form).forEach(function(key) {
+        Object.keys(form).forEach(function(key, ik) {
           formParam = `${formParam}&${key}=${form[key]}`;
+
+          if (ik == Object.keys(form).length - 1) {
+            axios
+              .post(
+                encodeURI(
+                  `${process.env.VUE_APP_JOGET_URL}web/json/data/form/store/${reqApp.appId}/${reqApp.formId}/${primaryKey}?j_username=${juser[permission].username}&j_password=${juser[permission].password}${formParam}`
+                )
+              )
+              .then(res => {
+                resultArr.push(result.data);
+
+                if (index == formData.length - 1) {
+                  return resultArr;
+                }
+              });
+          }
         });
-        const result = await axios.post(
-          encodeURI(
-            `${process.env.VUE_APP_JOGET_URL}web/json/data/form/store/${reqApp.appId}/${reqApp.formId}/${primaryKey}?j_username=${juser[permission].username}&j_password=${juser[permission].password}${formParam}`
-          )
-        );
-        resultArr.push(result.data);
-        if (index == formData.length - 1) {
-          return resultArr;
-        }
       });
     } else {
       Object.keys(formData).forEach(function(key) {
