@@ -25,7 +25,6 @@ module.exports = {
   },
 
   completeWithParams: async (req, res, next) => {
-    console.log(req.body)
     const activityId = req.body.activityId
     const permission = req.payload.permission
     
@@ -48,7 +47,6 @@ module.exports = {
   },
 
   setVar: async (req, res, next) => {
-    console.log(req.body)
     const activityId = req.body.activityId
     const permission = req.payload.permission
     const paramName = req.body.paramName
@@ -65,7 +63,6 @@ module.exports = {
       search.forEach((param) => {
         params = `${params}&${param.paramName}=${param.paramValue}`
       })
-      console.log(params)
     }
     const result = await axios.post(encodeURI(`${process.env.VUE_APP_JOGET_URL}web/json/monitoring/activity/list?j_username=${juser[permission].username}&j_password=${juser[permission].password}${params}`))
     return result

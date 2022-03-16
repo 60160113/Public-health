@@ -30,7 +30,6 @@ router.post('/getAll', auth.required, (req, res, next) => {
 router.post('/get', auth.required, (req, res, next) => {
   datalistController.get(req)
     .then((response) => {
-      console.log(response.data)
       res.status(200).send(response.data)
     }).catch((error) => {
       console.log(error)

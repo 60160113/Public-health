@@ -5,16 +5,9 @@ const jogetUser = require('../configs/json/JogetUser.json')
 const juser = jogetUser.jogetUser
 
 module.exports = {
-  // test: async (req, res, next) => {
-  //   return true
-  // },
   findUser: async (req, res, next) => {
     const emailParam = `email=${req}`
     return await axios.post(encodeURI(`${process.env.VUE_APP_JOGET_URL}web/json/data/list/${userApp}/${listForLogin}?j_username=${juser['admin'].username}&j_password=${juser['admin'].password}&${emailParam}`))
-    // await axios.post(encodeURI(`${process.env.APP_BACKEND_URL}web/json/data/list/${userApp}/${listForLogin}?j_username=${juser['admin'].username}&j_password=${juser['admin'].password}&${emailParam}`))
-    //   .then((res) => {
-    //     console.log(res.data)
-    //   })
   },
   checkLogin: async (req, res, next) => {
     const reqData = req.body.data
@@ -39,7 +32,6 @@ module.exports = {
     const permission = 'admin'
     const email = req.params.email
     const emailParam = `email=${email}`
-    console.log(encodeURI(`${process.env.VUE_APP_JOGET_URL}web/json/data/list/${reqApp.appId}/${reqApp.listId}?j_username=${juser[permission].username}&j_password=${juser[permission].password}&${emailParam}`))
     const result = await axios.post(encodeURI(`${process.env.VUE_APP_JOGET_URL}web/json/data/list/${reqApp.appId}/${reqApp.listId}?j_username=${juser[permission].username}&j_password=${juser[permission].password}&${emailParam}`))
     return result
   },

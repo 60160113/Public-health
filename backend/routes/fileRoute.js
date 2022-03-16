@@ -23,12 +23,10 @@ router.post('/:json', (req, res, next) => {
     if (err) {
       console.log(`Error reading file from disk: ${err}`);
     } else {
-    //   console.log(JSON.parse(data))
       dataObj = JSON.parse(data);
 
     // add a new record
       dataObj.push(jsonObj)
-      console.log(JSON.stringify(dataObj))
     }
   })
 
