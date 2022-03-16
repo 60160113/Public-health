@@ -3,22 +3,9 @@ const { required } = require('../configs/auth')
 const auth = require('../configs/auth')
 const mailController = require('../controllers/mailController')
 
-// router.post('/sendMail', auth.required, (req, res, next) => {
-//   console.log(req)
-//   mailController.sendMessage(req)
-//     .then((response) => {
-//       console.log(response)
-//       res.send(response)
-//     }).catch((error) => {
-//       console.log(error)
-//     })
-// })
-
 router.post('/confirmMail', auth.optional, (req, res, next) => {
-  console.log(req)
   mailController.sendMessage(req)
     .then((response) => {
-      console.log(response)
       res.send(response)
     }).catch((error) => {
       console.log(error)
