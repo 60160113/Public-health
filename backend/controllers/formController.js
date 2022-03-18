@@ -13,7 +13,7 @@ module.exports = {
     if (Array.isArray(formData)) {
       var resultArr = [];
       formData.forEach(async (form, index) => {
-        Object.keys(form).forEach(function(key, ik) {
+        Object.keys(form).forEach(async function(key, ik) {
           formParam = `${formParam}&${key}=${form[key]}`;
 
           if (ik == Object.keys(form).length - 1) {
