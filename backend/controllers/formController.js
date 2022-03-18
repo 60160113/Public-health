@@ -17,14 +17,14 @@ module.exports = {
           formParam = `${formParam}&${key}=${form[key]}`;
 
           if (ik == Object.keys(form).length - 1) {
-            axios
+            await axios
               .post(
                 encodeURI(
                   `${process.env.VUE_APP_JOGET_URL}web/json/data/form/store/${reqApp.appId}/${reqApp.formId}/${primaryKey}?j_username=${juser[permission].username}&j_password=${juser[permission].password}${formParam}`
                 )
               )
               .then(res => {
-                resultArr.push(result.data);
+                resultArr.push(res.data);
 
                 if (index == formData.length - 1) {
                   return resultArr;
