@@ -11,7 +11,7 @@ module.exports = {
       username: 'case',
       password: 'thac'
     }
-    const result = await axios.post(encodeURI(`${process.env.VUE_APP_ALF_URL}alfresco/s/api/login`), alfUser, axiosOptions)
+    const result = await axios.post(encodeURI(`${process.env.APP_ALF_URL}alfresco/s/api/login`), alfUser, axiosOptions)
     return result
   }
 }

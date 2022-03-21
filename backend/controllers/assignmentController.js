@@ -14,7 +14,7 @@ module.exports = {
       })
     }
     
-    const result = await axios.post(encodeURI(`${process.env.VUE_APP_JOGET_URL}web/json/workflow/assignment/list?j_username=${juser[permission].username}&j_password=${juser[permission].password}${params}`))
+    const result = await axios.post(encodeURI(`${process.env.APP_JOGET_URL}web/json/workflow/assignment/list?j_username=${juser[permission].username}&j_password=${juser[permission].password}${params}`))
     return result
   }
 }

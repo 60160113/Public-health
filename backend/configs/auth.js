@@ -9,13 +9,13 @@ const getTokenFromHeader = req => {
 
 const auth = {
   required: jwt({
-    secret: process.env.VUE_APP_SECRET,
+    secret: process.env.APP_SECRET,
     algorithms: ['HS256'],
     userProperty: 'payload',
     getToken: getTokenFromHeader
   }),
   optional: jwt({
-    secret: process.env.VUE_APP_SECRET,
+    secret: process.env.APP_SECRET,
     algorithms: ['HS256'],
     userProperty: 'payload',
     credentialsRequired: false,

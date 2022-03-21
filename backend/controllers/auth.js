@@ -9,7 +9,7 @@ router.post('/login', (req, res, next) => {
     // return next(err)
     
     if (user) {
-      const token = jwt.sign(user, process.env.VUE_APP_SECRET)
+      const token = jwt.sign(user, process.env.APP_SECRET)
       return res.json({user, token})
     } else {
       return res.status(422).json(info)

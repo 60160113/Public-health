@@ -20,7 +20,7 @@ module.exports = {
             await axios
               .post(
                 encodeURI(
-                  `${process.env.VUE_APP_JOGET_URL}web/json/data/form/store/${reqApp.appId}/${reqApp.formId}/${primaryKey}?j_username=${juser[permission].username}&j_password=${juser[permission].password}${formParam}`
+                  `${process.env.APP_JOGET_URL}web/json/data/form/store/${reqApp.appId}/${reqApp.formId}/${primaryKey}?j_username=${juser[permission].username}&j_password=${juser[permission].password}${formParam}`
                 )
               )
               .then(res => {
@@ -39,7 +39,7 @@ module.exports = {
       });
       const result = await axios.post(
         encodeURI(
-          `${process.env.VUE_APP_JOGET_URL}web/json/data/form/store/${reqApp.appId}/${reqApp.formId}/${primaryKey}?j_username=${juser[permission].username}&j_password=${juser[permission].password}${formParam}`
+          `${process.env.APP_JOGET_URL}web/json/data/form/store/${reqApp.appId}/${reqApp.formId}/${primaryKey}?j_username=${juser[permission].username}&j_password=${juser[permission].password}${formParam}`
         )
       );
       return result;
@@ -52,7 +52,7 @@ module.exports = {
     const permission = req.payload.permission;
     const result = await axios.post(
       encodeURI(
-        `${process.env.VUE_APP_JOGET_URL}web/json/data/form/delete/${reqApp.appId}/${reqApp.formId}/${primaryKey}?j_username=${juser[permission].username}&j_password=${juser[permission].password}`
+        `${process.env.APP_JOGET_URL}web/json/data/form/delete/${reqApp.appId}/${reqApp.formId}/${primaryKey}?j_username=${juser[permission].username}&j_password=${juser[permission].password}`
       )
     );
     return result;

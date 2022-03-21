@@ -43,7 +43,7 @@ passport.use(new LocalStrategy({
 
 passport.use(new JWTStrategy({
   jwtFromRequest: ExtractJWT.fromAuthHeaderAsBearerToken(),
-  secretOrKey   : process.env.VUE_APP_SECRET
+  secretOrKey   : process.env.APP_SECRET
 }, (jwtPayload, cb) => {
   try {
     // find the user in db if needed

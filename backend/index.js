@@ -13,7 +13,7 @@ const fs = require('fs')
 
 dotenv.config()
 
-const port = process.env.VUE_APP_PORT
+const port = process.env.APP_PORT
 
 // Set Parses JSON 
 app.use(express.json())
@@ -62,7 +62,7 @@ app.use((err, req, res, next) => {
 //   key: fs.readFileSync(__dirname + '/server.key'),
 //   cert: fs.readFileSync(__dirname + '/server.cert')
 // }, app)
-// .listen(process.env.VUE_APP_BACKEND_PORT, function () {
+// .listen(process.env.APP_BACKEND_PORT, function () {
 //   console.log('Example app listening on port 3300! Go to https://amo.thac.or.th:3300/')
 // })
 
