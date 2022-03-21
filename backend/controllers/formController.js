@@ -4,57 +4,47 @@ const juser = jogetUser.jogetUser;
 
 module.exports = {
   submit: async (req, res, next) => {
-    const reqApp = req.body.app;
+    const app = req.body.app;
     const primaryKey = req.body.primaryKey;
     const formData = req.body.formData;
     const permission = req.payload.permission;
-    let formParam = "";
-
-    if (Array.isArray(formData)) {
-      var resultArr = [];
-      formData.forEach(async (form, index) => {
-        Object.keys(form).forEach(async function(key, ik) {
-          formParam = `${formParam}&${key}=${form[key]}`;
-
-          if (ik == Object.keys(form).length - 1) {
-            await axios
-              .post(
-                encodeURI(
-                  `${process.env.APP_JOGET_URL}web/json/data/form/store/${reqApp.appId}/${reqApp.formId}/${primaryKey}?j_username=${juser[permission].username}&j_password=${juser[permission].password}${formParam}`
-                )
-              )
-              .then(res => {
-                resultArr.push(res.data);
-
-                if (index == formData.length - 1) {
-                  return resultArr;
-                }
-              });
-          }
-        });
+    const encoded = base64.encode(
+      `${juser[permission].username}:${juser[permission].password}`
+    );
+    var form = new FormData();
+    Object.keys(formData).forEach(function(key) {
+      form.append(key, formData[key]);
+    });
+    const url = encodeURI(
+      `${process.env.APP_JOGET_URL}web/json/data/form/store/${app.appId}/${app.formId}/${primaryKey}`
+    );
+    await axios
+      .post(url, form, {
+        headers: { Authorization: `Basic ${encoded}`, ...form.getHeaders() }
+      })
+      .then(response => {
+        res.status(200).send(response.data);
+      })
+      .catch(error => {
+        res.status(500).send({ statusText: "can not start process" });
       });
-    } else {
-      Object.keys(formData).forEach(function(key) {
-        formParam = `${formParam}&${key}=${formData[key]}`;
-      });
-      const result = await axios.post(
-        encodeURI(
-          `${process.env.APP_JOGET_URL}web/json/data/form/store/${reqApp.appId}/${reqApp.formId}/${primaryKey}?j_username=${juser[permission].username}&j_password=${juser[permission].password}${formParam}`
-        )
-      );
-      return result;
-    }
   },
 
   delete: async (req, res, next) => {
     const reqApp = req.body.app;
     const primaryKey = req.body.primaryKey;
     const permission = req.payload.permission;
-    const result = await axios.post(
-      encodeURI(
-        `${process.env.APP_JOGET_URL}web/json/data/form/delete/${reqApp.appId}/${reqApp.formId}/${primaryKey}?j_username=${juser[permission].username}&j_password=${juser[permission].password}`
+    await axios
+      .post(
+        encodeURI(
+          `${process.env.APP_JOGET_URL}web/json/data/form/delete/${reqApp.appId}/${reqApp.formId}/${primaryKey}?j_username=${juser[permission].username}&j_password=${juser[permission].password}`
+        )
       )
-    );
-    return result;
+      .then(response => {
+        res.status(200).send(response.data);
+      })
+      .catch(error => {
+        res.send(error);
+      });
   }
 };
