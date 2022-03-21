@@ -135,7 +135,7 @@ export default {
           const user = res.data.user;
           user.token = res.data.token;
           user.ticket = alf_login.data.entry.id;
-          user.position = userData.data.data[0].position;
+          user.position = userData.data[0].position;
           localStorage.setItem("AuthUser", JSON.stringify(user));
           this.$router.push("/home");
         })
