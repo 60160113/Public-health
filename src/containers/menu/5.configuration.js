@@ -8,5 +8,11 @@ export default [
     name: "วัตถุประสงค์",
     to: "/configuration/data_center/objectives",
     icon: "cil-circle"
+  },
+  {
+    _name: "CSidebarNavItem",
+    name: "หมายเลขบัตรเข้าอาคาร",
+    to: "/configuration/data_center/building_cards",
+    icon: "cil-circle"
   }
 ];
