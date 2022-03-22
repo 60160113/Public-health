@@ -9,7 +9,7 @@
           color="primary"
           @click="
             modal = true;
-            form.status = 'add';
+            status = 'add';
           "
           >เพิ่ม</CButton
         >
@@ -66,11 +66,21 @@
                   v-c-tooltip="'แก้ไข'"
                   @click="
                     modal = true;
-                    form.status = 'edit';
+                    status = 'edit';
                     form.id = item.id;
                     form.objective = item.objective;
                   "
                   >แก้ไข</CDropdownItem
+                >
+                <CDropdownDivider />
+                <CDropdownItem
+                  v-c-tooltip="'ลบ'"
+                  @click="
+                    modal = true;
+                    status = 'remove';
+                    form = { ...item };
+                  "
+                  >ลบ</CDropdownItem
                 >
               </CDropdown>
             </td>
@@ -84,23 +94,28 @@
       :show.sync="modal"
       :no-close-on-backdrop="true"
       :centered="true"
-      :color="form.status == 'add' ? 'success' : 'warning'"
+      :color="
+        status == 'remove' ? 'danger' : status == 'add' ? 'success' : 'warning'
+      "
     >
-      <CTextarea label="วัตถุประสงค์" v-model="form.objective" />
+      <b v-if="status == 'remove'">คุณต้องการลบรายการที่เลือกหรือไม่ ?</b>
+      <CTextarea v-else label="วัตถุประสงค์" v-model="form.objective" />
       <template #header>
         <h6 class="modal-title">
-          {{ form.status == "add" ? "เพิ่ม" : "แก้ไข" }}วัตถุประสงค์
+          {{
+            status == "remove" ? "ลบ" : status == "add" ? "เพิ่ม" : "แก้ไข"
+          }}วัตถุประสงค์
         </h6>
         <CButtonClose @click="modal = false" class="text-white" />
       </template>
       <template #footer>
         <CButton color="secondary" @click="modal = false">ยกเลิก</CButton>&nbsp;
         <CButton
-          color="success"
+          :color="status == 'remove' ? 'danger' : 'success'"
           @click.prevent="
-            submitForm(form.id, { objective: form.objective, status: 'active' })
+            status == 'remove' ? remove() : submitForm(form.id, { ...form })
           "
-          >บันทึก</CButton
+          >{{ status == "remove" ? "ลบ" : "บันทึก" }}</CButton
         >
       </template>
 
@@ -125,8 +140,10 @@ export default {
       form: {
         objective: "",
         id: "",
-        status: "add",
+        status: "active",
       },
+
+      status: "add",
 
       fields: [
         { key: "index", label: "#", _style: "width:10%" },
@@ -179,6 +196,18 @@ export default {
           this.getObjectives();
         })
         .catch((err) => {
+          this.loading = false;
+        });
+    },
+    remove() {
+      this.loading = true;
+      this.jogetFormDelete("mophApp", "data_center_objectives", this.form.id)
+        .then((res) => {
+          this.getObjectives();
+          this.modal = false;
+        })
+        .catch((err) => {
+          this.modal = false;
           this.loading = false;
         });
     },
