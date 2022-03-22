@@ -32,7 +32,7 @@ export default {
           );
           // get data
           const userData = await axios.post(
-            `${process.env.VUE_APP_BACKEND_URL}/list/get`,
+            `${process.env.VUE_APP_BACKEND_URL}/list/getOne`,
             {
               app: {
                 appId: "mophApp",
@@ -52,7 +52,7 @@ export default {
           // set data (to localStorage)
           const user = response.data.user;
           user.token = response.data.token;
-          user.position = userData.data[0].position;
+          user.position = userData.data.position;
           localStorage.setItem("AuthUser", JSON.stringify(user));
 
           resolve(user);
