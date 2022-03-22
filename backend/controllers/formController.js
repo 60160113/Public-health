@@ -2,6 +2,7 @@ const axios = require("axios");
 const jogetUser = require("../configs/json/JogetUser.json");
 const juser = jogetUser.jogetUser;
 const base64 = require('base-64')
+const FormData = require('form-data')
 
 module.exports = {
   submit: async (req, res, next) => {
