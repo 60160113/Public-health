@@ -25,6 +25,7 @@
           :itemsPerPageSelect="{
             label: 'แสดง',
           }"
+          :responsive="false"
           :loading="loading"
         >
           <template #no-items-view
@@ -41,15 +42,24 @@
                 <template slot="toggler-content">
                   <CIcon name="cil-options" />
                 </template>
-                <CDropdownDivider />
                 <CDropdownItem
                   v-c-tooltip="'แก้ไข'"
                   @click="
                     modal = true;
                     status = 'edit';
-                    form = item;
+                    form = { ...item };
                   "
                   >แก้ไข</CDropdownItem
+                >
+                <CDropdownDivider />
+                <CDropdownItem
+                  v-c-tooltip="'ลบ'"
+                  @click="
+                    modal = true;
+                    status = 'remove';
+                    form = { ...item };
+                  "
+                  >ลบ</CDropdownItem
                 >
               </CDropdown>
             </td>
@@ -63,26 +73,32 @@
       :show.sync="modal"
       :no-close-on-backdrop="true"
       :centered="true"
-      :color="status == 'add' ? 'success' : 'warning'"
+      :color="
+        status == 'remove' ? 'danger' : status == 'add' ? 'success' : 'warning'
+      "
     >
+      <b v-if="status == 'remove'">คุณต้องการลบรายการที่เลือกหรือไม่ ?</b>
       <CInput
+        v-else
         label="หมายเลขบัตรเข้าอาคาร"
         @keypress.enter="submit()"
         v-model="form.number"
       />
       <template #header>
         <h6 class="modal-title">
-          {{ status == "add" ? "เพิ่ม" : "แก้ไข" }}หมายเลขบัตรเข้าอาคาร
+          {{
+            status == "remove" ? "ลบ" : status == "add" ? "เพิ่ม" : "แก้ไข"
+          }}หมายเลขบัตรเข้าอาคาร
         </h6>
         <CButtonClose @click="modal = false" class="text-white" />
       </template>
       <template #footer>
-        <CButton color="danger" @click="modal = false">ยกเลิก</CButton>&nbsp;
+        <CButton color="secondary" @click="modal = false">ยกเลิก</CButton>&nbsp;
         <CButton
-          color="success"
+          :color="status == 'remove' ? 'danger' : 'success'"
           :disabled="!form.number"
-          @click.prevent="submit()"
-          >บันทึก</CButton
+          @click.prevent="status == 'remove' ? remove() : submit()"
+          >{{ status == "remove" ? "ลบ" : "บันทึก" }}</CButton
         >
       </template>
 
@@ -92,10 +108,10 @@
 </template>
 
 <script>
-import axios from "axios";
-import { authHeader } from "@/helpers/auth-header";
+import JogetHelper from "@/helpers/JogetHelper";
 
 export default {
+  mixins: [JogetHelper],
   created() {
     this.getList();
   },
@@ -105,7 +121,7 @@ export default {
 
       modal: false,
 
-      status: "add",
+      status: "add", // add, edit, remove
 
       form: {
         number: "",
@@ -119,28 +135,14 @@ export default {
       ],
 
       loading: false,
-      axiosOptions: {
-        headers: authHeader(),
-      },
     };
   },
   methods: {
     getList() {
       this.loading = true;
-      const axiosData = {
-        app: {
-          appId: "mophApp",
-          listId: "list_data_center_building_card",
-        },
-      };
-      axios
-        .post(
-          `${process.env.VUE_APP_BACKEND_URL}/list/getAll`,
-          axiosData,
-          this.axiosOptions
-        )
+      this.jogetListAll("mophApp", "list_data_center_building_card")
         .then((res) => {
-          this.list = res.data.data;
+          this.list = res.data;
           this.loading = false;
         })
         .catch((err) => {
@@ -149,29 +151,30 @@ export default {
     },
     submit() {
       this.loading = true;
-      // submit
-      var axiosData = {
-        app: {
-          appId: "mophApp",
-          formId: "data_center_building_card",
-        },
-        primaryKey: this.form.id,
-        formData: this.form,
-      };
-      console.log("axiosData", axiosData);
-
-      axios
-        .post(
-          `${process.env.VUE_APP_BACKEND_URL}/form/submit`,
-          axiosData,
-          this.axiosOptions
-        )
+      this.jogetFormSubmit(
+        "mophApp",
+        "data_center_building_card",
+        this.form.id,
+        this.form
+      )
         .then((res) => {
-            console.log(res);
           this.getList();
           this.modal = false;
         })
         .catch((err) => {
+          this.modal = false;
+          this.loading = false;
+        });
+    },
+    remove() {
+      this.loading = true;
+      this.jogetFormDelete("mophApp", "data_center_building_card", this.form.id)
+        .then((res) => {
+          this.getList();
+          this.modal = false;
+        })
+        .catch((err) => {
+          this.modal = false;
           this.loading = false;
         });
     },
