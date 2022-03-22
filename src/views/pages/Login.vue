@@ -70,7 +70,7 @@
 </template>
 
 <script>
-import JogetHelper from "src/helpers/JogetHelper";
+import JogetHelper from "@/helpers/JogetHelper";
 export default {
   name: "Login",
   mixins: [JogetHelper],
