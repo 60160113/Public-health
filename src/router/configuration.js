@@ -14,5 +14,13 @@ export default [
     meta: {
       requiresAuth: true
     }
+  },
+  {
+    path: "/configuration/data_center/data_center_cards",
+    name: "Data center card numbers",
+    component: () => import("@/views/configuration/data_center/DataCenterCards.vue"),
+    meta: {
+      requiresAuth: true
+    }
   }
 ];
