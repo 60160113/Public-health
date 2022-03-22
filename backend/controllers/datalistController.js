@@ -19,12 +19,10 @@ module.exports = {
           `${process.env.APP_JOGET_URL}web/json/data/list/${reqApp.appId}/${reqApp.listId}/?j_username=${juser[permission].username}&j_password=${juser[permission].password}${params}`
         )
       );
-      if (response.data.data.length > 1) {
-        res.send("Result more than one record");
-      } else if (result.data.data.length === 1) {
-        res.status(200).send(result.data);
+      if (result.data.data.length >= 1) {
+        res.status(200).send(result.data.data[0]);
       } else {
-        res.send("No Data");
+        res.send({message: "No Data"});
       }
     } catch (error) {
       res.status(error.response.status);
