@@ -4,7 +4,7 @@ import axios from "axios";
 export default {
   methods: {
     // return header
-    axiosOptions() {
+    jogetAxiosOptions() {
       const AuthUser = JSON.parse(localStorage.getItem("AuthUser"));
       // return authorization header with jwt token
       if (AuthUser && AuthUser.token) {
@@ -17,7 +17,7 @@ export default {
     },
 
     // ==== AUTHEN ==== //
-    async login(authData) {
+    async jogetLogin(authData) {
       return new Promise(async (resolve, reject) => {
         try {
           // login
@@ -64,7 +64,7 @@ export default {
 
     // ==== PROCESS ====//
     // start process
-    async startProcess(appId, processDefId) {
+    async jogetStartProcess(appId, processDefId) {
       const axiosData = {
         app: {
           appId: appId,
@@ -74,11 +74,11 @@ export default {
       return await axios.post(
         `${process.env.VUE_APP_BACKEND_URL}/process/start`,
         axiosData,
-        this.axiosOptions()
+        this.jogetAxiosOptions()
       );
     },
     // complete process
-    async processComplete(activityId, variables = null) {
+    async jogetProcessComplete(activityId, variables = null) {
       var axiosData = {
         activityId: activityId,
       };
@@ -90,26 +90,26 @@ export default {
           variables ? "WithVariable" : ""
         }`,
         axiosData,
-        this.axiosOptions()
+        this.jogetAxiosOptions()
       );
     },
 
     // ==== ACTIVITY ==== //
     // current activity
-    async getCurrentActivity(processId) {
+    async jogetGetCurrentActivity(processId) {
       const axiosData = {
         processId: processId,
       };
       return await axios.post(
         `${process.env.VUE_APP_BACKEND_URL}/process/view`,
         axiosData,
-        this.axiosOptions()
+        this.jogetAxiosOptions()
       );
     },
 
     // ==== FORM ====//
     // submit
-    async formSubmit(appId, formId, primaryKey, formData) {
+    async jogetFormSubmit(appId, formId, primaryKey, formData) {
       const axiosData = {
         app: {
           appId: appId,
@@ -121,11 +121,11 @@ export default {
       return await axios.post(
         `${process.env.VUE_APP_BACKEND_URL}/form/submit`,
         axiosData,
-        this.axiosOptions()
+        this.jogetAxiosOptions()
       );
     },
     // delete
-    async formDelete(appId, formId, primaryKey) {
+    async jogetFormDelete(appId, formId, primaryKey) {
       const axiosData = {
         app: {
           appId: appId,
@@ -136,13 +136,13 @@ export default {
       return await axios.post(
         `${process.env.VUE_APP_BACKEND_URL}/form/delete`,
         axiosData,
-        this.axiosOptions()
+        this.jogetAxiosOptions()
       );
     },
 
     // ==== LIST ====//
     // get
-    async list(appId, listId, searchData) {
+    async jogetList(appId, listId, searchData) {
       const axiosData = {
         app: {
           appId: appId,
@@ -153,11 +153,11 @@ export default {
       return await axios.post(
         `${process.env.VUE_APP_BACKEND_URL}/list/get`,
         axiosData,
-        this.axiosOptions()
+        this.jogetAxiosOptions()
       );
     },
     // get all
-    async listAll(appId, listId) {
+    async jogetListAll(appId, listId) {
       const axiosData = {
         app: {
           appId: appId,
@@ -167,11 +167,11 @@ export default {
       return await axios.post(
         `${process.env.VUE_APP_BACKEND_URL}/list/getAll`,
         axiosData,
-        this.axiosOptions()
+        this.jogetAxiosOptions()
       );
     },
     // get one
-    async getOne(appId, listId, searchData) {
+    async jogetGetOne(appId, listId, searchData) {
       const axiosData = {
         app: {
           appId: appId,
@@ -182,7 +182,7 @@ export default {
       return await axios.post(
         `${process.env.VUE_APP_BACKEND_URL}/list/getOne`,
         axiosData,
-        this.axiosOptions()
+        this.jogetAxiosOptions()
       );
     },
   },

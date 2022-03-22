@@ -36,7 +36,7 @@
                       <CButton
                         color="primary"
                         class="px-4"
-                        @click.prevent="login"
+                        @click.prevent="login()"
                         >Login</CButton
                       >
                     </CCol>
@@ -72,8 +72,10 @@
 <script>
 import axios from "axios";
 
+import JogetHelper from "src/helpers/JogetHelper";
 export default {
   name: "Login",
+  mixins: [JogetHelper],
   created() {
     const user = JSON.parse(localStorage.getItem("AuthUser"));
     if (user) {
@@ -92,56 +94,9 @@ export default {
   },
   methods: {
     login() {
-      const axiosHeader = {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      };
-      axios
-        .post(
-          `${process.env.VUE_APP_BACKEND_URL}/auth/login`,
-          this.form,
-          axiosHeader
-        )
-        .then(async (res) => {
-          const userData = await axios.post(
-            `${process.env.VUE_APP_BACKEND_URL}/list/get`,
-            {
-              app: {
-                appId: "mophApp",
-                listId: "user_accounts",
-              },
-              search: [
-                {
-                  paramName: "id",
-                  paramValue: res.data.user.id,
-                },
-              ],
-            },
-            {
-              headers: { Authorization: "Bearer " + res.data.token },
-            }
-          );
-          const alf_login = await axios.post(
-            `${process.env.VUE_APP_ALF_API}authentication/versions/1/tickets`,
-            {
-              userId: "jack",
-              password: "ivsoft",
-            }
-          );
-          this.$alf_request.defaults.headers[
-            "Authorization"
-          ] = `Basic ${window.btoa(alf_login.data.entry.id)}`;
-          const user = res.data.user;
-          user.token = res.data.token;
-          user.ticket = alf_login.data.entry.id;
-          user.position = userData.data[0].position;
-          localStorage.setItem("AuthUser", JSON.stringify(user));
-          this.$router.push("/home");
-        })
-        .catch((err) => {
-          this.loginErrorModal = true;
-        });
+      this.jogetLogin(this.form).then(res => {
+        this.$router.push("/home")
+      })
     },
   },
 };
