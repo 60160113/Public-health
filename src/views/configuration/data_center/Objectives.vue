@@ -109,10 +109,9 @@
 </template>
 
 <script>
-import axios from "axios";
-import { authHeader } from "@/helpers/auth-header";
-
+import JogetHelper from "@/helpers/JogetHelper";
 export default {
+  mixins: [JogetHelper],
   created() {
     this.getObjectives();
   },
@@ -136,28 +135,15 @@ export default {
       ],
 
       loading: false,
-      axiosOptions: {
-        headers: authHeader(),
-      },
     };
   },
   methods: {
     getObjectives() {
       this.loading = true;
-      const axiosData = {
-        app: {
-          appId: "mophApp",
-          listId: "list_data_center_objectives",
-        },
-      };
-      axios
-        .post(
-          `${process.env.VUE_APP_BACKEND_URL}/list/getAll`,
-          axiosData,
-          this.axiosOptions
-        )
+
+      this.jogetListAll("mophApp", "list_data_center_objectives")
         .then((res) => {
-          this.objectives = res.data.data;
+          this.objectives = res.data;
           this.loading = false;
         })
         .catch((err) => {
@@ -165,26 +151,17 @@ export default {
         });
     },
     submit(primaryKey, formData) {
-      // submit
-      var axiosData = {
-        app: {
-          appId: "mophApp",
-          formId: "data_center_objectives",
-        },
+      return this.jogetFormSubmit(
+        "mophApp",
+        "data_center_objectives",
         primaryKey,
-        formData,
-      };
-
-      return axios.post(
-        `${process.env.VUE_APP_BACKEND_URL}/form/submit`,
-        axiosData,
-        this.axiosOptions
+        formData
       );
     },
     submitForm(id, formData) {
       this.loading = true;
       this.submit(id, formData)
-        .then(() => {
+        .then((res) => {
           this.getObjectives();
           this.modal = false;
         })
