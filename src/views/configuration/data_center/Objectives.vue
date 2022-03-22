@@ -93,7 +93,7 @@
         <CButtonClose @click="modal = false" class="text-white" />
       </template>
       <template #footer>
-        <CButton color="danger" @click="modal = false">ยกเลิก</CButton>&nbsp;
+        <CButton color="secondary" @click="modal = false">ยกเลิก</CButton>&nbsp;
         <CButton
           color="success"
           @click.prevent="
