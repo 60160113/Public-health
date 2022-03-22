@@ -70,8 +70,6 @@
 </template>
 
 <script>
-import axios from "axios";
-
 import JogetHelper from "src/helpers/JogetHelper";
 export default {
   name: "Login",
