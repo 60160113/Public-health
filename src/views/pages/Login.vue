@@ -16,6 +16,7 @@
                     placeholder="Username"
                     autocomplete="username email"
                     v-model.trim="form.email"
+                    @keypress.enter="validate? login(): false"
                   >
                     <template #prepend-content
                       ><CIcon name="cil-user"
@@ -26,6 +27,7 @@
                     type="password"
                     autocomplete="curent-password"
                     v-model.trim="form.password"
+                    @keypress.enter="validate? login(): false"
                   >
                     <template #prepend-content
                       ><CIcon name="cil-lock-locked"
@@ -52,20 +54,22 @@
     <CModal
       title="ข้อมูลไม่ถูกต้อง"
       color="danger"
-      size="lg"
+      size="sm"
       :show.sync="loginErrorModal"
       centered
     >
-      <p>อีเมลหรือรหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง</p>
+      <b>อีเมลหรือรหัสผ่านไม่ถูกต้อง กรุณาลองใหม่อีกครั้ง</b>
       <template #footer>
         <CButton
-          color="danger"
+          color="secondary"
           class="float-right"
           @click="loginErrorModal = false"
           >ปิด</CButton
         >
       </template>
     </CModal>
+
+    <CElementCover :opacity="0.8" v-if="loading" />
   </div>
 </template>
 
@@ -87,15 +91,29 @@ export default {
         password: "",
       },
 
+      loading: false,
+
       loginErrorModal: false,
     };
   },
   methods: {
     login() {
-      this.jogetLogin(this.form).then(res => {
-        this.$router.push("/home")
-      })
+      this.loading = true;
+      this.jogetLogin(this.form)
+        .then((res) => {
+          this.loading = false;
+          this.$router.push("/home");
+        })
+        .catch((err) => {
+          this.loading = false;
+          this.loginErrorModal = true;
+        });
     },
   },
+  computed: {
+    validate() {
+      return Object.values(this.form).filter(item => !item).length == 0
+    }
+  }
 };
 </script>
