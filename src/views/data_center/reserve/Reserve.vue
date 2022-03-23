@@ -36,25 +36,7 @@
               id="idcard"
               type="text"
               class="form-control"
-              :mask="[
-                /\d/,
-                '-',
-                /\d/,
-                /\d/,
-                /\d/,
-                /\d/,
-                '-',
-                /\d/,
-                /\d/,
-                /\d/,
-                /\d/,
-                /\d/,
-                '-',
-                /\d/,
-                /\d/,
-                '-',
-                /\d/,
-              ]"
+              :mask="idCardMaskInput"
               :guide="true"
               placeholderChar="#"
             />
@@ -182,6 +164,26 @@ export default {
       // etc
       loading: false,
       completed: false,
+
+      idCardMaskInput: [
+        /\d/,
+        "-",
+        /\d/,
+        /\d/,
+        /\d/,
+        /\d/,
+        "-",
+        /\d/,
+        /\d/,
+        /\d/,
+        /\d/,
+        /\d/,
+        "-",
+        /\d/,
+        /\d/,
+        "-",
+        /\d/,
+      ],
     };
   },
   methods: {
