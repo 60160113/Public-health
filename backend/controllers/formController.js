@@ -1,8 +1,8 @@
 const axios = require("axios");
 const jogetUser = require("../configs/json/JogetUser.json");
 const juser = jogetUser.jogetUser;
-const base64 = require('base-64')
-const FormData = require('form-data')
+const base64 = require("base-64");
+const FormData = require("form-data");
 
 module.exports = {
   submit: async (req, res, next) => {
@@ -30,6 +30,40 @@ module.exports = {
       .catch(error => {
         res.status(500).send({ statusText: "can not start process" });
       });
+  },
+
+  multipleSubmit: async (req, res, next) => {
+    try {
+      const app = req.body.app;
+      const formData = req.body.formData;
+      const permission = req.payload.permission;
+      const encoded = base64.encode(
+        `${juser[permission].username}:${juser[permission].password}`
+      );
+      var responseArr = [];
+      for await (const [index, data] of formData.entries()) {
+        var form = new FormData();
+        Object.keys(data).forEach(key => {
+          form.append(key, data[key]);
+        });
+        const url = encodeURI(
+          `${process.env.APP_JOGET_URL}web/json/data/form/store/${app.appId}/${app.formId}/`
+        );
+        await axios
+          .post(url, form, {
+            headers: {
+              Authorization: `Basic ${encoded}`,
+              ...form.getHeaders()
+            }
+          })
+          .then(async response => {
+            await responseArr.push(response.data);
+          });
+      }
+      await res.send({ response: responseArr });
+    } catch (error) {
+      res.status(500).send({ statusText: "can not start process" });
+    }
   },
 
   delete: async (req, res, next) => {

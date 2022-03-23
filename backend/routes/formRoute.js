@@ -5,6 +5,8 @@ const formController = require('../controllers/formController')
 
 router.post('/submit', auth.required, formController.submit)
 
+router.post('/submit/multiple', auth.required, formController.multipleSubmit)
+
 router.post('/delete', auth.required, formController.delete)
 
 module.exports = router
