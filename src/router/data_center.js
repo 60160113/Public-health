@@ -1,66 +1,10 @@
 export default [
   {
-    path: "/data-center/list-all",
-    name: "List All",
-    component: () => import("@/views/data_center/ListAll.vue"),
+    path: "/data-center/reserve/list",
+    name: "Reserve List",
+    component: () => import("@/views/data_center/reserve/List.vue"),
     meta: {
       requiresAuth: true
     }
   },
-  {
-    path: "/data-center/view-tasks",
-    name: "Tasks - Data Center",
-    component: () => import("@/views/data_center/Tasks.vue"),
-    meta: {
-      requiresAuth: true
-    }
-  },
-  {
-    path: "/data-center/check-in",
-    name: "Check In",
-    component: () => import("@/views/data_center/CheckIn.vue"),
-    meta: {
-      requiresAuth: true
-    }
-  },
-  {
-    path: "/data-center/consider-requirement/:processId",
-    name: "Consider Requirement",
-    component: () => import("@/views/data_center/ConsiderRequirement.vue"),
-    meta: {
-      requiresAuth: true
-    }
-  },
-  {
-    path: "/data-center/data-center-check-in/:processId",
-    name: "Data Center Check In",
-    component: () => import("@/views/data_center/DataCenterCheckIn.vue"),
-    meta: {
-      requiresAuth: true
-    }
-  },
-  {
-    path: "/data-center/data-center-check-out/:processId",
-    name: "Data Center Check Out",
-    component: () => import("@/views/data_center/DataCenterCheckOut.vue"),
-    meta: {
-      requiresAuth: true
-    }
-  },
-  {
-    path: "/data-center/check-out/:processId",
-    name: "Check Out",
-    component: () => import("@/views/data_center/CheckOut.vue"),
-    meta: {
-      requiresAuth: true
-    }
-  },
-  {
-    path: "/data-center/view-report/:id",
-    name: "Data Center Report",
-    component: () => import("@/views/data_center/ViewReport.vue"),
-    meta: {
-      requiresAuth: true
-    }
-  }
 ];
