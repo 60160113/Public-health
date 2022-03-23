@@ -124,6 +124,21 @@ export default {
         this.jogetAxiosOptions()
       );
     },
+    // multiple submit
+    async jogetMultipleFormSubmit(appId, formId, formData) {
+      const axiosData = {
+        app: {
+          appId: appId,
+          formId: formId,
+        },
+        formData: formData,
+      };
+      return await axios.post(
+        `${process.env.VUE_APP_BACKEND_URL}/form/submit/multiple`,
+        axiosData,
+        this.jogetAxiosOptions()
+      );
+    },
     // delete
     async jogetFormDelete(appId, formId, primaryKey) {
       const axiosData = {
