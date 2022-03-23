@@ -7,6 +7,19 @@
 
       <CCardBody>
         <CRow>
+          <CCol>
+            <label>วันที่ต้องการจอง</label>
+            <v-date-picker
+              :min-date="disabledDate"
+              mode="dateTime"
+              :masks="{
+                input: 'YYYY-MM-DD',
+              }"
+              v-model="reserve_form.reserve_date"
+            />
+          </CCol>
+        </CRow>
+        <CRow class="mt-2">
           <CCol md="6">
             <CInput label="ผู้ร้องขอ" />
           </CCol>
@@ -18,20 +31,32 @@
             <CInput label="สังกัด" />
           </CCol>
           <CCol md="6">
-            <CInput
-              label="เลขที่บัตรประชาชน"
-              maxlength="13"
-              @keypress="
-                ($event) => {
-                  let keyCode = $event.keyCode ? $event.keyCode : $event.which;
-                  if (
-                    (keyCode > 31 && (keyCode < 48 || keyCode > 57)) ||
-                    keyCode == 46
-                  ) {
-                    $event.preventDefault();
-                  }
-                }
-              "
+            <label for="idcard">เลขที่บัตรประชาชน</label>
+            <masked-input
+              id="idcard"
+              type="text"
+              class="form-control"
+              :mask="[
+                /\d/,
+                '-',
+                /\d/,
+                /\d/,
+                /\d/,
+                /\d/,
+                '-',
+                /\d/,
+                /\d/,
+                /\d/,
+                /\d/,
+                /\d/,
+                '-',
+                /\d/,
+                /\d/,
+                '-',
+                /\d/,
+              ]"
+              :guide="true"
+              placeholderChar="#"
             />
           </CCol>
         </CRow>
@@ -84,9 +109,10 @@
 <script>
 import JogetHelper from "@/helpers/JogetHelper";
 import { DatePicker } from "v-calendar";
+import MaskedInput from "vue-text-mask";
 export default {
   mixins: [JogetHelper],
-  components: { "v-date-picker": DatePicker },
+  components: { "v-date-picker": DatePicker, MaskedInput },
   created() {
     this.loading = true;
     this.login("application", "application").then(async (res) => {
@@ -122,8 +148,6 @@ export default {
     return {
       // form
       reserve_form: {
-        processId: "",
-
         reserve_date: new Date(),
         objective: "",
         note: "",
@@ -184,6 +208,8 @@ export default {
     },
     async submit() {
       try {
+        // reserve
+        const reserveData = { ...this.reserve_form, processId: "" };
         // booker
         const bookerData = this.booker_form.map((item) => {
           item.processId = "";
@@ -205,6 +231,12 @@ export default {
   computed: {
     disabledButton() {
       return Object.values(this.reserve_form).includes("");
+    },
+    disabledDate() {
+      const today = new Date();
+      const tomorow = new Date();
+      tomorow.setDate(today.getDate() + 1);
+      return tomorow;
     },
   },
 };
