@@ -16,7 +16,14 @@
                 input: 'YYYY-MM-DD',
               }"
               v-model="reserve_form.reserve_date"
-            />
+            >
+              <template v-slot="{ inputValue, inputEvents }">
+                <CInput
+                  :value="inputValue"
+                  v-on="inputEvents"
+                />
+              </template>
+            </v-date-picker>
           </CCol>
         </CRow>
         <CRow class="mt-2">
