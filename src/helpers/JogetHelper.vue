@@ -4,8 +4,8 @@ import axios from "axios";
 export default {
   methods: {
     // return header
-    jogetAxiosOptions() {
-      const AuthUser = JSON.parse(localStorage.getItem("AuthUser"));
+    jogetAxiosOptions(localStorageIndex = "AuthUser") {
+      const AuthUser = JSON.parse(localStorage.getItem(localStorageIndex));
       // return authorization header with jwt token
       if (AuthUser && AuthUser.token) {
         return {
@@ -17,7 +17,7 @@ export default {
     },
 
     // ==== AUTHEN ==== //
-    async jogetLogin(authData) {
+    async jogetLogin(authData, localStorageIndex = "AuthUser") {
       return new Promise(async (resolve, reject) => {
         try {
           // login
@@ -53,7 +53,7 @@ export default {
           const user = response.data.user;
           user.token = response.data.token;
           user.position = userData.data.position;
-          localStorage.setItem("AuthUser", JSON.stringify(user));
+          localStorage.setItem(localStorageIndex, JSON.stringify(user));
 
           resolve(user);
         } catch (error) {
@@ -64,7 +64,7 @@ export default {
 
     // ==== PROCESS ====//
     // start process
-    async jogetStartProcess(appId, processDefId) {
+    async jogetStartProcess(appId, processDefId, localStorageIndex = "") {
       const axiosData = {
         app: {
           appId: appId,
@@ -74,11 +74,15 @@ export default {
       return await axios.post(
         `${process.env.VUE_APP_BACKEND_URL}/process/start`,
         axiosData,
-        this.jogetAxiosOptions()
+        this.jogetAxiosOptions(localStorageIndex)
       );
     },
     // complete process
-    async jogetProcessComplete(activityId, variables = null) {
+    async jogetProcessComplete(
+      activityId,
+      variables = null,
+      localStorageIndex = ""
+    ) {
       var axiosData = {
         activityId: activityId,
       };
@@ -90,26 +94,32 @@ export default {
           variables ? "WithVariable" : ""
         }`,
         axiosData,
-        this.jogetAxiosOptions()
+        this.jogetAxiosOptions(localStorageIndex)
       );
     },
 
     // ==== ACTIVITY ==== //
     // current activity
-    async jogetGetCurrentActivity(processId) {
+    async jogetGetCurrentActivity(processId, localStorageIndex = "") {
       const axiosData = {
         processId: processId,
       };
       return await axios.post(
         `${process.env.VUE_APP_BACKEND_URL}/process/view`,
         axiosData,
-        this.jogetAxiosOptions()
+        this.jogetAxiosOptions(localStorageIndex)
       );
     },
 
     // ==== FORM ====//
     // submit
-    async jogetFormSubmit(appId, formId, primaryKey, formData) {
+    async jogetFormSubmit(
+      appId,
+      formId,
+      primaryKey,
+      formData,
+      localStorageIndex = ""
+    ) {
       const axiosData = {
         app: {
           appId: appId,
@@ -121,11 +131,16 @@ export default {
       return await axios.post(
         `${process.env.VUE_APP_BACKEND_URL}/form/submit`,
         axiosData,
-        this.jogetAxiosOptions()
+        this.jogetAxiosOptions(localStorageIndex)
       );
     },
     // multiple submit
-    async jogetMultipleFormSubmit(appId, formId, formData) {
+    async jogetMultipleFormSubmit(
+      appId,
+      formId,
+      formData,
+      localStorageIndex = ""
+    ) {
       const axiosData = {
         app: {
           appId: appId,
@@ -136,11 +151,11 @@ export default {
       return await axios.post(
         `${process.env.VUE_APP_BACKEND_URL}/form/submit/multiple`,
         axiosData,
-        this.jogetAxiosOptions()
+        this.jogetAxiosOptions(localStorageIndex)
       );
     },
     // delete
-    async jogetFormDelete(appId, formId, primaryKey) {
+    async jogetFormDelete(appId, formId, primaryKey, localStorageIndex = "") {
       const axiosData = {
         app: {
           appId: appId,
@@ -151,13 +166,13 @@ export default {
       return await axios.post(
         `${process.env.VUE_APP_BACKEND_URL}/form/delete`,
         axiosData,
-        this.jogetAxiosOptions()
+        this.jogetAxiosOptions(localStorageIndex)
       );
     },
 
     // ==== LIST ====//
     // get
-    async jogetList(appId, listId, searchData) {
+    async jogetList(appId, listId, searchData, localStorageIndex = "") {
       const axiosData = {
         app: {
           appId: appId,
@@ -168,11 +183,11 @@ export default {
       return await axios.post(
         `${process.env.VUE_APP_BACKEND_URL}/list/get`,
         axiosData,
-        this.jogetAxiosOptions()
+        this.jogetAxiosOptions(localStorageIndex)
       );
     },
     // get all
-    async jogetListAll(appId, listId) {
+    async jogetListAll(appId, listId, localStorageIndex = "") {
       const axiosData = {
         app: {
           appId: appId,
@@ -182,11 +197,11 @@ export default {
       return await axios.post(
         `${process.env.VUE_APP_BACKEND_URL}/list/getAll`,
         axiosData,
-        this.jogetAxiosOptions()
+        this.jogetAxiosOptions(localStorageIndex)
       );
     },
     // get one
-    async jogetGetOne(appId, listId, searchData) {
+    async jogetGetOne(appId, listId, searchData, localStorageIndex = "") {
       const axiosData = {
         app: {
           appId: appId,
@@ -197,7 +212,7 @@ export default {
       return await axios.post(
         `${process.env.VUE_APP_BACKEND_URL}/list/getOne`,
         axiosData,
-        this.jogetAxiosOptions()
+        this.jogetAxiosOptions(localStorageIndex)
       );
     },
   },
