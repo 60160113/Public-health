@@ -174,7 +174,7 @@
         </CCol>
 
         <CCol md="6">
-          <CInput label="สังกัด" v-model="arr_form.booker.affiliation" />
+          <CInput label="สังกัด/บริษัท" v-model="arr_form.booker.affiliation" />
         </CCol>
         <CCol md="6">
           <label for="idcard">เลขที่บัตรประชาชน</label>
@@ -421,30 +421,70 @@ export default {
     },
     async submit() {
       try {
-        // reserve
-        const reserveData = { ...this.reserve_form, processId: "" };
-        // booker
-        const bookerData = this.arr_list.booker.map((item) => {
-          item.processId = "";
-          item.activity = ""; // id;name
+        this.loading = true;
+        // start process
+        const startProcess = await this.jogetStartProcess(
+          "mophApp",
+          "data_center_reserve_process",
+          "tempUser"
+        );
+        const processId = startProcess.data.processId;
 
-          item.reserve_id = ""; // foreign key to processId of data_center_reserve
-          item.assign = "position;IST"; // localStorage() field;value
+        // Submit
+        // == Reserve == //
+        const reserveData = { ...this.reserve_form, processId: processId };
+        await this.jogetFormSubmit(
+          "mophApp",
+          "data_center_reserve",
+          "",
+          reserveData,
+          "tempUser"
+        );
+        // == Booker == //
+        const bookerData = this.arr_list.booker.map((item) => {
+          item.reserve_id = processId; // foreign key to processId of data_center_reserve
+          item.assign = "position;guard"; // localStorage() field;value
           return item;
         });
-        // hardware
+        await this.jogetMultipleFormSubmit(
+          "mophApp",
+          "data_center_booker",
+          bookerData,
+          "tempUser"
+        );
+        // == Hardware == //
         const hardwareData = this.arr_list.hardware.map((item) => {
-          item.processId = "";
-          item.status = "เข้า";
+          item.processId = processId;
           return item;
+        });
+        await this.jogetMultipleFormSubmit(
+          "mophApp",
+          "data_center_hardware",
+          hardwareData,
+          "tempUser"
+        );
+
+        // activity
+        const Activity = await this.jogetGetCurrentActivity(
+          processId,
+          "tempUser"
+        );
+        await this.jogetProcessComplete(
+          Activity.data.activityId,
+          null,
+          "tempUser"
+        ).then((res) => {
+          this.loading = false;
+          this.completed = true;
         });
       } catch (error) {}
     },
   },
   computed: {
     disabledButton() {
+      const reserveForm = (({ note, ...item }) => item)(this.reserve_form);
       return (
-        Object.values(this.reserve_form).includes("") ||
+        Object.values(reserveForm).includes("") ||
         this.arr_list.booker.length == 0
       );
     },
