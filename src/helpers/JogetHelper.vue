@@ -4,8 +4,9 @@ import axios from "axios";
 export default {
   methods: {
     // return header
-    jogetAxiosOptions(localStorageIndex = "AuthUser") {
-      const AuthUser = JSON.parse(localStorage.getItem(localStorageIndex));
+    jogetAxiosOptions(localStorageIndex = "") {
+      const storageIndex = localStorageIndex ? localStorageIndex : "AuthUser"
+      const AuthUser = JSON.parse(localStorage.getItem(storageIndex));
       // return authorization header with jwt token
       if (AuthUser && AuthUser.token) {
         return {
