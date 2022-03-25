@@ -6,57 +6,77 @@
       </CCardHeader>
 
       <CCardBody>
+        <!-- reserve_date -->
         <CRow>
           <CCol>
-            <label>วันที่ต้องการจอง</label>
+            <label>วันที่ต้องการจอง <b style="color: red">*</b></label>
             <v-date-picker
               :min-date="disabledDate"
               mode="dateTime"
               :masks="{
                 input: 'YYYY-MM-DD',
               }"
+              is24hr
               v-model="reserve_form.reserve_date"
             >
               <template v-slot="{ inputValue, inputEvents }">
-                <CInput
-                  :value="inputValue"
-                  v-on="inputEvents"
-                />
+                <CInput :value="inputValue" v-on="inputEvents" />
               </template>
             </v-date-picker>
           </CCol>
         </CRow>
-        <CRow class="mt-2">
-          <CCol md="6">
-            <CInput label="ผู้ร้องขอ" />
-          </CCol>
-          <CCol md="6">
-            <CInput label="ตำแหน่ง" />
-          </CCol>
+        <hr />
 
-          <CCol md="6">
-            <CInput label="สังกัด" />
-          </CCol>
-          <CCol md="6">
-            <label for="idcard">เลขที่บัตรประชาชน</label>
-            <masked-input
-              id="idcard"
-              type="text"
-              class="form-control"
-              :mask="idCardMaskInput"
-              :guide="true"
-              placeholderChar="#"
-            />
-          </CCol>
-        </CRow>
+        <!-- booker T A B L E -->
+        <div id="booker_section">
+          <h5 class="text-primary">
+            รายการผู้จอง <b style="color: red">*</b> (ต้องมีอย่างน้อย 1 รายการ)
+          </h5>
+          <CDataTable
+            :items="arr_list.booker"
+            :fields="booker_field"
+            pagination
+            :items-per-page="5"
+            :itemsPerPageSelect="{
+              label: 'แสดง',
+            }"
+          >
+            <template #no-items-view
+              ><div class="text-center">ไม่พบข้อมูล</div>
+            </template>
+            <template #over-table>
+              <div style="margin-bottom: 10px">
+                <CButton
+                  color="success"
+                  @click.prevent="
+                    modalName = 'booker';
+                    modal = true;
+                  "
+                  >เพิ่มผู้จอง</CButton
+                >
+              </div>
+            </template>
+            <template #action="{ index }">
+              <td>
+                <CButton
+                  color="danger"
+                  @click="arr_list.booker.splice(index, 1)"
+                  >ลบ</CButton
+                >
+              </td>
+            </template>
+          </CDataTable>
+        </div>
 
         <hr />
-        <CRow>
+        <!-- reserve D E T A I L -->
+        <CRow id="reserve_section">
           <CCol md="6">
             <CSelect
               label="ผู้ติดต่อ"
               placeholder="กรุณาเลือกผู้ติดต่อ"
               :options="ISS_options"
+              :value.sync="reserve_form.ISS"
             />
           </CCol>
           <CCol md="6">
@@ -64,15 +84,53 @@
               label="วัตถุประสงค์"
               placeholder="กรุณาเลือกวัตถุประสงค์"
               :options="objective_options"
+              :value.sync="reserve_form.objective"
             />
           </CCol>
-        </CRow>
-
-        <CRow>
           <CCol col="12">
-            <CTextarea label="หมายเหตุ" />
+            <CTextarea label="หมายเหตุ" v-model="reserve_form.note" />
           </CCol>
         </CRow>
+        <hr />
+
+        <!-- hardware T A B L E -->
+        <div id="hardware_section">
+          <h5 class="text-primary">รายการ Hardwares</h5>
+          <CDataTable
+            :items="arr_list.hardware"
+            :fields="hardware_field"
+            pagination
+            :items-per-page="5"
+            :itemsPerPageSelect="{
+              label: 'แสดง',
+            }"
+          >
+            <template #no-items-view
+              ><div class="text-center">ไม่พบข้อมูล</div>
+            </template>
+            <template #over-table>
+              <div style="margin-bottom: 10px">
+                <CButton
+                  color="success"
+                  @click.prevent="
+                    modalName = 'hardware';
+                    modal = true;
+                  "
+                  >เพิ่ม Hardware</CButton
+                >
+              </div>
+            </template>
+            <template #action="{ index }">
+              <td>
+                <CButton
+                  color="danger"
+                  @click="arr_list.hardware.splice(index, 1)"
+                  >ลบ</CButton
+                >
+              </td>
+            </template>
+          </CDataTable>
+        </div>
       </CCardBody>
 
       <CCardFooter>
@@ -90,6 +148,119 @@
       <CCardHeader><strong class="text-primary">เสร็จสิ้น</strong></CCardHeader>
       <CCardBody>ข้อมูลการจองของคุณถูกจัดเก็บไปยังฐานข้อมูลเสร็จสิ้น</CCardBody>
     </CCard>
+
+    <!-- M O D A L -->
+    <CModal
+      :show.sync="modal"
+      :no-close-on-backdrop="true"
+      :centered="true"
+      color="success"
+    >
+      <!-- BOOKER M O D A L -->
+      <CRow v-if="modalName == 'booker'">
+        <CCol md="6">
+          <CInput label="ชื่อ - สกุล" v-model="arr_form.booker.name" />
+        </CCol>
+        <CCol md="6">
+          <CInput label="ตำแหน่ง" v-model="arr_form.booker.position" />
+        </CCol>
+
+        <CCol md="6">
+          <CInput label="สังกัด" v-model="arr_form.booker.affiliation" />
+        </CCol>
+        <CCol md="6">
+          <label for="idcard">เลขที่บัตรประชาชน</label>
+          <masked-input
+            id="idcard"
+            type="text"
+            class="form-control"
+            :mask="idCardMaskInput"
+            :guide="true"
+            placeholderChar="#"
+            v-model="arr_form.booker.idcard"
+          />
+        </CCol>
+      </CRow>
+
+      <!-- HARDWARE M O D A L -->
+      <div v-else>
+        <CRow>
+          <CCol col="6">
+            <CInput label="ชื่อ" v-model="arr_form.hardware.name" />
+          </CCol>
+          <CCol col="6">
+            <CInput label="ยี่ห้อ" v-model="arr_form.hardware.brand" />
+          </CCol>
+
+          <CCol col="6">
+            <CInput label="S/N" v-model="arr_form.hardware.serial_number" />
+          </CCol>
+          <CCol col="6">
+            <CInput
+              label="จำนวน"
+              type="number"
+              v-model="arr_form.hardware.unit"
+            />
+          </CCol>
+        </CRow>
+        <hr />
+
+        <label>นำเข้า - นำออก</label>
+        <CInputRadioGroup
+          :options="[
+            { value: 'เข้า', label: 'เข้า' },
+            { value: 'ออก', label: 'ออก' },
+          ]"
+          :checked.sync="arr_form.hardware.status"
+          custom
+          inline
+        />
+
+        <hr />
+        <label>รูปแบบ</label>
+        <CInputRadioGroup
+          :options="[
+            { value: 'ชั่วคราว', label: 'ชั่วคราว' },
+            { value: 'ถาวร', label: 'ถาวร' },
+          ]"
+          :checked.sync="arr_form.hardware.type"
+          custom
+          inline
+        />
+
+        <div v-if="arr_form.hardware.type == 'ชั่วคราว'">
+          <hr />
+          <CRow class="mt-3">
+            <CCol>
+              <label>วันที่ส่งคืน</label>
+              <v-date-picker
+                :min-date="disabledDate"
+                mode="dateTime"
+                :masks="{
+                  input: 'YYYY-MM-DD',
+                }"
+                is24hr
+                v-model="arr_form.hardware.return_date"
+              >
+                <template v-slot="{ inputValue, inputEvents }">
+                  <CInput :value="inputValue" v-on="inputEvents" />
+                </template>
+              </v-date-picker>
+            </CCol>
+          </CRow>
+        </div>
+      </div>
+      <template #header>
+        <h5 class="modal-title">
+          เพิ่ม{{ modalName == "booker" ? "ผู้จอง" : " hardware" }}
+        </h5>
+        <CButtonClose @click="modal = false" class="text-white" />
+      </template>
+      <template #footer>
+        <CButton color="secondary" @click="modal = false">ยกเลิก</CButton>&nbsp;
+        <CButton color="success" @click.prevent="addItem()">บันทึก</CButton>
+      </template>
+    </CModal>
 
     <CElementCover :opacity="0.8" v-if="loading" />
   </div>
@@ -116,7 +287,10 @@ export default {
           },
         ]
       );
-      this.objective_options = objectives.data.map((item) => item.objective);
+      this.objective_options = [
+        ...objectives.data.map((item) => item.objective),
+        "อื่น ๆ",
+      ];
       // get ISS
       const ISS_list = await this.jogetList("mophApp", "user_accounts", [
         {
@@ -137,38 +311,68 @@ export default {
     return {
       // form
       reserve_form: {
-        reserve_date: new Date(),
+        reserve_date: null,
         objective: "",
         note: "",
 
         ISS: "", // id;name
       },
 
-      booker_form: [
-        {
+      arr_form: {
+        booker: {
           name: "",
           position: "",
           affiliation: "",
           idcard: "",
         },
-      ],
-
-      hardware_form: [
-        {
+        hardware: {
           name: "",
           brand: "",
           serial_number: "",
           unit: "",
+          status: "เข้า",
           type: "ชั่วคราว",
           return_date: null,
         },
-      ],
+      },
+
+      arr_list: {
+        booker: [],
+
+        hardware: [],
+      },
 
       // options
       objective_options: [],
       ISS_options: [],
 
+      // table field
+      booker_field: [
+        { key: "name", label: "ชื่อ - สกุล", _style: "width:40%" },
+        { key: "position", label: "ตำแหน่ง", _style: "width:15%" },
+
+        { key: "affiliation", label: "สังกัด/บริษัท", _style: "width:15%" },
+        { key: "idcard", label: "บัตรประชาชน", _style: "width:20%" },
+        { key: "action", label: "", _style: "width:10%" },
+      ],
+
+      hardware_field: [
+        { key: "name", label: "รายการ", _style: "width:25%" },
+        { key: "brand", label: "ยี่ห้อ/รุ่น", _style: "width:10%" },
+        {
+          key: "serial_number",
+          label: "S/N",
+          _style: "width:10%",
+        },
+        { key: "unit", label: "จำนวน (ชุด)", _style: "width:15%" },
+        { key: "status", label: "เข้า - ออก", _style: "width:15%" },
+        { key: "type", label: "ชั่วคราว - ถาวร", _style: "width:15%" },
+        { key: "action", label: "", _style: "width:10%" },
+      ],
+
       // etc
+      modal: false,
+      modalName: "",
       loading: false,
       completed: false,
 
@@ -197,30 +401,16 @@ export default {
     login(email, password) {
       return this.jogetLogin({ email, password });
     },
-    addBooker() {
-      this.booker_form.push({
-        name: "",
-        position: "",
-        affiliation: "",
-        idcard: "",
-      });
-    },
-    addHardware() {
-      this.hardware_form.push({
-        name: "",
-        brand: "",
-        serial_number: "",
-        unit: "",
-        type: "ชั่วคราว",
-        return_date: null,
-      });
+    addItem() {
+      this.arr_list[this.modalName].push(this.arr_form[this.modalName]);
+      this.modal = false;
     },
     async submit() {
       try {
         // reserve
         const reserveData = { ...this.reserve_form, processId: "" };
         // booker
-        const bookerData = this.booker_form.map((item) => {
+        const bookerData = this.arr_list.booker.map((item) => {
           item.processId = "";
           item.activity = ""; // id;name
 
@@ -229,7 +419,7 @@ export default {
           return item;
         });
         // hardware
-        const hardwareData = this.hardware_form.map((item) => {
+        const hardwareData = this.arr_list.hardware.map((item) => {
           item.processId = "";
           item.status = "เข้า";
           return item;
@@ -239,13 +429,39 @@ export default {
   },
   computed: {
     disabledButton() {
-      return Object.values(this.reserve_form).includes("");
+      return (
+        Object.values(this.reserve_form).includes("") ||
+        this.arr_list.booker.length == 0
+      );
     },
     disabledDate() {
       const today = new Date();
       const tomorow = new Date();
       tomorow.setDate(today.getDate() + 1);
       return tomorow;
+    },
+  },
+  watch: {
+    modal: function (val) {
+      if (!val) {
+        this.arr_form = {
+          booker: {
+            name: "",
+            position: "",
+            affiliation: "",
+            idcard: "",
+          },
+          hardware: {
+            name: "",
+            brand: "",
+            serial_number: "",
+            unit: "",
+            status: "เข้า",
+            type: "ชั่วคราว",
+            return_date: null,
+          },
+        };
+      }
     },
   },
 };
