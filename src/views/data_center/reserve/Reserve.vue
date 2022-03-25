@@ -120,6 +120,14 @@
                 >
               </div>
             </template>
+            <template #type="{ item }">
+              <td>
+                {{ item.type }}
+                <p v-if="item.return_date">
+                  (ส่งคืนวันที่ {{ item.return_date.toLocaleDateString() }})
+                </p>
+              </td>
+            </template>
             <template #action="{ index }">
               <td>
                 <CButton
