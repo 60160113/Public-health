@@ -293,19 +293,25 @@ export default {
             paramName: "status",
             paramValue: "active",
           },
-        ]
+        ],
+        "tempUser"
       );
       this.objective_options = [
         ...objectives.data.map((item) => item.objective),
         "อื่น ๆ",
       ];
       // get ISS
-      const ISS_list = await this.jogetList("mophApp", "user_accounts", [
-        {
-          paramName: "position",
-          paramValue: "ISS",
-        },
-      ]);
+      const ISS_list = await this.jogetList(
+        "mophApp",
+        "user_accounts",
+        [
+          {
+            paramName: "position",
+            paramValue: "ISS",
+          },
+        ],
+        "tempUser"
+      );
       this.ISS_options = ISS_list.data.map((item) => {
         return { value: `${item.id};${item.fullname}`, label: item.fullname };
       });
@@ -313,7 +319,7 @@ export default {
     });
   },
   beforeRouteLeave(to, from, next) {
-    localStorage.removeItem("AuthUser");
+    localStorage.removeItem("tempUser");
   },
   data() {
     return {
@@ -407,7 +413,7 @@ export default {
   },
   methods: {
     login(email, password) {
-      return this.jogetLogin({ email, password });
+      return this.jogetLogin({ email, password }, "tempUser");
     },
     addItem() {
       this.arr_list[this.modalName].push(this.arr_form[this.modalName]);
