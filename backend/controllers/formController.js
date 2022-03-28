@@ -32,6 +32,19 @@ module.exports = {
       });
   },
 
+  /*
+    description => submit form multiple rows.
+    body => {
+     "app": {
+        "appId",
+        "formId"
+      },
+      "formData": [{
+        "key" // primaryKey,
+        "data" // array data [{}, {}]
+      }] 
+    }
+  */
   multipleSubmit: async (req, res, next) => {
     try {
       const app = req.body.app;
@@ -41,13 +54,15 @@ module.exports = {
         `${juser[permission].username}:${juser[permission].password}`
       );
       var responseArr = [];
-      for await (const [index, data] of formData.entries()) {
+      for await (const elem of formData) {
+        const data = elem.data;
+        const key = elem.key;
         var form = new FormData();
         Object.keys(data).forEach(key => {
           form.append(key, data[key]);
         });
         const url = encodeURI(
-          `${process.env.APP_JOGET_URL}web/json/data/form/store/${app.appId}/${app.formId}/`
+          `${process.env.APP_JOGET_URL}web/json/data/form/store/${app.appId}/${app.formId}/${key}`
         );
         await axios
           .post(url, form, {
@@ -60,7 +75,7 @@ module.exports = {
             await responseArr.push(response.data);
           });
       }
-      await res.send({ response: responseArr });
+      await res.send({ response: responseArr, total: responseArr.length });
     } catch (error) {
       res.status(500).send({ statusText: "can not start process" });
     }
@@ -82,5 +97,37 @@ module.exports = {
       .catch(error => {
         res.send(error);
       });
+  },
+
+  /*
+    description => delete multiple rows.
+    body => {
+     "app": {
+        "appId",
+        "formId"
+      },
+      "primaryKeys": [] // array of primaryKey to delete
+    }
+  */
+  multipleDelete: async (req, res, next) => {
+    try {
+      const app = req.body.app;
+      const primaryKeys = req.body.primaryKeys;
+      const permission = req.payload.permission;
+
+      var responseArr = [];
+      for await (const key of primaryKeys) {
+        await axios.post(
+          encodeURI(
+            `${process.env.APP_JOGET_URL}web/json/data/form/delete/${app.appId}/${app.formId}/${key}?j_username=${juser[permission].username}&j_password=${juser[permission].password}`
+          ).then(async response => {
+            await responseArr.push(response.data);
+          })
+        );
+      }
+      await res.send({ response: responseArr, total: responseArr.length });
+    } catch (error) {
+      res.status(500).send({ statusText: "can not start process" });
+    }
   }
 };

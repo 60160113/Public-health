@@ -9,4 +9,6 @@ router.post('/submit/multiple', auth.required, formController.multipleSubmit)
 
 router.post('/delete', auth.required, formController.delete)
 
+router.post('/delete/multiple', auth.required, formController.multipleDelete)
+
 module.exports = router
