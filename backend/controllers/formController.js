@@ -40,7 +40,7 @@ module.exports = {
         "formId"
       },
       "formData": [{
-        "key" // primaryKey,
+        "primaryKey" // primaryKey,
         "data" // array data [{}, {}]
       }] 
     }
@@ -56,7 +56,7 @@ module.exports = {
       var responseArr = [];
       for await (const elem of formData) {
         const data = elem.data;
-        const key = elem.key;
+        const key = elem.primaryKey;
         var form = new FormData();
         Object.keys(data).forEach(key => {
           form.append(key, data[key]);
