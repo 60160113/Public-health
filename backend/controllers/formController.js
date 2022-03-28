@@ -117,13 +117,13 @@ module.exports = {
 
       var responseArr = [];
       for await (const key of primaryKeys) {
-        await axios.post(
-          encodeURI(
+        await axios
+          .post(
             `${process.env.APP_JOGET_URL}web/json/data/form/delete/${app.appId}/${app.formId}/${key}?j_username=${juser[permission].username}&j_password=${juser[permission].password}`
-          ).then(async response => {
+          )
+          .then(async response => {
             await responseArr.push(response.data);
-          })
-        );
+          });
       }
       await res.send({ response: responseArr, total: responseArr.length });
     } catch (error) {
