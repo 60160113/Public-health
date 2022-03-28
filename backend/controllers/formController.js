@@ -56,13 +56,13 @@ module.exports = {
       var responseArr = [];
       for await (const elem of formData) {
         const data = elem.data;
-        const key = elem.primaryKey;
+        const primaryKey = elem.primaryKey;
         var form = new FormData();
         Object.keys(data).forEach(key => {
           form.append(key, data[key]);
         });
         const url = encodeURI(
-          `${process.env.APP_JOGET_URL}web/json/data/form/store/${app.appId}/${app.formId}/${key}`
+          `${process.env.APP_JOGET_URL}web/json/data/form/store/${app.appId}/${app.formId}/${primaryKey}`
         );
         await axios
           .post(url, form, {
