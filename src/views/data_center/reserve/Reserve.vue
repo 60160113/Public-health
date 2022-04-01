@@ -444,7 +444,10 @@ export default {
         const bookerData = this.arr_list.booker.map((item) => {
           item.reserve_id = processId; // foreign key to processId of data_center_reserve
           item.assign = "position;guard"; // localStorage() field;value
-          return item;
+          return {
+            primaryKey: "",
+            data: item,
+          };
         });
         await this.jogetMultipleFormSubmit(
           "mophApp",
@@ -455,7 +458,10 @@ export default {
         // == Hardware == //
         const hardwareData = this.arr_list.hardware.map((item) => {
           item.processId = processId;
-          return item;
+          return {
+            primaryKey: "",
+            data: item,
+          };
         });
         await this.jogetMultipleFormSubmit(
           "mophApp",
@@ -469,6 +475,7 @@ export default {
           processId,
           "tempUser"
         );
+        // process complete
         await this.jogetProcessComplete(
           Activity.data.activityId,
           null,
