@@ -15,7 +15,7 @@ module.exports = {
     );
     var form = new FormData();
     Object.keys(formData).forEach(function(key) {
-      form.append(key, formData[key]);
+      form.append(key, formData[key] != null ? formData[key].toString() : "");
     });
     const url = encodeURI(
       `${process.env.APP_JOGET_URL}web/json/data/form/store/${app.appId}/${app.formId}/${primaryKey}`
@@ -59,7 +59,7 @@ module.exports = {
         const primaryKey = elem.primaryKey;
         var form = new FormData();
         Object.keys(data).forEach(key => {
-          form.append(key, data[key]);
+          form.append(key, data[key] != null ? data[key].toString() : "");
         });
         const url = encodeURI(
           `${process.env.APP_JOGET_URL}web/json/data/form/store/${app.appId}/${app.formId}/${primaryKey}`
