@@ -69,7 +69,10 @@
       @click="submit"
       >บันทึก</CButton
     >
-    <CElementCover :opacity="0.8" v-if="loading" />
+        <CElementCover :opacity="0.8" v-if="loading">
+      <h1 class="d-inline">Loading...</h1>
+      <CSpinner size="5xl" color="success" />
+    </CElementCover>
   </div>
 </template>
 

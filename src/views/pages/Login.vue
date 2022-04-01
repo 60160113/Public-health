@@ -16,7 +16,7 @@
                     placeholder="Username"
                     autocomplete="username email"
                     v-model.trim="form.email"
-                    @keypress.enter="validate? login(): false"
+                    @keypress.enter="validate ? login() : false"
                   >
                     <template #prepend-content
                       ><CIcon name="cil-user"
@@ -27,7 +27,7 @@
                     type="password"
                     autocomplete="curent-password"
                     v-model.trim="form.password"
-                    @keypress.enter="validate? login(): false"
+                    @keypress.enter="validate ? login() : false"
                   >
                     <template #prepend-content
                       ><CIcon name="cil-lock-locked"
@@ -69,7 +69,10 @@
       </template>
     </CModal>
 
-    <CElementCover :opacity="0.8" v-if="loading" />
+    <CElementCover :opacity="0.8" v-if="loading">
+      <h1 class="d-inline">Loading...</h1>
+      <CSpinner size="5xl" color="success" />
+    </CElementCover>
   </div>
 </template>
 
@@ -112,8 +115,8 @@ export default {
   },
   computed: {
     validate() {
-      return Object.values(this.form).filter(item => !item).length == 0
-    }
-  }
+      return Object.values(this.form).filter((item) => !item).length == 0;
+    },
+  },
 };
 </script>

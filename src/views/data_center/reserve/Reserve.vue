@@ -160,8 +160,8 @@
     <!-- M O D A L -->
     <CModal
       :show.sync="modal"
-      :no-close-on-backdrop="true"
       :centered="true"
+      :closeOnBackdrop="false"
       color="success"
     >
       <!-- BOOKER M O D A L -->
@@ -270,7 +270,10 @@
       </template>
     </CModal>
 
-    <CElementCover :opacity="0.8" v-if="loading" />
+        <CElementCover :opacity="0.8" v-if="loading">
+      <h1 class="d-inline">Loading...</h1>
+      <CSpinner size="5xl" color="success" />
+    </CElementCover>
   </div>
 </template>
 
