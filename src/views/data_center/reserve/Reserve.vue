@@ -434,16 +434,6 @@ export default {
         );
         const processId = startProcess.data.processId;
 
-        // Submit
-        // == Reserve == //
-        const reserveData = { ...this.reserve_form, processId: processId };
-        await this.jogetFormSubmit(
-          "mophApp",
-          "data_center_reserve",
-          "",
-          reserveData,
-          "tempUser"
-        );
         // == Booker == //
         const bookerData = this.arr_list.booker.map((item) => {
           item.reserve_id = processId; // foreign key to processId of data_center_reserve
@@ -453,15 +443,6 @@ export default {
             data: item,
           };
         });
-        if (bookerData.length > 0) {
-          await this.jogetMultipleFormSubmit(
-            "mophApp",
-            "data_center_booker",
-            bookerData,
-            "tempUser"
-          );
-        }
-
         // == Hardware == //
         const hardwareData = this.arr_list.hardware.map((item) => {
           item.processId = processId;
@@ -470,6 +451,34 @@ export default {
             data: item,
           };
         });
+        // == Reserve == //
+        const reserveData = {
+          ...this.reserve_form,
+          processId: processId,
+          display_hasHardwares: this.arr_list.hardware.length > 0,
+          display_requesterName: this.arr_list.booker[0] ? this.arr_list.booker[0].name : "",
+          display_requesterPosition: this.arr_list.booker[0] ? this.arr_list.booker[0].position : "",
+          display_requesterAffiliation: this.arr_list.booker[0] ? this.arr_list.booker[0].affiliation : "",
+        };
+
+        // Submit reserve
+        await this.jogetFormSubmit(
+          "mophApp",
+          "data_center_reserve",
+          "",
+          reserveData,
+          "tempUser"
+        );
+        // Submit booker
+        if (bookerData.length > 0) {
+          await this.jogetMultipleFormSubmit(
+            "mophApp",
+            "data_center_booker",
+            bookerData,
+            "tempUser"
+          );
+        }
+        // Submit hardware
         if (hardwareData.length > 0) {
           await this.jogetMultipleFormSubmit(
             "mophApp",
@@ -493,7 +502,9 @@ export default {
           this.loading = false;
           this.completed = true;
         });
-      } catch (error) {}
+      } catch (error) {
+        this.loading = false;
+      }
     },
   },
   computed: {
