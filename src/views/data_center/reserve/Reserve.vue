@@ -449,12 +449,15 @@ export default {
             data: item,
           };
         });
-        await this.jogetMultipleFormSubmit(
-          "mophApp",
-          "data_center_booker",
-          bookerData,
-          "tempUser"
-        );
+        if (bookerData.length > 0) {
+          await this.jogetMultipleFormSubmit(
+            "mophApp",
+            "data_center_booker",
+            bookerData,
+            "tempUser"
+          );
+        }
+
         // == Hardware == //
         const hardwareData = this.arr_list.hardware.map((item) => {
           item.processId = processId;
@@ -463,12 +466,14 @@ export default {
             data: item,
           };
         });
-        await this.jogetMultipleFormSubmit(
-          "mophApp",
-          "data_center_hardware",
-          hardwareData,
-          "tempUser"
-        );
+        if (hardwareData.length > 0) {
+          await this.jogetMultipleFormSubmit(
+            "mophApp",
+            "data_center_hardware",
+            hardwareData,
+            "tempUser"
+          );
+        }
 
         // activity
         const Activity = await this.jogetGetCurrentActivity(
