@@ -19,7 +19,6 @@
             label: 'แสดง',
           }"
           column-filter
-          hover
           :loading="loading"
         >
           <template #no-items-view
@@ -107,7 +106,7 @@ export default {
         { key: "objective", label: "วัตถุประสงค์", _style: "width:15%" },
         {
           key: "hasHardwareStatus",
-          label: "มีการนำเข้า - ออก Hardwares",
+          label: "รายการ Hardwares",
           _style: "width:5%",
         },
         { key: "actions", label: "ดำเนินการ", _style: "width:10%" },
