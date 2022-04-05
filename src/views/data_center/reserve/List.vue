@@ -7,7 +7,7 @@
 
       <CCardBody>
         <CDataTable
-          :items="list"
+          :items="filteredList"
           :fields="fields"
           :tableFilter="{
             label: 'ค้นหา: ',
@@ -20,9 +20,61 @@
           }"
           column-filter
           :loading="loading"
+          :responsive="false"
         >
           <template #no-items-view
             ><div class="text-center">ไม่พบข้อมูล</div>
+          </template>
+
+          <template #reserve_date_label-filter>
+            <v-date-picker
+              v-model="filter.reserve_date"
+              is-range
+              :is-required="false"
+            >
+              <template v-slot="{ inputValue, inputEvents }">
+                <CRow>
+                  <CCol cols="11"
+                    ><input
+                      class="form-control form-control-sm"
+                      v-on="inputEvents.start"
+                      :value="`${inputValue.start} - ${inputValue.end}`"
+                    />
+                    <input
+                      class="form-control form-control-sm"
+                      v-on="inputEvents.end"
+                      :value="`${inputValue.start} - ${inputValue.end}`"
+                      v-show="false"
+                    />
+                  </CCol>
+                  <CCol cols="1"
+                    ><CButton
+                      size="sm"
+                      @click="
+                        filter.reserve_date.start = null;
+                        filter.reserve_date.end = null;
+                      "
+                      >ล้าง</CButton
+                    ></CCol
+                  >
+                </CRow>
+              </template>
+            </v-date-picker>
+          </template>
+
+          <template #hasHardwareStatus-filter>
+            <select
+              class="form-control form-control-sm"
+              v-model="filter.hasHardwareStatus"
+            >
+              <option
+                v-for="(option, index) in hasHardwareStatusOption"
+                :key="index"
+                :value="option.value"
+              >
+                {{ option.label }}
+              </option>
+            </select>
           </template>
 
           <template #hasHardwareStatus="{ item }"
@@ -38,33 +90,12 @@
             </td>
           </template>
 
-          <template #actions="{ index }">
+          <template #actions>
             <td>
-              <CButton
-                color="primary"
-                variant="outline"
-                square
-                size="sm"
-                block
-                @click="toggleIndex = toggleIndex == index ? -1 : index"
-              >
-                แสดง
-              </CButton>
+              <CButton color="info" size="sm"><b>ดูรายละเอียด</b> </CButton
+              >&nbsp;
+              <CButton color="primary" size="sm"><b>ดำเนินการ</b> </CButton>
             </td>
-          </template>
-
-          <template #details="{ index }">
-            <CCollapse :show="toggleIndex == index" :duration="150">
-              <div class="mt-2 mb-2">
-                <CButton color="success" class="ml-2"><b>อนุมัติ</b> </CButton>
-                <CButton color="danger" class="ml-2"
-                  ><b>ไม่อนุมัติ</b>
-                </CButton>
-                <CButton color="info" class="ml-2"
-                  ><b>ดูรายละเอียด</b>
-                </CButton>
-              </div>
-            </CCollapse>
           </template>
 
           <template #actions-filter> <p></p> </template>
@@ -76,8 +107,10 @@
 
 <script>
 import JogetHelper from "@/helpers/JogetHelper";
+import { DatePicker } from "v-calendar";
 export default {
   mixins: [JogetHelper],
+  components: { "v-date-picker": DatePicker },
   created() {
     this.getList();
   },
@@ -85,35 +118,52 @@ export default {
     return {
       list: [],
 
+      filter: {
+        hasHardwareStatus: "",
+        reserve_date: {
+          start: null,
+          end: null,
+        },
+      },
+
+      hasHardwareStatusOption: [
+        { value: "", label: "ทั้งหมด" },
+        { value: "มี", label: "มี" },
+        { value: "ไม่มี", label: "ไม่มี" },
+      ],
+
       fields: [
-        { key: "request_id", label: "ID", _style: "width:20%" },
-        { key: "reserve_date", label: "วันที่ร้องขอ", _style: "width:15%" },
+        { key: "request_id", label: "ID", _style: "width:15%" },
+        {
+          key: "reserve_date_label",
+          label: "วันที่ร้องขอ",
+          _style: "width:22%",
+        },
         {
           key: "display_requesterName",
           label: "ผู้ร้องขอ",
-          _style: "width:15%",
+          _style: "width:13%",
         },
         {
           key: "display_requesterPosition",
           label: "ตำแหน่ง",
-          _style: "width:10%",
+          _style: "width:9%",
         },
         {
           key: "display_requesterAffiliation",
           label: "สังกัด/บริษัท",
-          _style: "width:10%",
+          _style: "width:9%",
         },
-        { key: "objective", label: "วัตถุประสงค์", _style: "width:15%" },
+        { key: "objective", label: "วัตถุประสงค์", _style: "width:9%" },
         {
           key: "hasHardwareStatus",
           label: "รายการ Hardwares",
           _style: "width:5%",
         },
-        { key: "actions", label: "ดำเนินการ", _style: "width:10%" },
+        { key: "actions", label: "", _style: "width:18%" },
       ],
 
       loading: false,
-      toggleIndex: -1,
     };
   },
   methods: {
@@ -127,7 +177,7 @@ export default {
             item.hasHardwareStatus = JSON.parse(item.display_hasHardwares)
               ? "มี"
               : "ไม่มี";
-            item.reserve_date =
+            item.reserve_date_label =
               new Date(item.reserve_date).toLocaleDateString() +
               " " +
               new Date(item.reserve_date).toLocaleTimeString();
@@ -138,6 +188,31 @@ export default {
         .catch((err) => {
           this.loading = false;
         });
+    },
+  },
+  computed: {
+    filteredList() {
+      var list = [...this.list];
+      if (this.filter.hasHardwareStatus) {
+        list = list.filter(
+          (item) => item.hasHardwareStatus == this.filter.hasHardwareStatus
+        );
+      }
+      if (this.filter.reserve_date.start) {
+        list = list.filter((item) => {
+          const reserve_time = item.reserve_date_label.split(" ")[1].split(":");
+          const reserve_date = new Date(item.reserve_date).getTime();
+
+          const start = new Date(this.filter.reserve_date.start);
+          const end = new Date(this.filter.reserve_date.end);
+          end.setHours(reserve_time[0], reserve_time[1], reserve_time[2]);
+
+          return (
+            reserve_date >= start.getTime() && reserve_date <= end.getTime()
+          );
+        });
+      }
+      return list;
     },
   },
 };
