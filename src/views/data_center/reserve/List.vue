@@ -38,7 +38,11 @@
                     ><input
                       class="form-control form-control-sm"
                       v-on="inputEvents.start"
-                      :value="`${inputValue.start} - ${inputValue.end}`"
+                      :value="
+                        inputValue.start
+                          ? `${inputValue.start} - ${inputValue.end}`
+                          : ''
+                      "
                     />
                     <input
                       class="form-control form-control-sm"
