@@ -13,7 +13,10 @@
           ><p><b>เลขที่เอกสาร: </b>{{ reserve_form.request_id }}</p></CCol
         >
       </CRow>
-      <p><b>ผู้ติดต่อ: </b>{{ reserve_form.ISS.split(";")[1] }}</p>
+      <p>
+        <b>ผู้ติดต่อ: </b
+        >{{ reserve_form.ISS ? reserve_form.ISS.split(";")[1] : "" }}
+      </p>
       <p><b>วัตถุประสงค์: </b>{{ reserve_form.objective }}</p>
       <p v-if="reserve_form.note"><b>หมายเหตุ: </b>{{ reserve_form.note }}</p>
     </div>

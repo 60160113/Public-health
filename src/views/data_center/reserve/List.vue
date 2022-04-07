@@ -20,7 +20,6 @@
           }"
           column-filter
           :loading="loading"
-          :responsive="false"
         >
           <template #no-items-view
             ><div class="text-center">ไม่พบข้อมูล</div>
@@ -104,9 +103,15 @@
                 color="info"
                 size="sm"
                 @click.prevent="openModal('detail', item.processId)"
-                ><b>ดูรายละเอียด</b> </CButton
+                ><b>รายละเอียด</b> </CButton
               >&nbsp;
-              <CButton color="primary" size="sm"><b>ดำเนินการ</b> </CButton>
+              <CButton
+                color="primary"
+                size="sm"
+                @click.prevent="openModal('form', item.processId, item.id)"
+                :disabled="item.IST_approve != ''"
+                ><b>ดำเนินการ</b>
+              </CButton>
             </td>
           </template>
 
@@ -115,6 +120,7 @@
       </CCardBody>
     </CCard>
 
+    <!-- M O D A L -->
     <CModal
       :show.sync="modal"
       :centered="true"
@@ -126,15 +132,45 @@
         <Detail v-if="processId" :id="processId" />
       </div>
 
+      <div v-else>
+        <CSelect
+          label="ดำเนินการ"
+          placeholder="กรุณาเลือก"
+          :options="[
+            { value: 'true', label: 'อนุมัติ' },
+            { value: 'false', label: 'ไม่อนุมัติ' },
+          ]"
+          :value.sync="form.IST_approve"
+        />
+        <CTextarea label="ความคิดเห็น" v-model="form.IST_approve_comment" />
+      </div>
+
       <template #header>
         <h5 class="modal-title">
           {{ modalName == "detail" ? "รายละเอียด" : " อนุมัติการจอง" }}
         </h5>
-        <CButtonClose @click="modal = false" class="text-white" />
+        <CButtonClose
+          @click="modal = false"
+          class="text-white"
+          :disabled="loading"
+        />
       </template>
       <template #footer>
-        <CButton color="secondary" @click="modal = false">ปิด</CButton>
+        <CButton
+          v-if="modalName !== 'detail'"
+          color="primary"
+          @click.prevent="submit()"
+          :disabled="!form.IST_approve || loading"
+          >บันทึก</CButton
+        >
+        <CButton color="secondary" @click="modal = false" :disabled="loading"
+          >ปิด</CButton
+        >
       </template>
+      <CElementCover :opacity="0.8" v-if="loading">
+        <h1 class="d-inline">Loading...</h1>
+        <CSpinner size="5xl" color="success" />
+      </CElementCover>
     </CModal>
   </div>
 </template>
@@ -148,6 +184,8 @@ export default {
   mixins: [JogetHelper, dateFormat],
   components: { Detail },
   created() {
+    const AuthUser = JSON.parse(localStorage.getItem("AuthUser"));
+    this.form.IST = `${AuthUser.id};${AuthUser.fullname}`;
     this.getList();
   },
   data() {
@@ -207,18 +245,29 @@ export default {
         { key: "actions", label: "", _style: "width:18%" },
       ],
 
+      form: {
+        IST_approve: "",
+        IST_approve_comment: "",
+        IST_approve_date: new Date(),
+        IST: "",
+      },
+
       loading: false,
       modal: false,
       modalName: "",
       processId: "",
+      reserveId: "",
     };
   },
   methods: {
-    openModal(name, processId) {
+    openModal(name, processId, id = "") {
+      this.loading = true;
       this.modalName = name;
       this.processId = processId;
+      this.reserveId = id;
 
       this.modal = true;
+      this.loading = false;
     },
     // get list
     getList() {
@@ -256,6 +305,59 @@ export default {
         default:
           return "secondary";
       }
+    },
+    // submit
+    async submit() {
+      this.loading = true;
+
+      // Submit reserve
+      await this.jogetFormSubmit(
+        "mophApp",
+        "data_center_reserve",
+        this.reserveId,
+        this.form
+      );
+
+      // activity
+      const Activity = await this.jogetGetCurrentActivity(this.processId);
+      // process complete
+      await this.jogetProcessComplete(Activity.data.activityId);
+
+      // booker
+      if (this.form.IST_approve == "true") {
+        const bookers = await this.jogetList(
+          "mophApp",
+          "list_data_center_booker",
+          [
+            {
+              paramName: "reserve_id",
+              paramValue: this.processId,
+            },
+          ]
+        );
+
+        const bookerData = bookers.data.map((item) => {
+          return {
+            primaryKey: item.id,
+            data: {
+              status: true,
+            },
+          };
+        });
+
+        // Submit booker
+        if (bookerData.length > 0) {
+          await this.jogetMultipleFormSubmit(
+            "mophApp",
+            "data_center_booker",
+            bookerData
+          );
+        }
+      }
+
+      this.getList();
+      this.modal = false;
+      this.loading = false;
     },
   },
   computed: {
@@ -300,6 +402,7 @@ export default {
       if (!val) {
         this.processId = "";
         this.modalName = "";
+        this.reserveId = "";
       }
     },
     "filter.reserve_date.start": function (val) {
