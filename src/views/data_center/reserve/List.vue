@@ -72,6 +72,21 @@
             </td>
           </template>
 
+          <template #status-filter>
+            <select
+              class="form-control form-control-sm"
+              v-model="filter.status"
+            >
+              <option
+                v-for="(option, index) in statusOption"
+                :key="index"
+                :value="option.value"
+              >
+                {{ option.label }}
+              </option>
+            </select>
+          </template>
+
           <template #status="{ item }">
             <td>
               <CBadge
@@ -142,15 +157,23 @@ export default {
       filter: {
         hasHardwareStatus: "",
         reserve_date: {
-          start: null,
-          end: null,
+          start: "",
+          end: "",
         },
+        status: "",
       },
 
       hasHardwareStatusOption: [
         { value: "", label: "ทั้งหมด" },
         { value: "มี", label: "มี" },
         { value: "ไม่มี", label: "ไม่มี" },
+      ],
+
+      statusOption: [
+        { value: "", label: "ทั้งหมด" },
+        { value: "รอดำเนินการ", label: "รอดำเนินการ" },
+        { value: "อนุมัติ", label: "อนุมัติ" },
+        { value: "ไม่อนุมัติ", label: "ไม่อนุมัติ" },
       ],
 
       fields: [
@@ -243,6 +266,9 @@ export default {
           (item) => item.hasHardwareStatus == this.filter.hasHardwareStatus
         );
       }
+      if (this.filter.status) {
+        list = list.filter((item) => item.status == this.filter.status);
+      }
       if (this.filter.reserve_date.start) {
         if (!this.filter.reserve_date.end) {
           this.filter.reserve_date.end = JSON.parse(
@@ -255,7 +281,11 @@ export default {
 
           const start = new Date(this.filter.reserve_date.start);
           const end = new Date(this.filter.reserve_date.end);
-          end.setHours(reserve_time[0], reserve_time[1], reserve_time[2]);
+          end.setHours(
+            reserve_time[0],
+            reserve_time[1],
+            reserve_time[2].split(".")[0]
+          );
 
           return (
             reserve_date >= start.getTime() && reserve_date <= end.getTime()
@@ -274,12 +304,12 @@ export default {
     },
     "filter.reserve_date.start": function (val) {
       if (!val) {
-        this.filter.reserve_date.end = null;
+        this.filter.reserve_date.end = "";
       }
     },
     "filter.reserve_date.end": function (val) {
       if (!val) {
-        this.filter.reserve_date.start = null;
+        this.filter.reserve_date.start = "";
       }
     },
   },
