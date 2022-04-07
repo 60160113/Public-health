@@ -20,7 +20,10 @@
               v-model="reserve_form.reserve_date"
             >
               <template v-slot="{ inputValue, inputEvents }">
-                <CInput :value="inputValue" v-on="inputEvents" />
+                <CInput
+                  :value="toThaiFormatWithTime(inputValue)"
+                  v-on="inputEvents"
+                />
               </template>
             </v-date-picker>
           </CCol>
@@ -124,7 +127,7 @@
               <td>
                 {{ item.type }}
                 <p v-if="item.return_date">
-                  (ส่งคืนวันที่ {{ item.return_date.toLocaleDateString() }})
+                  (ส่งคืนวันที่ {{ toThaiFormatWithTime(item.return_date) }})
                 </p>
               </td>
             </template>
@@ -252,7 +255,10 @@
                 v-model="arr_form.hardware.return_date"
               >
                 <template v-slot="{ inputValue, inputEvents }">
-                  <CInput :value="inputValue" v-on="inputEvents" />
+                  <CInput
+                    :value="toThaiFormatWithTime(inputValue)"
+                    v-on="inputEvents"
+                  />
                 </template>
               </v-date-picker>
             </CCol>
@@ -280,10 +286,11 @@
 
 <script>
 import JogetHelper from "@/helpers/JogetHelper";
+import dateFormat from "@/helpers/dateFormat.vue";
 import { DatePicker } from "v-calendar";
 import MaskedInput from "vue-text-mask";
 export default {
-  mixins: [JogetHelper],
+  mixins: [JogetHelper, dateFormat],
   components: { "v-date-picker": DatePicker, MaskedInput },
   created() {
     this.loading = true;
@@ -456,9 +463,15 @@ export default {
           ...this.reserve_form,
           processId: processId,
           display_hasHardwares: this.arr_list.hardware.length > 0,
-          display_requesterName: this.arr_list.booker[0] ? this.arr_list.booker[0].name : "",
-          display_requesterPosition: this.arr_list.booker[0] ? this.arr_list.booker[0].position : "",
-          display_requesterAffiliation: this.arr_list.booker[0] ? this.arr_list.booker[0].affiliation : "",
+          display_requesterName: this.arr_list.booker[0]
+            ? this.arr_list.booker[0].name
+            : "",
+          display_requesterPosition: this.arr_list.booker[0]
+            ? this.arr_list.booker[0].position
+            : "",
+          display_requesterAffiliation: this.arr_list.booker[0]
+            ? this.arr_list.booker[0].affiliation
+            : "",
         };
 
         // Submit reserve
