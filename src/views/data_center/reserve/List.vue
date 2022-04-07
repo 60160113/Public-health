@@ -94,9 +94,13 @@
             </td>
           </template>
 
-          <template #actions>
+          <template #actions="{ item }">
             <td>
-              <CButton color="info" size="sm"><b>ดูรายละเอียด</b> </CButton
+              <CButton
+                color="info"
+                size="sm"
+                @click.prevent="openModal('detail', item.processId)"
+                ><b>ดูรายละเอียด</b> </CButton
               >&nbsp;
               <CButton color="primary" size="sm"><b>ดำเนินการ</b> </CButton>
             </td>
@@ -106,15 +110,40 @@
         </CDataTable>
       </CCardBody>
     </CCard>
+
+    <CModal
+      :show.sync="modal"
+      :centered="true"
+      :closeOnBackdrop="false"
+      size="lg"
+      :color="modalName == 'detail' ? 'info' : 'primary'"
+    >
+      <div v-if="modalName == 'detail'">
+        <Detail v-if="processId" :id="processId" />
+      </div>
+
+      <template #header>
+        <h5 class="modal-title">
+          {{ modalName == "detail" ? "รายละเอียด" : " อนุมัติการจอง" }}
+        </h5>
+        <CButtonClose @click="modal = false" class="text-white" />
+      </template>
+      <template #footer>
+        <CButton color="secondary" @click="modal = false">ปิด</CButton>
+      </template>
+    </CModal>
   </div>
 </template>
 
 <script>
 import JogetHelper from "@/helpers/JogetHelper";
 import { DatePicker } from "v-calendar";
+
+import Detail from "@/views/data_center/reserve/Detail.vue";
+import dateFormat from "@/helpers/dateFormat.vue";
 export default {
-  mixins: [JogetHelper],
-  components: { "v-date-picker": DatePicker },
+  mixins: [JogetHelper, dateFormat],
+  components: { "v-date-picker": DatePicker, Detail },
   created() {
     this.getList();
   },
@@ -168,9 +197,18 @@ export default {
       ],
 
       loading: false,
+      modal: false,
+      modalName: "",
+      processId: "",
     };
   },
   methods: {
+    openModal(name, processId) {
+      this.modalName = name;
+      this.processId = processId;
+
+      this.modal = true;
+    },
     // get list
     getList() {
       this.loading = true;
@@ -181,10 +219,9 @@ export default {
             item.hasHardwareStatus = JSON.parse(item.display_hasHardwares)
               ? "มี"
               : "ไม่มี";
-            item.reserve_date_label =
-              new Date(item.reserve_date).toLocaleDateString() +
-              " " +
-              new Date(item.reserve_date).toLocaleTimeString();
+            item.reserve_date_label = this.toThaiFormatWithTime(
+              item.reserve_date
+            );
             return item;
           });
           this.loading = false;
@@ -217,6 +254,14 @@ export default {
         });
       }
       return list;
+    },
+  },
+  watch: {
+    modal: function (val) {
+      if (!val) {
+        this.processId = "";
+        this.modalName = "";
+      }
     },
   },
 };
