@@ -27,43 +27,21 @@
           </template>
 
           <template #reserve_date_label-filter>
-            <v-date-picker
-              v-model="filter.reserve_date"
-              is-range
-              :is-required="false"
-            >
-              <template v-slot="{ inputValue, inputEvents }">
-                <CRow>
-                  <CCol cols="11"
-                    ><input
-                      class="form-control form-control-sm"
-                      v-on="inputEvents.start"
-                      :value="
-                        inputValue.start
-                          ? `${inputValue.start} - ${inputValue.end}`
-                          : ''
-                      "
-                    />
-                    <input
-                      class="form-control form-control-sm"
-                      v-on="inputEvents.end"
-                      :value="`${inputValue.start} - ${inputValue.end}`"
-                      v-show="false"
-                    />
-                  </CCol>
-                  <CCol cols="1"
-                    ><CButton
-                      size="sm"
-                      @click="
-                        filter.reserve_date.start = null;
-                        filter.reserve_date.end = null;
-                      "
-                      >ล้าง</CButton
-                    ></CCol
-                  >
-                </CRow>
-              </template>
-            </v-date-picker>
+            <CRow>
+              <CCol
+                ><input
+                  type="date"
+                  v-model="filter.reserve_date.start"
+                  class="form-control form-control-sm"
+              /></CCol>
+              <b class="mt-1">ถึง</b>
+              <CCol
+                ><input
+                  type="date"
+                  v-model="filter.reserve_date.end"
+                  class="form-control form-control-sm"
+              /></CCol>
+            </CRow>
           </template>
 
           <template #hasHardwareStatus-filter>
@@ -90,6 +68,17 @@
                 style="font-size: 16px; width: 100%"
                 class="mt-1"
                 ><b>{{ item.hasHardwareStatus }}</b></CBadge
+              >
+            </td>
+          </template>
+
+          <template #status="{ item }">
+            <td>
+              <CBadge
+                :color="getStatusColor(item.status)"
+                style="font-size: 16px; width: 100%"
+                class="mt-1"
+                >{{ item.status }}</CBadge
               >
             </td>
           </template>
@@ -137,13 +126,12 @@
 
 <script>
 import JogetHelper from "@/helpers/JogetHelper";
-import { DatePicker } from "v-calendar";
 
 import Detail from "@/views/data_center/reserve/Detail.vue";
 import dateFormat from "@/helpers/dateFormat.vue";
 export default {
   mixins: [JogetHelper, dateFormat],
-  components: { "v-date-picker": DatePicker, Detail },
+  components: { Detail },
   created() {
     this.getList();
   },
@@ -178,11 +166,6 @@ export default {
           _style: "width:13%",
         },
         {
-          key: "display_requesterPosition",
-          label: "ตำแหน่ง",
-          _style: "width:9%",
-        },
-        {
           key: "display_requesterAffiliation",
           label: "สังกัด/บริษัท",
           _style: "width:9%",
@@ -192,6 +175,11 @@ export default {
           key: "hasHardwareStatus",
           label: "รายการ Hardwares",
           _style: "width:5%",
+        },
+        {
+          key: "status",
+          label: "สถานะ",
+          _style: "width:9%",
         },
         { key: "actions", label: "", _style: "width:18%" },
       ],
@@ -219,6 +207,12 @@ export default {
             item.hasHardwareStatus = JSON.parse(item.display_hasHardwares)
               ? "มี"
               : "ไม่มี";
+            item.status =
+              item.IST_approve == "true"
+                ? "อนุมัติ"
+                : item.IST_approve
+                ? "ไม่อนุมัติ"
+                : "รอดำเนินการ";
             item.reserve_date_label = this.toThaiFormatWithTime(
               item.reserve_date
             );
@@ -230,6 +224,16 @@ export default {
           this.loading = false;
         });
     },
+    getStatusColor(status) {
+      switch (status) {
+        case "อนุมัติ":
+          return "success";
+        case "ไม่อนุมัติ":
+          return "danger";
+        default:
+          return "secondary";
+      }
+    },
   },
   computed: {
     filteredList() {
@@ -240,8 +244,13 @@ export default {
         );
       }
       if (this.filter.reserve_date.start) {
+        if (!this.filter.reserve_date.end) {
+          this.filter.reserve_date.end = JSON.parse(
+            JSON.stringify(this.filter.reserve_date.start)
+          );
+        }
         list = list.filter((item) => {
-          const reserve_time = item.reserve_date_label.split(" ")[1].split(":");
+          const reserve_time = item.reserve_date.split("T")[1].split(":");
           const reserve_date = new Date(item.reserve_date).getTime();
 
           const start = new Date(this.filter.reserve_date.start);
@@ -261,6 +270,16 @@ export default {
       if (!val) {
         this.processId = "";
         this.modalName = "";
+      }
+    },
+    "filter.reserve_date.start": function (val) {
+      if (!val) {
+        this.filter.reserve_date.end = null;
+      }
+    },
+    "filter.reserve_date.end": function (val) {
+      if (!val) {
+        this.filter.reserve_date.start = null;
       }
     },
   },
