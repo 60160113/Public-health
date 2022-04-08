@@ -1,7 +1,7 @@
 <script>
 import menu from "./menu";
 import { freeSet } from '@coreui/icons'
-import icons from '@/assets/icons/icons.js'
+import * as icons from '@/assets/icons/icons.js'
 export default {
   name: "nav",
   components: {
