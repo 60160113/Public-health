@@ -24,6 +24,32 @@
           <template #no-items-view
             ><div class="text-center">ไม่พบข้อมูล</div>
           </template>
+
+          <template #reserve_date-filter>
+            <CRow>
+              <CCol
+                ><input
+                  type="date"
+                  v-model="filter.reserve_date.start"
+                  class="form-control form-control-sm"
+              /></CCol>
+              <b class="mt-1">ถึง</b>
+              <CCol
+                ><input
+                  type="date"
+                  v-model="filter.reserve_date.end"
+                  class="form-control form-control-sm"
+              /></CCol>
+            </CRow>
+          </template>
+
+          <template #reserve_date="{ item }">
+            <td>
+              {{ toThaiFormatWithTime(item.reserve_date) }}
+            </td>
+          </template>
+
+          <template #actions-filter> <p></p> </template>
         </CDataTable>
       </CCardBody>
     </CCard>
@@ -43,8 +69,15 @@ export default {
       list: [],
       loading: false,
 
+      filter: {
+        reserve_date: {
+          start: "",
+          end: "",
+        },
+      },
+
       fields: [
-        { key: "reserve_request_id", label: "ID", _style: "width:15%" },
+        { key: "reserve_request_id", label: "ID", _style: "width:10%" },
         { key: "reserve_date", label: "วันที่", _style: "width:15%" },
         {
           key: "name",
@@ -59,7 +92,7 @@ export default {
         {
           key: "idcard",
           label: "เลขที่บัตรประชาชน",
-          _style: "width:10%",
+          _style: "width:15%",
         },
         {
           key: "building_card",
@@ -91,8 +124,43 @@ export default {
   },
   computed: {
     filteredList() {
-      var list = this.list;
+      var list = [...this.list];
+      if (this.filter.reserve_date.start) {
+        if (!this.filter.reserve_date.end) {
+          this.filter.reserve_date.end = JSON.parse(
+            JSON.stringify(this.filter.reserve_date.start)
+          );
+        }
+        list = list.filter((item) => {
+          const reserve_time = item.reserve_date.split("T")[1].split(":");
+          const reserve_date = new Date(item.reserve_date).getTime();
+
+          const start = new Date(this.filter.reserve_date.start);
+          const end = new Date(this.filter.reserve_date.end);
+          end.setHours(
+            reserve_time[0],
+            reserve_time[1],
+            reserve_time[2].split(".")[0]
+          );
+
+          return (
+            reserve_date >= start.getTime() && reserve_date <= end.getTime()
+          );
+        });
+      }
       return list;
+    },
+  },
+  watch: {
+    "filter.reserve_date.start": function (val) {
+      if (!val) {
+        this.filter.reserve_date.end = "";
+      }
+    },
+    "filter.reserve_date.end": function (val) {
+      if (!val) {
+        this.filter.reserve_date.start = "";
+      }
     },
   },
 };
