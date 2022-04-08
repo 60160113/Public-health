@@ -45,6 +45,7 @@ export default {
 
       fields: [
         { key: "reserve_request_id", label: "ID", _style: "width:15%" },
+        { key: "reserve_date", label: "วันที่", _style: "width:15%" },
         {
           key: "name",
           label: "ชื่อ - สกุล",
