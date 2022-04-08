@@ -16,12 +16,16 @@
               :masks="{
                 input: 'YYYY-MM-DD',
               }"
+              :model-config="{
+                type: 'string',
+                mask: 'iso',
+              }"
               is24hr
               v-model="reserve_form.reserve_date"
             >
               <template v-slot="{ inputValue, inputEvents }">
                 <CInput
-                  :value="toThaiFormatWithTime(inputValue)"
+                  :value="inputValue"
                   v-on="inputEvents"
                 />
               </template>
@@ -256,7 +260,7 @@
               >
                 <template v-slot="{ inputValue, inputEvents }">
                   <CInput
-                    :value="toThaiFormatWithTime(inputValue)"
+                    :value="inputValue"
                     v-on="inputEvents"
                   />
                 </template>
@@ -441,23 +445,6 @@ export default {
         );
         const processId = startProcess.data.processId;
 
-        // == Booker == //
-        const bookerData = this.arr_list.booker.map((item) => {
-          item.reserve_id = processId; // foreign key to processId of data_center_reserve
-          item.assign = "position;guard"; // localStorage() field;value
-          return {
-            primaryKey: "",
-            data: item,
-          };
-        });
-        // == Hardware == //
-        const hardwareData = this.arr_list.hardware.map((item) => {
-          item.processId = processId;
-          return {
-            primaryKey: "",
-            data: item,
-          };
-        });
         // == Reserve == //
         const reserveData = {
           ...this.reserve_form,
@@ -482,6 +469,39 @@ export default {
           reserveData,
           "tempUser"
         );
+
+        // get reserve
+        const reserveObj = await this.jogetGetOne(
+          "mophApp",
+          "list_data_center_reserve",
+          [
+            {
+              paramName: "processId",
+              paramValue: processId,
+            },
+          ],
+          "tempUser"
+        );
+
+        // == Booker == //
+        const bookerData = this.arr_list.booker.map((item) => {
+          item.reserve_id = processId; // foreign key to processId of data_center_reserve
+          item.reserve_request_id = reserveObj.data.request_id;
+          item.assign = "position;guard"; // localStorage() field;value
+          return {
+            primaryKey: "",
+            data: item,
+          };
+        });
+        // == Hardware == //
+        const hardwareData = this.arr_list.hardware.map((item) => {
+          item.processId = processId;
+          return {
+            primaryKey: "",
+            data: item,
+          };
+        });
+
         // Submit booker
         if (bookerData.length > 0) {
           await this.jogetMultipleFormSubmit(
