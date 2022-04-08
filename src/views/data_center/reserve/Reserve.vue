@@ -24,10 +24,7 @@
               v-model="reserve_form.reserve_date"
             >
               <template v-slot="{ inputValue, inputEvents }">
-                <CInput
-                  :value="inputValue"
-                  v-on="inputEvents"
-                />
+                <CInput :value="inputValue" v-on="inputEvents" />
               </template>
             </v-date-picker>
           </CCol>
@@ -259,10 +256,7 @@
                 v-model="arr_form.hardware.return_date"
               >
                 <template v-slot="{ inputValue, inputEvents }">
-                  <CInput
-                    :value="inputValue"
-                    v-on="inputEvents"
-                  />
+                  <CInput :value="inputValue" v-on="inputEvents" />
                 </template>
               </v-date-picker>
             </CCol>
@@ -487,6 +481,7 @@ export default {
         const bookerData = this.arr_list.booker.map((item) => {
           item.reserve_id = processId; // foreign key to processId of data_center_reserve
           item.reserve_request_id = reserveObj.data.request_id;
+          item.reserve_date = reserveObj.data.reserve_date;
           item.assign = "position;guard"; // localStorage() field;value
           return {
             primaryKey: "",
