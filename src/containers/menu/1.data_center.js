@@ -11,7 +11,7 @@ export default [
   },
   {
     _name: "CSidebarNavItem",
-    name: "รายการเช็คอินเข้าศูนย์ปฏิบัติการ",
+    name: "ถาดงานศูนย์ปฏิบัติการ",
     to: "/data-center/check-in/list",
     icon: "cilLayers"
   }
