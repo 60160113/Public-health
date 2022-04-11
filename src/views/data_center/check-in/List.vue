@@ -49,6 +49,17 @@
             </td>
           </template>
 
+          <template #taskName="{ item }">
+            <td>
+              <CBadge
+                :color="getTaskColor(item.taskId)"
+                style="font-size: 16px; width: 100%"
+                class="mt-1"
+                >{{ item.taskName }}</CBadge
+              >
+            </td>
+          </template>
+
           <template #actions>
             <td>
               <CButton color="info" size="sm"><b>รายละเอียด</b> </CButton>&nbsp;
@@ -102,16 +113,11 @@ export default {
           _style: "width:15%",
         },
         {
-          key: "building_card",
-          label: "บัตรเข้าอาคาร",
+          key: "taskName",
+          label: "งาน",
           _style: "width:10%",
         },
-        {
-          key: "data_center_card",
-          label: "บัตรเข้าศูนย์ปฏิบัติการ",
-          _style: "width:10%",
-        },
-        { key: "actions", label: "", _style: "width:10%" },
+        { key: "actions", label: "", _style: "width:15%" },
       ],
     };
   },
@@ -121,12 +127,34 @@ export default {
 
       this.jogetListAll("mophApp", "data_center_checkin")
         .then((res) => {
-          this.list = res.data;
+          this.list = res.data.map((item) => {
+            item.taskName = item.activity
+              ? item.activity.split(";")[1]
+              : "เช็คอิน";
+            item.taskId = item.activity
+              ? item.activity.split(";")[0]
+              : "checkin";
+            return item;
+          });
           this.loading = false;
         })
         .catch((err) => {
           this.loading = false;
         });
+    },
+    getTaskColor(taskId) {
+      switch (taskId) {
+        case "checkin":
+        case "checkout":
+          return "success";
+        case "data_center_check_in":
+        case "data_center_check_out":
+          return "warning";
+        case "complete":
+          return "info";
+        default:
+          return "secondary";
+      }
     },
   },
   computed: {
