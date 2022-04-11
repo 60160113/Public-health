@@ -132,16 +132,11 @@ export default {
           );
         }
         list = list.filter((item) => {
-          const reserve_time = item.reserve_date.split("T")[1].split(":");
           const reserve_date = new Date(item.reserve_date).getTime();
 
           const start = new Date(this.filter.reserve_date.start);
           const end = new Date(this.filter.reserve_date.end);
-          end.setHours(
-            reserve_time[0],
-            reserve_time[1],
-            reserve_time[2].split(".")[0]
-          );
+          end.setHours(23, 59, 59);
 
           return (
             reserve_date >= start.getTime() && reserve_date <= end.getTime()
