@@ -49,6 +49,13 @@
             </td>
           </template>
 
+          <template #actions>
+            <td>
+              <CButton color="info" size="sm"><b>รายละเอียด</b> </CButton>&nbsp;
+              <CButton color="primary" size="sm"><b>ดำเนินการ</b> </CButton>
+            </td>
+          </template>
+
           <template #actions-filter> <p></p> </template>
         </CDataTable>
       </CCardBody>
