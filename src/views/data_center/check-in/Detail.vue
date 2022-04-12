@@ -27,6 +27,8 @@
           ><p><b>สังกัด/บริษัท:</b> {{ booker.affiliation }}</p></CCol
         >
       </CRow>
+      <hr />
+      <p><b>วันที่จอง:</b> {{ toThaiFormatWithTime(booker.reserve_date) }}</p>
     </div>
     <!-- hardware T A B L E -->
     <hr />
