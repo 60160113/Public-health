@@ -100,6 +100,7 @@
           v-if="processId && id"
           :processId="processId"
           :id="id"
+          :onComplete="completeTask"
         />
       </div>
 
@@ -234,6 +235,12 @@ export default {
         default:
           return "secondary";
       }
+    },
+    completeTask() {
+      this.loading = true;
+      this.getList();
+      this.modal = false;
+      this.loading = false;
     },
   },
   computed: {
