@@ -60,9 +60,14 @@
             </td>
           </template>
 
-          <template #actions>
+          <template #actions="{ item }">
             <td>
-              <CButton color="info" size="sm"><b>รายละเอียด</b> </CButton>&nbsp;
+              <CButton
+                color="info"
+                size="sm"
+                @click="openModal('detail', item.reserve_id, item.id)"
+                ><b>รายละเอียด</b> </CButton
+              >&nbsp;
               <CButton color="primary" size="sm"><b>ดำเนินการ</b> </CButton>
             </td>
           </template>
@@ -71,14 +76,54 @@
         </CDataTable>
       </CCardBody>
     </CCard>
+
+    <!-- M O D A L -->
+    <CModal
+      :show.sync="modal"
+      :centered="true"
+      :closeOnBackdrop="false"
+      size="lg"
+      :color="modalName == 'detail' ? 'info' : 'primary'"
+    >
+      <div v-if="modalName == 'detail'">
+        <Detail
+          v-if="processId && id"
+          :processId="processId"
+          :id="id"
+        />
+      </div>
+
+      <template #header>
+        <h5 class="modal-title">
+          {{ modalName == "detail" ? "รายละเอียด" : "ดำเนินการ" }}
+        </h5>
+        <CButtonClose
+          @click="modal = false"
+          class="text-white"
+          :disabled="loading"
+        />
+      </template>
+      <template #footer>
+        <CButton color="secondary" @click="modal = false" :disabled="loading"
+          >ปิด</CButton
+        >
+      </template>
+      <CElementCover :opacity="0.8" v-if="loading">
+        <h1 class="d-inline">Loading...</h1>
+        <CSpinner size="5xl" color="success" />
+      </CElementCover>
+    </CModal>
   </div>
 </template>
 
 <script>
 import JogetHelper from "@/helpers/JogetHelper";
 import dateFormat from "@/helpers/dateFormat.vue";
+
+import Detail from "@/views/data_center/check-in/Detail.vue";
 export default {
   mixins: [JogetHelper, dateFormat],
+  components: { Detail },
   created() {
     this.getList();
   },
@@ -86,6 +131,10 @@ export default {
     return {
       list: [],
       loading: false,
+      modal: false,
+      modalName: "",
+      processId: "",
+      id: "",
 
       filter: {
         reserve_date: {
@@ -122,6 +171,15 @@ export default {
     };
   },
   methods: {
+    openModal(name, processId, id = "") {
+      this.loading = true;
+      this.modalName = name;
+      this.processId = processId;
+      this.id = id;
+
+      this.modal = true;
+      this.loading = false;
+    },
     getList() {
       this.loading = true;
 
