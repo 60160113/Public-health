@@ -111,8 +111,7 @@ export default {
       if (this.form.guard_approve == "true") {
         // activity
         const Activity = await this.jogetGetCurrentActivity(processId);
-        console.log("Activity", Activity);
-        this.form.activity = `${Activity.data.activityId};${Activity.data.activityName}`;
+        this.form.activity = `${Activity.data.activityDefId};${Activity.data.activityName}`;
         this.form.processId = processId;
         this.form.assign = "position;ISS";
       } else {
