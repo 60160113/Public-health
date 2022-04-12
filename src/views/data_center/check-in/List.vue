@@ -71,7 +71,7 @@
               <CButton
                 color="primary"
                 size="sm"
-                @click="openModal(item.taskId, item.reserve_id, item.id)"
+                @click="openModal(item.taskId, item.processId, item.id)"
                 ><b>ดำเนินการ</b>
               </CButton>
             </td>
