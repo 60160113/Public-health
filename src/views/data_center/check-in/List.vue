@@ -65,13 +65,16 @@
               <CButton
                 color="info"
                 size="sm"
-                @click="openModal('detail', item.reserve_id, item.id)"
+                @click.prevent="openModal('detail', item.reserve_id, item.id)"
                 ><b>รายละเอียด</b> </CButton
               >&nbsp;
               <CButton
                 color="primary"
                 size="sm"
-                @click="openModal(item.taskId, item.processId, item.id)"
+                :disabled="item.taskId == 'complete'"
+                @click.prevent="
+                  openModal(item.taskId, item.processId, item.id, item.taskName)
+                "
                 ><b>ดำเนินการ</b>
               </CButton>
             </td>
@@ -97,7 +100,7 @@
       <div v-else>
         <component
           :is="modalName"
-          v-if="processId && id"
+          v-if="id"
           :processId="processId"
           :id="id"
           :onComplete="completeTask"
@@ -106,7 +109,7 @@
 
       <template #header>
         <h5 class="modal-title">
-          {{ modalName == "detail" ? "รายละเอียด" : "ดำเนินการ" }}
+          {{ modalName == "detail" ? "รายละเอียด" : modalLabel }}
         </h5>
         <CButtonClose
           @click="modal = false"
@@ -155,6 +158,7 @@ export default {
       loading: false,
       modal: false,
       modalName: "",
+      modalLabel: "",
       processId: "",
       id: "",
 
@@ -193,11 +197,12 @@ export default {
     };
   },
   methods: {
-    openModal(name, processId, id = "") {
+    openModal(name, processId, id, label = "") {
       this.loading = true;
       this.modalName = name;
       this.processId = processId;
       this.id = id;
+      this.modalLabel = label;
 
       this.modal = true;
       this.loading = false;
@@ -236,11 +241,13 @@ export default {
           return "secondary";
       }
     },
-    completeTask() {
+    async completeTask() {
       this.loading = true;
       this.getList();
-      this.modal = false;
-      this.loading = false;
+      setTimeout(() => {
+        this.modal = false;
+        this.loading = false;
+      }, 500);
     },
   },
   computed: {
@@ -268,6 +275,14 @@ export default {
     },
   },
   watch: {
+    modal: function (val) {
+      if (!val) {
+        this.processId = "";
+        this.modalLabel = "";
+        this.modalName = "";
+        this.id = "";
+      }
+    },
     "filter.reserve_date.start": function (val) {
       if (!val) {
         this.filter.reserve_date.end = "";
