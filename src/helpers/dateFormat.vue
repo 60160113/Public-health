@@ -28,7 +28,7 @@ export default {
     toThaiFormatWithTime(date) {
       if (date) {
         return (
-          this.toThaiFormat(date) + " " + new Date(date).toLocaleTimeString()
+          this.toThaiFormat(date) + " " + new Date(date).toLocaleTimeString() + " น."
         );
       } else {
         return "";
