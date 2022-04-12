@@ -10,7 +10,7 @@
           ><p><b>วันที่:</b> {{ toThaiFormat(booker.dateCreated) }}</p></CCol
         >
       </CRow>
-      <hr />
+      <hr class="mt-1" />
       <CRow>
         <CCol>
           <p><b>ชื่อ - สกุล:</b> {{ booker.name }}</p>
@@ -27,8 +27,13 @@
           ><p><b>สังกัด/บริษัท:</b> {{ booker.affiliation }}</p></CCol
         >
       </CRow>
-      <hr />
+      <hr class="mt-1" />
       <p><b>วันที่จอง:</b> {{ toThaiFormatWithTime(booker.reserve_date) }}</p>
+      <p>
+        <b>ผู้ติดต่อ:</b> {{ reserve.ISS ? reserve.ISS.split(";")[1] : "" }}
+      </p>
+      <p><b>วัตถุประสงค์: </b>{{ reserve.objective }}</p>
+      <p v-if="reserve.note"><b>หมายเหตุ: </b>{{ reserve.note }}</p>
     </div>
     <!-- hardware T A B L E -->
     <hr />
@@ -76,11 +81,13 @@ export default {
   },
   async created() {
     await this.getBooker();
+    await this.getReserve();
     await this.getHardware();
   },
   data() {
     return {
       booker: {},
+      reserve: {},
       hardwares: [],
 
       hardware_field: [
@@ -106,6 +113,16 @@ export default {
         },
       ]).then((res) => {
         this.booker = res.data;
+      });
+    },
+    async getReserve() {
+      this.jogetGetOne("mophApp", "list_data_center_reserve", [
+        {
+          paramName: "processId",
+          paramValue: this.processId,
+        },
+      ]).then((res) => {
+        this.reserve = res.data;
       });
     },
     async getHardware() {

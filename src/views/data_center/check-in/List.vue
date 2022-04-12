@@ -68,7 +68,12 @@
                 @click="openModal('detail', item.reserve_id, item.id)"
                 ><b>รายละเอียด</b> </CButton
               >&nbsp;
-              <CButton color="primary" size="sm"><b>ดำเนินการ</b> </CButton>
+              <CButton
+                color="primary"
+                size="sm"
+                @click="openModal(item.taskId, item.reserve_id, item.id)"
+                ><b>ดำเนินการ</b>
+              </CButton>
             </td>
           </template>
 
@@ -86,7 +91,12 @@
       :color="modalName == 'detail' ? 'info' : 'primary'"
     >
       <div v-if="modalName == 'detail'">
-        <Detail
+        <Detail v-if="processId && id" :processId="processId" :id="id" />
+      </div>
+
+      <div v-else>
+        <component
+          :is="modalName"
           v-if="processId && id"
           :processId="processId"
           :id="id"
@@ -121,9 +131,20 @@ import JogetHelper from "@/helpers/JogetHelper";
 import dateFormat from "@/helpers/dateFormat.vue";
 
 import Detail from "@/views/data_center/check-in/Detail.vue";
+
+import Checkin from "@/views/data_center/check-in/actions/Checkin.vue";
+import DataCenterCheckin from "@/views/data_center/check-in/actions/DataCenterCheckin.vue";
+import DataCenterCheckOut from "@/views/data_center/check-in/actions/DataCenterCheckOut.vue";
+import Checkout from "@/views/data_center/check-in/actions/Checkout.vue";
 export default {
   mixins: [JogetHelper, dateFormat],
-  components: { Detail },
+  components: {
+    Detail,
+    checkin: Checkin,
+    data_center_check_in: DataCenterCheckin,
+    data_center_check_out: DataCenterCheckOut,
+    checkout: Checkout,
+  },
   created() {
     this.getList();
   },
