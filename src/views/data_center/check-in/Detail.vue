@@ -2,10 +2,31 @@
   <div>
     <!-- B o o k e r -->
     <div id="booker_section">
-      <!-- {{ booker }} -->
-      ชื่อ - สกุล: {{ booker.name }}
-
-      เลขที่: {{ booker.reserve_request_id }}
+      <CRow>
+        <CCol>
+          <p><b>เลขที่เอกสาร:</b> {{ booker.reserve_request_id }}</p>
+        </CCol>
+        <CCol
+          ><p><b>วันที่:</b> {{ toThaiFormat(booker.dateCreated) }}</p></CCol
+        >
+      </CRow>
+      <hr />
+      <CRow>
+        <CCol>
+          <p><b>ชื่อ - สกุล:</b> {{ booker.name }}</p>
+        </CCol>
+        <CCol
+          ><p><b>เลขที่บัตรประชาชน:</b> {{ booker.idcard }}</p></CCol
+        >
+      </CRow>
+      <CRow>
+        <CCol>
+          <p><b>ตำแหน่ง:</b> {{ booker.position }}</p>
+        </CCol>
+        <CCol
+          ><p><b>สังกัด/บริษัท:</b> {{ booker.affiliation }}</p></CCol
+        >
+      </CRow>
     </div>
     <!-- hardware T A B L E -->
     <hr />
@@ -98,3 +119,9 @@ export default {
   },
 };
 </script>
+
+<style scoped>
+p {
+  font-size: 16px;
+}
+</style>
