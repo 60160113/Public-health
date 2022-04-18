@@ -166,7 +166,7 @@
       :show.sync="modal"
       :centered="true"
       :closeOnBackdrop="false"
-      size="lg"
+      size="xl"
       color="success"
     >
       <!-- BOOKER M O D A L -->
