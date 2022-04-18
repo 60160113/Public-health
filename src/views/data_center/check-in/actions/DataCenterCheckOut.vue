@@ -147,6 +147,11 @@
         <CButton color="success" @click.prevent="addItem()">บันทึก</CButton>
       </template>
     </CModal>
+
+    <CElementCover :opacity="0.8" v-if="loading">
+      <h1 class="d-inline">Loading...</h1>
+      <CSpinner size="5xl" color="success" />
+    </CElementCover>
   </div>
 </template>
 
@@ -261,6 +266,7 @@ export default {
         "mophApp",
         "data_center_hardware",
         this.hardwares.map((item) => {
+          item.processId = this.booker.reserve_id;
           return {
             primaryKey: "",
             data: item,
