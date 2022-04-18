@@ -181,9 +181,8 @@ export default {
       default: "",
     },
   },
-  async created() {
-    await this.getBooker();
-    await this.getHardware();
+  created() {
+    this.getBooker();
   },
   data() {
     return {
@@ -232,7 +231,9 @@ export default {
       this.hardwares.push(this.hardware_form);
       this.modal = false;
     },
-    async getBooker() {
+    getBooker() {
+      this.loading = true;
+
       this.jogetGetOne("mophApp", "data_center_checkin", [
         {
           paramName: "id",
@@ -240,9 +241,11 @@ export default {
         },
       ]).then((res) => {
         this.booker = res.data;
+        this.getHardware();
       });
     },
-    async getHardware() {
+    getHardware() {
+      this.loading = true;
       this.jogetList("mophApp", "list_data_center_hardware", [
         {
           paramName: "processId",
@@ -252,6 +255,9 @@ export default {
         this.hardwares = res.data;
         this.previousHardwares = this.hardwares.map((item) => item.id);
       });
+      setTimeout(() => {
+        this.loading = false;
+      }, 500);
     },
     async submit() {
       this.loading = true;
