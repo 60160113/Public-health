@@ -35,6 +35,36 @@
       <p><b>วัตถุประสงค์: </b>{{ reserve.objective }}</p>
       <p v-if="reserve.note"><b>หมายเหตุ: </b>{{ reserve.note }}</p>
     </div>
+    <!-- Check in -->
+    <div id="checkin_section" v-if="booker.guard_approve">
+      <hr />
+      <CRow>
+        <CCol
+          ><p>
+            <b>สถานะการเช็คอินเข้าอาคาร:</b>&nbsp;
+            <CBadge
+              style="font-size: 16px"
+              :color="JSON.parse(booker.guard_approve) ? 'success' : 'danger'"
+              >{{
+                JSON.parse(booker.guard_approve) ? "สำเร็จ" : "ยกเลิก"
+              }}</CBadge
+            >
+          </p></CCol
+        >
+        <CCol>
+          <p>
+            <b>หมายเลขบัตรเข้าอาคาร:</b>&nbsp;
+            <CBadge style="font-size: 16px" color="success">{{
+              booker.building_card
+            }}</CBadge>
+          </p>
+        </CCol>
+      </CRow>
+
+      <p v-if="booker.guard_approve_comment">
+        <b>ความคิดเห็น:</b> {{ booker.guard_approve_comment }}
+      </p>
+    </div>
     <!-- hardware T A B L E -->
     <hr />
     <div id="hardware_section">
