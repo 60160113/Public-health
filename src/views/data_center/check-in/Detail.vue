@@ -37,7 +37,7 @@
     </div>
     <!-- Check in -->
     <div id="checkin_section" v-if="booker.guard_approve">
-      <hr />
+      <hr class="mt-1" />
       <CRow>
         <CCol
           ><p>
@@ -80,7 +80,7 @@
     </div>
     <!-- Data Center Check In -->
     <div id="data_center_checkin_section" v-if="booker.ISS_approve">
-      <hr />
+      <hr class="mt-1" />
       <CRow>
         <CCol
           ><p>
@@ -120,7 +120,7 @@
       </CRow>
     </div>
     <!-- hardware T A B L E -->
-    <hr />
+    <hr class="mt-1" />
     <div id="hardware_section">
       <h5 class="text-primary">รายการ Hardwares</h5>
       <CDataTable
