@@ -67,6 +67,8 @@
 <script>
 import JogetHelper from "@/helpers/JogetHelper";
 import dateFormat from "@/helpers/dateFormat.vue";
+
+const AuthUser = JSON.parse(localStorage.getItem("AuthUser"));
 export default {
   mixins: [JogetHelper, dateFormat],
   props: {
@@ -95,6 +97,7 @@ export default {
       data_center_cards: [],
 
       form: {
+        checkin_ISS_name: AuthUser.fullname,
         activity: "",
         assign: "",
 
