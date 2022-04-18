@@ -5,7 +5,7 @@ export default {
   methods: {
     // return header
     jogetAxiosOptions(localStorageIndex = "") {
-      const storageIndex = localStorageIndex ? localStorageIndex : "AuthUser"
+      const storageIndex = localStorageIndex ? localStorageIndex : "AuthUser";
       const AuthUser = JSON.parse(localStorage.getItem(storageIndex));
       // return authorization header with jwt token
       if (AuthUser && AuthUser.token) {
@@ -166,6 +166,26 @@ export default {
       };
       return await axios.post(
         `${process.env.VUE_APP_BACKEND_URL}/form/delete`,
+        axiosData,
+        this.jogetAxiosOptions(localStorageIndex)
+      );
+    },
+    // multiple delete
+    async jogetMultipleFormDelete(
+      appId,
+      formId,
+      primaryKeys,
+      localStorageIndex = ""
+    ) {
+      const axiosData = {
+        app: {
+          appId: appId,
+          formId: formId,
+        },
+        primaryKeys: primaryKeys,
+      };
+      return await axios.post(
+        `${process.env.VUE_APP_BACKEND_URL}/form/delete/multiple`,
         axiosData,
         this.jogetAxiosOptions(localStorageIndex)
       );
