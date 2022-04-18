@@ -61,9 +61,63 @@
         </CCol>
       </CRow>
 
-      <p v-if="booker.guard_approve_comment">
-        <b>ความคิดเห็น:</b> {{ booker.guard_approve_comment }}
-      </p>
+      <CRow>
+        <CCol>
+          <p>
+            <b>ความคิดเห็น:</b>
+            {{
+              booker.guard_approve_comment ? booker.guard_approve_comment : "-"
+            }}
+          </p>
+        </CCol>
+        <CCol>
+          <p>
+            <b>เช็คอินเมื่อ:</b>
+            {{ toThaiFormatWithTime(booker.guard_approve_date) }}
+          </p>
+        </CCol>
+      </CRow>
+    </div>
+    <!-- Data Center Check In -->
+    <div id="data_center_checkin_section" v-if="booker.ISS_approve">
+      <hr />
+      <CRow>
+        <CCol
+          ><p>
+            <b>สถานะการเช็คอินเข้าศูนย์ปฏิบัติการ:</b>&nbsp;
+            <CBadge
+              style="font-size: 16px"
+              :color="JSON.parse(booker.ISS_approve) ? 'success' : 'danger'"
+              >{{
+                JSON.parse(booker.ISS_approve) ? "สำเร็จ" : "ยกเลิก"
+              }}</CBadge
+            >
+          </p></CCol
+        >
+        <CCol>
+          <p>
+            <b>หมายเลขบัตรเข้าศูนย์ปฏิบัติการ:</b>&nbsp;
+            <CBadge style="font-size: 16px" color="warning">{{
+              booker.data_center_card
+            }}</CBadge>
+          </p>
+        </CCol>
+      </CRow>
+
+      <CRow>
+        <CCol>
+          <p>
+            <b>ความคิดเห็น:</b>
+            {{ booker.ISS_approve_comment ? booker.ISS_approve_comment : "-" }}
+          </p>
+        </CCol>
+        <CCol>
+          <p>
+            <b>เช็คอินเมื่อ:</b>
+            {{ toThaiFormatWithTime(booker.ISS_approve_date) }}
+          </p>
+        </CCol>
+      </CRow>
     </div>
     <!-- hardware T A B L E -->
     <hr />
