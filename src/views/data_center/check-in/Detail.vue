@@ -145,6 +145,11 @@
         </template>
       </CDataTable>
     </div>
+
+    <CElementCover :opacity="0.8" v-if="loading">
+      <h1 class="d-inline">Loading...</h1>
+      <CSpinner size="5xl" color="success" />
+    </CElementCover>
   </div>
 </template>
 
@@ -164,15 +169,21 @@ export default {
     },
   },
   async created() {
+    this.loading = true;
     await this.getBooker();
     await this.getReserve();
     await this.getHardware();
+    setTimeout(() => {
+      this.loading = false;
+    }, 500);
   },
   data() {
     return {
       booker: {},
       reserve: {},
       hardwares: [],
+
+      loading: true,
 
       hardware_field: [
         { key: "name", label: "รายการ", _style: "width:25%" },
