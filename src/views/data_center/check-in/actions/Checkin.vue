@@ -1,5 +1,33 @@
 <template>
   <div>
+    <div id="booker_section">
+      <CRow>
+        <CCol>
+          <p><b>เลขที่เอกสาร:</b> {{ booker.reserve_request_id }}</p>
+        </CCol>
+        <CCol
+          ><p><b>วันที่:</b> {{ toThaiFormat(booker.dateCreated) }}</p></CCol
+        >
+      </CRow>
+      <hr class="mt-1" />
+      <CRow>
+        <CCol>
+          <p><b>ชื่อ - สกุล:</b> {{ booker.name }}</p>
+        </CCol>
+        <CCol
+          ><p><b>เลขที่บัตรประชาชน:</b> {{ booker.idcard }}</p></CCol
+        >
+      </CRow>
+      <CRow>
+        <CCol>
+          <p><b>ตำแหน่ง:</b> {{ booker.position }}</p>
+        </CCol>
+        <CCol
+          ><p><b>สังกัด/บริษัท:</b> {{ booker.affiliation }}</p></CCol
+        >
+      </CRow>
+    </div>
+    <hr class="mt-1" />
     <CSelect
       label="ดำเนินการ"
       placeholder="กรุณาเลือก"
@@ -36,8 +64,9 @@
 
 <script>
 import JogetHelper from "@/helpers/JogetHelper";
+import dateFormat from "@/helpers/dateFormat.vue";
 export default {
-  mixins: [JogetHelper],
+  mixins: [JogetHelper, dateFormat],
   props: {
     onComplete: {
       type: Function,
@@ -54,8 +83,9 @@ export default {
       default: "",
     },
   },
-  created() {
-    this.getBuildingCards();
+  async created() {
+    await this.getBooker();
+    await this.getBuildingCards();
   },
   data() {
     return {
@@ -71,12 +101,24 @@ export default {
         guard_approve_date: new Date(),
       },
 
+      booker: {},
+
       building_card_list: [],
 
       loading: false,
     };
   },
   methods: {
+    async getBooker() {
+      this.jogetGetOne("mophApp", "data_center_checkin", [
+        {
+          paramName: "id",
+          paramValue: this.id,
+        },
+      ]).then((res) => {
+        this.booker = res.data;
+      });
+    },
     getBuildingCards() {
       this.jogetListAll("mophApp", "list_data_center_building_card").then(
         (res) => {
@@ -111,11 +153,11 @@ export default {
       if (this.form.guard_approve == "true") {
         // activity
         const Activity = await this.jogetGetCurrentActivity(processId);
-        this.form.activity = `${Activity.data.activityDefId};${Activity.data.activityName}`;
+        this.form.activity = `${Activity.data.activityDefId};${Activity.data.activityName};${Activity.data.activityId}`;
         this.form.processId = processId;
         this.form.assign = "position;ISS";
       } else {
-        this.form.activity = `complete;เสร็จสิ้น`;
+        this.form.activity = `complete;เสร็จสิ้น;none`;
       }
       await this.jogetFormSubmit(
         "mophApp",
