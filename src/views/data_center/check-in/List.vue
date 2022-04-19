@@ -21,6 +21,20 @@
           column-filter
           :loading="loading"
         >
+          <template #over-table>
+            <div style="margin-bottom: 10px">
+              <CSelect
+                label="แสดง"
+                placeholder="กรุณาเลือก"
+                :options="[
+                  { value: 'all', label: 'ทั้งหมด' },
+                  { value: 'mine', label: 'งานของฉัน' },
+                ]"
+                style="width: 25%"
+                :value.sync="filter.taskOwner"
+              />
+            </div>
+          </template>
           <template #no-items-view
             ><div class="text-center">ไม่พบข้อมูล</div>
           </template>
@@ -194,6 +208,8 @@ export default {
           end: "",
         },
         taskId: "",
+
+        taskOwner: "all",
       },
 
       fields: [
@@ -289,6 +305,9 @@ export default {
       var list = [...this.list];
       if (this.filter.taskId) {
         list = list.filter((item) => item.taskId == this.filter.taskId);
+      }
+      if (this.filter.taskOwner == "mine") {
+        list = list.filter((item) => !this.disabledAction(item));
       }
       if (this.filter.reserve_date.start) {
         if (!this.filter.reserve_date.end) {
