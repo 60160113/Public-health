@@ -119,6 +119,19 @@
         </CCol>
       </CRow>
     </div>
+    <div id="checkout_section" v-if="booker.return_data_center_card_date">
+      <hr class="mt-1" />
+      <p>
+        <b>เช็คเอาท์ศูนย์ปฏิบัติการเมื่อ:</b>&nbsp;{{
+          toThaiFormatWithTime(booker.return_data_center_card_date)
+        }}
+      </p>
+      <p v-if="booker.return_building_card_date">
+        <b>เช็คเอาท์อาคารเมื่อ:</b>&nbsp;{{
+          toThaiFormatWithTime(booker.return_building_card_date)
+        }}
+      </p>
+    </div>
     <!-- hardware T A B L E -->
     <hr class="mt-1" />
     <div id="hardware_section">
