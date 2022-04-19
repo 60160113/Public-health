@@ -86,7 +86,7 @@
               <CButton
                 color="primary"
                 size="sm"
-                :disabled="item.taskId == 'complete'"
+                :disabled="disabledAction(item)"
                 @click.prevent="
                   openModal(item.taskId, item.processId, item.id, item.taskName)
                 "
@@ -155,6 +155,8 @@ import Checkin from "@/views/data_center/check-in/actions/Checkin.vue";
 import DataCenterCheckin from "@/views/data_center/check-in/actions/DataCenterCheckin.vue";
 import DataCenterCheckOut from "@/views/data_center/check-in/actions/DataCenterCheckOut.vue";
 import Checkout from "@/views/data_center/check-in/actions/Checkout.vue";
+
+const AuthUser = JSON.parse(localStorage.getItem("AuthUser"));
 export default {
   mixins: [JogetHelper, dateFormat],
   components: {
@@ -222,6 +224,13 @@ export default {
     };
   },
   methods: {
+    disabledAction(item) {
+      const assignField = item.assign.split(";")[0] || "";
+      const assignTo = item.assign.split(";")[1] || "";
+      const assignStatus =
+        assignTo && assignField ? AuthUser[assignField] !== assignTo : false;
+      return item.taskId == "complete" || assignStatus;
+    },
     openModal(name, processId, id, label = "") {
       this.loading = true;
       this.modalName = name;
