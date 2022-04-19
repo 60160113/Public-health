@@ -49,6 +49,21 @@
             </td>
           </template>
 
+          <template #taskName-filter>
+            <select
+              class="form-control form-control-sm"
+              v-model="filter.taskId"
+            >
+              <option
+                v-for="(option, index) in taskList"
+                :key="index"
+                :value="option.value"
+              >
+                {{ option.label }}
+              </option>
+            </select>
+          </template>
+
           <template #taskName="{ item }">
             <td>
               <CBadge
@@ -162,11 +177,21 @@ export default {
       processId: "",
       id: "",
 
+      taskList: [
+        { value: "", label: "ทั้งหมด" },
+        { value: "checkin", label: "เช็คอิน" },
+        { value: "data_center_check_in", label: "เช็คอินเข้าศูนย์ปฏิบัติการ" },
+        { value: "data_center_check_out", label: "เช็คเอาท์ศูนย์ปฏิบัติการ" },
+        { value: "checkout", label: "เช็คเอาท์" },
+        { value: "complete", label: "เสร็จสิ้น" },
+      ],
+
       filter: {
         reserve_date: {
           start: "",
           end: "",
         },
+        taskId: "",
       },
 
       fields: [
@@ -253,6 +278,9 @@ export default {
   computed: {
     filteredList() {
       var list = [...this.list];
+      if (this.filter.taskId) {
+        list = list.filter((item) => item.taskId == this.filter.taskId);
+      }
       if (this.filter.reserve_date.start) {
         if (!this.filter.reserve_date.end) {
           this.filter.reserve_date.end = JSON.parse(
