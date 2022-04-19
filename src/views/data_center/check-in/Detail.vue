@@ -51,7 +51,7 @@
             >
           </p></CCol
         >
-        <CCol>
+        <CCol v-if="booker.building_card">
           <p>
             <b>หมายเลขบัตรเข้าอาคาร:</b>&nbsp;
             <CBadge style="font-size: 16px" color="success">{{
@@ -94,7 +94,7 @@
             >
           </p></CCol
         >
-        <CCol>
+        <CCol v-if="booker.data_center_card">
           <p>
             <b>หมายเลขบัตรเข้าศูนย์ปฏิบัติการ:</b>&nbsp;
             <CBadge style="font-size: 16px" color="warning">{{
