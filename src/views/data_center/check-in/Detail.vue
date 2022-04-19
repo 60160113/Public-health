@@ -119,9 +119,9 @@
         </CCol>
       </CRow>
     </div>
-    <div id="checkout_section" v-if="booker.return_data_center_card_date">
+    <div id="checkout_section" v-if="booker.return_data_center_card_date || booker.return_building_card_date">
       <hr class="mt-1" />
-      <p>
+      <p v-if="booker.return_data_center_card_date">
         <b>เช็คเอาท์ศูนย์ปฏิบัติการเมื่อ:</b>&nbsp;{{
           toThaiFormatWithTime(booker.return_data_center_card_date)
         }}
