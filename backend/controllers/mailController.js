@@ -1,11 +1,12 @@
 const nodemailer = require('nodemailer')
+
 const transporter = nodemailer.createTransport({
   host: 'smtp.office365.com',
   port: 587,
   secure: false,
   auth: {
-    user: 'jrk-crm@jorakay.co.th',
-    pass: 'Jorakay2021'
+    user: process.env.APP_MAIL_USER,
+    pass: process.env.APP_MAIL_PASSWORD
   },
   tls: {
     ciphers: 'SSLv3'
