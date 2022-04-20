@@ -285,10 +285,11 @@
 <script>
 import JogetHelper from "@/helpers/JogetHelper";
 import dateFormat from "@/helpers/dateFormat.vue";
+import MailHelper from "@/helpers/MailHelper";
 import { DatePicker } from "v-calendar";
 import MaskedInput from "vue-text-mask";
 export default {
-  mixins: [JogetHelper, dateFormat],
+  mixins: [JogetHelper, dateFormat, MailHelper],
   components: { "v-date-picker": DatePicker, MaskedInput },
   created() {
     this.loading = true;
@@ -428,6 +429,48 @@ export default {
       this.arr_list[this.modalName].push(this.arr_form[this.modalName]);
       this.modal = false;
     },
+    async notifyIST() {
+      // get IST
+      const IST_list = await this.jogetList(
+        "mophApp",
+        "user_accounts",
+        [
+          {
+            paramName: "position",
+            paramValue: "IST",
+          },
+        ],
+        "tempUser"
+      );
+
+      const to = IST_list.data.map((item) => item.email);
+
+      const subject = `มีการร้องขอเข้าศูนย์ปฏิบัติการ${
+        this.arr_list.booker[0] ? "จาก " + this.arr_list.booker[0].name : ""
+      } ณ วันที่ ${this.toThaiFormatWithTime(new Date())}`;
+
+      const url = location.href.replace(
+        "data-center/reserve",
+        "data-center/reserve/list"
+      );
+
+      const html = `<p><b>วันที่จอง: </b>${this.toThaiFormatWithTime(
+        this.reserve_form.reserve_date
+      )}</p>${
+        this.arr_list.booker[0]
+          ? `<p><b>ผู้จอง: </b>${this.arr_list.booker[0].name}</p>`
+          : ""
+      }<p><b>ผู้ติดต่อ: </b>${
+        this.reserve_form.ISS.split(";")[1]
+          ? this.reserve_form.ISS.split(";")[1]
+          : "-"
+      }</p><p><b>วัตถุประสงค์: </b>${this.reserve_form.objective}</p>${
+        this.reserve_form.note
+          ? `<p><b>หมายเหตุ: </b>${this.reserve_form.note}</p>`
+          : ""
+      } <hr/> <p>ดูรายละเอียดเพิ่มเติมที่ </p> <a href="${url}" target="_blank" style="cursor: pointer">${url}</a>`;
+      await this.sendMail(to, subject, html, "", "tempUser");
+    },
     async submit() {
       try {
         this.loading = true;
@@ -438,6 +481,9 @@ export default {
           "tempUser"
         );
         const processId = startProcess.data.processId;
+
+        // email
+        this.notifyIST();
 
         // == Reserve == //
         const reserveData = {
