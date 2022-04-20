@@ -15,7 +15,13 @@ export default {
         return { headers: {} };
       }
     },
-    sendMail(to, subject, html, from = "", localStorageIndex = "AuthUser") {
+    async sendMail(
+      to,
+      subject,
+      html,
+      from = "",
+      localStorageIndex = "AuthUser"
+    ) {
       var axiosData = {
         to,
         subject,
