@@ -1,7 +1,8 @@
 <script>
 import menu from "./menu";
-import { freeSet } from '@coreui/icons'
-import * as icons from '@/assets/icons/icons.js'
+import { freeSet } from "@coreui/icons";
+import * as icons from "@/assets/icons/icons.js";
+
 export default {
   name: "nav",
   components: {
@@ -18,7 +19,28 @@ export default {
       return [
         {
           _name: "CSidebarNav",
-          _children: this.menu,
+          _children: this.menu.filter((item) => {
+            // check route restriction
+            const AuthUser = JSON.parse(localStorage.getItem("AuthUser"));
+            var restrictions = [];
+            if (item.to && this.$router.match(item.to).meta.restriction) {
+              restrictions = this.$router.match(item.to).meta.restriction;
+            } else if (item.restriction) {
+              restrictions = item.restriction;
+            } else {
+              return true;
+            }
+
+            const status =
+              restrictions.filter((el) => {
+                const values = Array.isArray(el.value)
+                  ? el.value
+                  : el.value.split(",");
+                return values.includes(AuthUser[el.key]);
+              }).length > 0;
+
+            return status;
+          }),
         },
       ];
     },
@@ -27,8 +49,8 @@ export default {
 </script>
 
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Sarabun:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800&display=swap");
 * {
-  font-family: 'Sarabun', sans-serif;
+  font-family: "Sarabun", sans-serif;
 }
 </style>

@@ -4,7 +4,13 @@ export default [
     name: "Reserve List",
     component: () => import("@/views/data_center/reserve/List.vue"),
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      restriction: [
+        {
+          key: "position",
+          value: "IST"
+        }
+      ]
     }
   },
   {
@@ -12,7 +18,13 @@ export default [
     name: "Check-in List",
     component: () => import("@/views/data_center/check-in/List.vue"),
     meta: {
-      requiresAuth: true
+      requiresAuth: true,
+      restriction: [
+        {
+          key: "position",
+          value: "IST,ISS,guard"
+        }
+      ]
     }
-  },
+  }
 ];

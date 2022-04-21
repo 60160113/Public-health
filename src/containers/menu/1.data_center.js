@@ -1,7 +1,13 @@
 export default [
   {
     _name: "CSidebarNavTitle",
-    _children: ["Data Center"]
+    _children: ["Data Center"],
+    restriction: [
+      {
+        key: "position",
+        value: "IST,ISS,guard"
+      }
+    ]
   },
   {
     _name: "CSidebarNavItem",
