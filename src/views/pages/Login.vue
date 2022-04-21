@@ -40,6 +40,12 @@
                         class="px-4"
                         @click.prevent="login()"
                         >Login</CButton
+                      >&nbsp;
+                      <CButton
+                        color="primary"
+                        class="px-4"
+                        @click.prevent="reservePage()"
+                        >จองเข้าศูนย์ปฏิบัติการ</CButton
                       >
                     </CCol>
                   </CRow>
@@ -111,6 +117,10 @@ export default {
           this.loading = false;
           this.loginErrorModal = true;
         });
+    },
+    reservePage() {
+      let routeData = this.$router.resolve("/data-center/reserve");
+      window.open(routeData.href, "_blank");
     },
   },
   computed: {
