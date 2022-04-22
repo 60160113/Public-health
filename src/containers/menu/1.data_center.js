@@ -13,7 +13,7 @@ export default [
     _name: "CSidebarNavItem",
     name: "รายการคำขอเข้าศูนย์ปฏิบัติการ",
     to: "/data-center/reserve/list",
-    icon: "cilLayers"
+    icon: "cilList"
   },
   {
     _name: "CSidebarNavItem",
