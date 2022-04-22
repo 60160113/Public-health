@@ -31,11 +31,7 @@
           <template #no-items-view
             ><div class="text-center">ไม่พบข้อมูล</div>
           </template>
-          <template #index="{ index }">
-            <td width="5%">
-              {{ index + 1 }}
-            </td>
-          </template>
+
           <template #action="{ item }">
             <td>
               <CDropdown color="secondary" toggler-text="" size="sm">
@@ -129,9 +125,8 @@ export default {
       },
 
       fields: [
-        { key: "index", label: "#", _style: "width:10%" },
         { key: "number", label: "หมายเลข", _style: "width:70%" },
-        { key: "action", label: "ดำเนินการ", _style: "width:20%" },
+        { key: "action", label: "ดำเนินการ", _style: "width:30%" },
       ],
 
       loading: false,
