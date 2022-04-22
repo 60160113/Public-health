@@ -2,7 +2,7 @@
   <div>
     <CCard>
       <CCardHeader>
-        <strong class="text-primary">รายการคำขอเข้าศูนย์ปฏิบัติการ</strong>
+        <strong class="text-primary">ถาดงานศูนย์ปฏิบัติการ</strong>
       </CCardHeader>
 
       <CCardBody>
