@@ -24,6 +24,11 @@
           <CIcon v-else name="cil-moon" />
         </button>
       </CHeaderNavItem>
+      <span
+        ><b class="text-primary">{{ user.fullname }}</b> <br />
+        ({{ user.position }})</span
+      >
+
       <TheHeaderDropdownAccnt />
     </CHeaderNav>
   </CHeader>
@@ -35,6 +40,8 @@ import TheHeaderDropdownNotif from "./TheHeaderDropdownNotif";
 import TheHeaderDropdownTasks from "./TheHeaderDropdownTasks";
 import TheHeaderDropdownMssgs from "./TheHeaderDropdownMssgs";
 
+const user = JSON.parse(localStorage.getItem("AuthUser"));
+
 export default {
   name: "TheHeader",
   components: {
@@ -42,6 +49,11 @@ export default {
     TheHeaderDropdownNotif,
     TheHeaderDropdownTasks,
     TheHeaderDropdownMssgs,
+  },
+  data() {
+    return {
+      user: user,
+    };
   },
 };
 </script>
