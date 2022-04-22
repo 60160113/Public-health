@@ -10,8 +10,7 @@
             <CCard class="p-4">
               <CCardBody>
                 <CForm>
-                  <h1>Login</h1>
-                  <p class="text-muted">Sign In to your account</p>
+                  <h1>เข้าสู่ระบบ</h1>
                   <CInput
                     placeholder="Username"
                     autocomplete="username email"
@@ -39,7 +38,7 @@
                         color="primary"
                         class="px-4"
                         @click.prevent="login()"
-                        >Login</CButton
+                        >เข้าสู่ระบบ</CButton
                       >&nbsp;
                       <CButton
                         color="primary"
