@@ -7,13 +7,13 @@
   >
     <template #toggler>
       <CHeaderNavLink>
-        <div class="c-avatar">
-          <img src="img/avatars/6.jpg" class="c-avatar-img" />
-        </div>
+        <CButton size="sm" variant="outline" color="primary"
+          ><CIcon name="cil-options"
+        /></CButton>
       </CHeaderNavLink>
     </template>
     <CDropdownHeader tag="div" class="text-center" color="light">
-      <strong>Account</strong>
+      <strong>{{ user.fullname }}</strong>
     </CDropdownHeader>
 
     <CDropdownItem @click="logout">
@@ -23,17 +23,19 @@
 </template>
 
 <script>
+const user = JSON.parse(localStorage.getItem("AuthUser"));
 export default {
   name: "TheHeaderDropdownAccnt",
   data() {
     return {
       itemsCount: 42,
+      user: user,
     };
   },
   methods: {
     logout() {
       localStorage.removeItem("AuthUser");
-      location.reload()
+      location.reload();
     },
   },
 };
