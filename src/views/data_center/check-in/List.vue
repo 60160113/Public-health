@@ -24,13 +24,14 @@
           <template #over-table>
             <div style="margin-bottom: 10px">
               <CSelect
-                label="แสดง"
+                horizontal
+                label="รายการ:"
                 placeholder="กรุณาเลือก"
                 :options="[
                   { value: 'all', label: 'ทั้งหมด' },
                   { value: 'mine', label: 'งานของฉัน' },
                 ]"
-                style="width: 25%"
+                style="width: 50%"
                 :value.sync="filter.taskOwner"
               />
             </div>
