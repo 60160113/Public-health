@@ -6,7 +6,7 @@ export default [{
     {
         _name: "CSidebarNavDropdown",
         name: "Data Center",
-        icon: "cil-circle",
+        icon: "cil-description",
         items: [{
                 _name: "CSidebarNavItem",
                 name: "วัตถุประสงค์",
@@ -28,7 +28,7 @@ export default [{
     {
         _name: "CSidebarNavDropdown",
         name: "Change Request",
-        icon: "cil-circle",
+        icon: "cil-history",
         items: [{
                 _name: "CSidebarNavItem",
                 name: "เหตุผลที่ขอเปลี่ยนแปลง",

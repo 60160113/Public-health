@@ -6,7 +6,7 @@ export default [{
         _name: "CSidebarNavItem",
         name: "ร้องขอดำเนินการเปลี่ยนแปลง",
         to: "/change_request/request",
-        icon: "cil-circle"
+        icon: "cil-comment-square"
     },
     {
         _name: "CSidebarNavItem",
