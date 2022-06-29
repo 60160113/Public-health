@@ -24,4 +24,26 @@ export default [{
             }
         ]
     },
+    // change request
+    {
+        _name: "CSidebarNavDropdown",
+        name: "Change Request",
+        icon: "cil-circle",
+        items: [{
+                _name: "CSidebarNavItem",
+                name: "เหตุผลที่ขอเปลี่ยนแปลง",
+                to: "/configuration/change_request/reasons",
+            },
+            {
+                _name: "CSidebarNavItem",
+                name: "ระบบที่เกี่ยวข้อง",
+                to: "/configuration/change_request/related-systems",
+            },
+            {
+                _name: "CSidebarNavItem",
+                name: "เอกสารแนบ",
+                to: "/configuration/change_request/attachments",
+            }
+        ]
+    },
 ];
