@@ -40,6 +40,30 @@
             ><div class="text-center">ไม่พบข้อมูล</div>
           </template>
 
+          <template #dateCreated-filter>
+            <CRow>
+              <CCol
+                ><input
+                  type="date"
+                  v-model="filter.dateCreated.start"
+                  class="form-control form-control-sm"
+              /></CCol>
+              <b class="mt-1">ถึง</b>
+              <CCol
+                ><input
+                  type="date"
+                  v-model="filter.dateCreated.end"
+                  class="form-control form-control-sm"
+              /></CCol>
+            </CRow>
+          </template>
+
+          <template #dateCreated="{ item }">
+            <td>
+              {{ toThaiFormatWithTime(item.dateCreated) }}
+            </td>
+          </template>
+
           <template #actions="{ item }">
             <td>
               <CButton color="info" size="sm"><b>รายละเอียด</b> </CButton>&nbsp;
@@ -103,6 +127,11 @@ export default {
       ],
 
       filter: {
+        dateCreated: {
+          start: "",
+          end: "",
+        },
+
         taskId: "",
 
         taskOwner: "all",
@@ -150,6 +179,24 @@ export default {
       }
       if (this.filter.taskOwner == "mine") {
         list = list.filter((item) => !this.disabledAction(item));
+      }
+      if (this.filter.dateCreated.start) {
+        if (!this.filter.dateCreated.end) {
+          this.filter.dateCreated.end = JSON.parse(
+            JSON.stringify(this.filter.dateCreated.start)
+          );
+        }
+        list = list.filter((item) => {
+          const dateCreated = new Date(item.dateCreated).getTime();
+
+          const start = new Date(this.filter.dateCreated.start);
+          const end = new Date(this.filter.dateCreated.end);
+          end.setHours(23, 59, 59);
+
+          return (
+            dateCreated >= start.getTime() && dateCreated <= end.getTime()
+          );
+        });
       }
       return list;
     },
