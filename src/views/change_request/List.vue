@@ -117,12 +117,12 @@ export default {
         {
           key: "taskName",
           label: "งาน",
-          _style: "width:10%",
+          _style: "width:15%",
         },
         {
           key: "actions",
           label: "",
-          _style: "width:20%",
+          _style: "width:15%",
         },
       ],
 
