@@ -129,7 +129,7 @@ import JogetHelper from "@/helpers/JogetHelper";
 export default {
   mixins: [JogetHelper],
   created() {
-    this.getObjectives();
+    this.getList();
   },
   data() {
     return {
@@ -156,7 +156,7 @@ export default {
     };
   },
   methods: {
-    getObjectives() {
+    getList() {
       this.loading = true;
 
       this.jogetListAll("mophApp", "list_change_request_attachment")
@@ -180,7 +180,7 @@ export default {
       this.loading = true;
       this.submit(id, formData)
         .then((res) => {
-          this.getObjectives();
+          this.getList();
           this.modal = false;
         })
         .catch((err) => {
@@ -193,7 +193,7 @@ export default {
         status,
       })
         .then(() => {
-          this.getObjectives();
+          this.getList();
         })
         .catch((err) => {
           this.loading = false;
@@ -203,7 +203,7 @@ export default {
       this.loading = true;
       this.jogetFormDelete("mophApp", "change_request_attachment", this.form.id)
         .then((res) => {
-          this.getObjectives();
+          this.getList();
           this.modal = false;
         })
         .catch((err) => {
