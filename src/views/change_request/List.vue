@@ -39,6 +39,20 @@
           <template #no-items-view
             ><div class="text-center">ไม่พบข้อมูล</div>
           </template>
+
+          <template #actions="{ item }">
+            <td>
+              <CButton color="info" size="sm"><b>รายละเอียด</b> </CButton>&nbsp;
+              <CButton
+                color="primary"
+                size="sm"
+                :disabled="disabledAction(item)"
+                ><b>ดำเนินการ</b>
+              </CButton>
+            </td>
+          </template>
+
+          <template #actions-filter> <p></p> </template>
         </CDataTable>
       </CCardBody>
     </CCard>
@@ -64,7 +78,7 @@ export default {
         {
           key: "subject",
           label: "ความประสงค์",
-          _style: "width:10%",
+          _style: "width:20%",
         },
         {
           key: "reason",
@@ -75,6 +89,16 @@ export default {
           key: "requester_name",
           label: "ผู้ร้องขอ",
           _style: "width:10%",
+        },
+        {
+          key: "taskName",
+          label: "งาน",
+          _style: "width:10%",
+        },
+        {
+          key: "actions",
+          label: "",
+          _style: "width:20%",
         },
       ],
 
