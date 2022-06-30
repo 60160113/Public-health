@@ -21,6 +21,21 @@
           column-filter
           :loading="loading"
         >
+          <template #over-table>
+            <div style="margin-bottom: 10px">
+              <CSelect
+                horizontal
+                label="รายการ:"
+                placeholder="กรุณาเลือก"
+                :options="[
+                  { value: 'all', label: 'ทั้งหมด' },
+                  { value: 'mine', label: 'งานของฉัน' },
+                ]"
+                style="width: 50%"
+                :value.sync="filter.taskOwner"
+              />
+            </div>
+          </template>
           <template #no-items-view
             ><div class="text-center">ไม่พบข้อมูล</div>
           </template>
@@ -37,6 +52,9 @@ import dateFormat from "@/helpers/dateFormat.vue";
 const AuthUser = JSON.parse(localStorage.getItem("AuthUser"));
 export default {
   mixins: [JogetHelper, dateFormat],
+  created() {
+    this.getList();
+  },
   data() {
     return {
       list: [],
@@ -60,6 +78,12 @@ export default {
         },
       ],
 
+      filter: {
+        taskId: "",
+
+        taskOwner: "all",
+      },
+
       loading: false,
 
       modal: false,
@@ -69,9 +93,40 @@ export default {
       processId: "",
     };
   },
+  methods: {
+    getList() {
+      this.loading = true;
+
+      this.jogetListAll("mophApp", "list_change_request")
+        .then((res) => {
+          this.list = res.data.map((item) => {
+            item.taskName = item.activity ? item.activity.split(";")[1] : "";
+            item.taskId = item.activity ? item.activity.split(";")[0] : "";
+            return item;
+          });
+          this.loading = false;
+        })
+        .catch((err) => {
+          this.loading = false;
+        });
+    },
+    disabledAction(item) {
+      const assignField = item.assign.split(";")[0] || "";
+      const assignTo = item.assign.split(";")[1] || "";
+      const assignStatus =
+        assignTo && assignField ? AuthUser[assignField] !== assignTo : false;
+      return item.taskId == "complete" || assignStatus;
+    },
+  },
   computed: {
     filteredList() {
       var list = [...this.list];
+      if (this.filter.taskId) {
+        list = list.filter((item) => item.taskId == this.filter.taskId);
+      }
+      if (this.filter.taskOwner == "mine") {
+        list = list.filter((item) => !this.disabledAction(item));
+      }
       return list;
     },
   },
