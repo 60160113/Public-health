@@ -66,7 +66,12 @@
 
           <template #actions="{ item }">
             <td>
-              <CButton color="info" size="sm"><b>รายละเอียด</b> </CButton>&nbsp;
+              <CButton
+                color="info"
+                size="sm"
+                @click.prevent="openModal('detail', item.processId)"
+                ><b>รายละเอียด</b> </CButton
+              >&nbsp;
               <CButton
                 color="primary"
                 size="sm"
@@ -80,6 +85,47 @@
         </CDataTable>
       </CCardBody>
     </CCard>
+
+    <!-- M O D A L -->
+    <CModal
+      :show.sync="modal"
+      :centered="true"
+      :closeOnBackdrop="false"
+      size="xl"
+      :color="modalName == 'detail' ? 'info' : 'primary'"
+    >
+      <div v-if="modalName == 'detail'">
+        <Detail :processId="processId" />
+      </div>
+
+      <div v-else>
+        <component
+          :is="modalName"
+          :processId="processId"
+          :onComplete="completeTask"
+        />
+      </div>
+
+      <template #header>
+        <h5 class="modal-title">
+          {{ modalName == "detail" ? "รายละเอียด" : modalLabel }}
+        </h5>
+        <CButtonClose
+          @click="modal = false"
+          class="text-white"
+          :disabled="loading"
+        />
+      </template>
+      <template #footer>
+        <CButton color="secondary" @click="modal = false" :disabled="loading"
+          >ปิด</CButton
+        >
+      </template>
+      <CElementCover :opacity="0.8" v-if="loading">
+        <h1 class="d-inline">Loading...</h1>
+        <CSpinner size="5xl" color="success" />
+      </CElementCover>
+    </CModal>
   </div>
 </template>
 
@@ -87,9 +133,14 @@
 import JogetHelper from "@/helpers/JogetHelper";
 import dateFormat from "@/helpers/dateFormat.vue";
 
+import Detail from "@/views/change_request/Detail.vue";
+
 const AuthUser = JSON.parse(localStorage.getItem("AuthUser"));
 export default {
   mixins: [JogetHelper, dateFormat],
+  components: {
+    Detail,
+  },
   created() {
     this.getList();
   },
@@ -163,12 +214,29 @@ export default {
           this.loading = false;
         });
     },
+    openModal(name, processId, label = "") {
+      this.loading = true;
+      this.modalName = name;
+      this.processId = processId;
+      this.modalLabel = label;
+
+      this.modal = true;
+      this.loading = false;
+    },
     disabledAction(item) {
       const assignField = item.assign.split(";")[0] || "";
       const assignTo = item.assign.split(";")[1] || "";
       const assignStatus =
         assignTo && assignField ? AuthUser[assignField] !== assignTo : false;
       return item.taskId == "complete" || assignStatus;
+    },
+    async completeTask() {
+      this.loading = true;
+      this.getList();
+      setTimeout(() => {
+        this.modal = false;
+        this.loading = false;
+      }, 500);
     },
   },
   computed: {
@@ -193,12 +261,29 @@ export default {
           const end = new Date(this.filter.dateCreated.end);
           end.setHours(23, 59, 59);
 
-          return (
-            dateCreated >= start.getTime() && dateCreated <= end.getTime()
-          );
+          return dateCreated >= start.getTime() && dateCreated <= end.getTime();
         });
       }
       return list;
+    },
+  },
+  watch: {
+    modal: function (val) {
+      if (!val) {
+        this.processId = "";
+        this.modalLabel = "";
+        this.modalName = "";
+      }
+    },
+    "filter.dateCreated.start": function (val) {
+      if (!val) {
+        this.filter.dateCreated.end = "";
+      }
+    },
+    "filter.dateCreated.end": function (val) {
+      if (!val) {
+        this.filter.dateCreated.start = "";
+      }
     },
   },
 };
